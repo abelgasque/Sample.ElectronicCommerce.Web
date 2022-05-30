@@ -5,6 +5,7 @@ using Sample.ElectronicCommerce.Security.Services;
 using Sample.ElectronicCommerce.Shared.Constants;
 using Sample.ElectronicCommerce.Shared.Entities.DTO;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Sample.ElectronicCommerce.Security.Controllers
@@ -45,13 +46,17 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             {
                 returnDTO = await _service.Login(pEntity, false);
                 _logger.LogInformation($"UserSessionController.Login => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
+                if (returnDTO.IsSuccess) 
+                {
+                    return new OkObjectResult(returnDTO);    
+                }
+                return new BadRequestObjectResult(returnDTO);                
             }
             catch (Exception ex)
             {
                 _logger.LogError($"UserSessionController.Login => Exception: {ex.Message}");
                 returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
+                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
             }
         }
         
@@ -71,13 +76,17 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             {
                 returnDTO = await _service.Refresh(pEntity);
                 _logger.LogInformation($"UserSessionController.Refresh => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
+                if (returnDTO.IsSuccess) 
+                {
+                    return new OkObjectResult(returnDTO);    
+                }
+                return new BadRequestObjectResult(returnDTO); 
             }
             catch (Exception ex)
             {
                 _logger.LogError($"UserSessionController.Refresh => Exception: {ex.Message}");
                 returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
+                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
             }
         }
         #endregion

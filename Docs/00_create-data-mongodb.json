@@ -1,0 +1,12 @@
+[
+	{
+		"Name": "Administrador",
+		"Code": "ROLE_ADMINISTRATOR",
+		"IsActive": true
+	},
+	{
+		"Name": "Cliente",
+		"Code": "ROLE_CUSTOMER",
+		"IsActive": true
+	}
+]

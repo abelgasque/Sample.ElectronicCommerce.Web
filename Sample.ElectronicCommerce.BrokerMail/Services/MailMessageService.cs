@@ -1,11 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Sample.ElectronicCommerce.BrokerMail.Entities.EF.Mapping;
+using Sample.ElectronicCommerce.BrokerMail.Entities;
 using Sample.ElectronicCommerce.BrokerMail.Repositories;
 using Sample.ElectronicCommerce.Shared.Constants;
 using Sample.ElectronicCommerce.Shared.Entities.DTO;
 using Sample.ElectronicCommerce.Shared.Entities.Settings;
-using Sample.ElectronicCommerce.Shared.Helpers;
 using Sample.ElectronicCommerce.Shared.Services;
 using System;
 using System.Collections.Generic;
@@ -25,7 +24,7 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
 
         private readonly MailMessageRepository _repository;
         
-        private readonly MailBrokerRepository _mailBrokerRepository;
+        private readonly BrokerMailRepository _mailBrokerRepository;
 
         private readonly LogAppService _logAppService;
         #endregion
@@ -35,7 +34,7 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
             ILogger<MailMessageService> logger, 
             IOptions<AppSettings> appSettings, 
             MailMessageRepository repository, 
-            MailBrokerRepository mailBrokerRepository,
+            BrokerMailRepository mailBrokerRepository,
             LogAppService logAppService
         ) {
             _logger = logger;
@@ -53,8 +52,7 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
             ResponseDTO responseDTO;
             try
             {
-                pEntity.DtCreation = DateTime.Now;
-                pEntity.NuVersion = _appSettings.Version;
+                pEntity.Version = _appSettings.Version;
                 responseDTO = await _repository.InsertAsync(pEntity);
                 if (responseDTO.IsSuccess)
                 {                    
@@ -78,7 +76,6 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
             ResponseDTO responseDTO;
             try
             {
-                pEntity.DtLastUpdate = DateTime.Now;
                 responseDTO = await _repository.UpdateAsync(pEntity);
             }
             catch (Exception ex)
@@ -91,7 +88,7 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
             return new ReturnDTO(responseDTO);
         }
 
-        public async Task<ReturnDTO> GetById(long pId)
+        public async Task<ReturnDTO> GetById(string pId)
         {
             _logger.LogInformation($"MailMessageService.GetById => Start");
             ResponseDTO responseDTO;
@@ -108,13 +105,13 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
             return new ReturnDTO(responseDTO);
         }
 
-        public async Task<ReturnDTO> GetAll(bool? pIsActive)
+        public async Task<ReturnDTO> GetAll()
         {
             _logger.LogInformation($"MailMessageService.GetAll => Start");
             ResponseDTO responseDTO;
             try
             {
-                responseDTO = await _repository.GetAll(pIsActive);
+                responseDTO = await _repository.GetAll();
             }
             catch (Exception ex)
             {
@@ -162,7 +159,7 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
             try
             {
                 responseDTO = await _mailBrokerRepository.GetById(pEntity.IdMailBroker);
-                MailBrokerEntity mailBroker = (MailBrokerEntity)responseDTO.DataObject;
+                BrokerMailEntity mailBroker = (BrokerMailEntity)responseDTO.DataObject;
 
                 if (mailBroker == null)
                 {

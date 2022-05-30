@@ -7,7 +7,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 
 import { environment } from 'src/environments/environment';
 
-import { ReturnDTO, TokenDTO, UserSession, UserWs } from 'src/app/shared/util/model';
+import { ReturnDTO, TokenDTO, UserSession, UserDTO } from 'src/app/shared/util/model';
 
 import { CoreService } from 'src/app/core/core.service';
 import { SharedService } from 'src/app/shared/shared.service';
@@ -32,7 +32,7 @@ export class SecurityService {
     this.baseUrl =`${ environment.baseUrl }/Token`; 
   }
 
-  public Authenticate(pEntity: UserWs) : Observable<any>  {
+  public Authenticate(pEntity: UserDTO) : Observable<any>  {
     return this.http.post<ReturnDTO>(`${ this.baseUrl }/Login`, pEntity);
   }
 
@@ -123,7 +123,7 @@ export class SecurityService {
 
   private setUserSession(pEntity: UserSession) {
     let dataObject: string = null;
-    if(pEntity != null && pEntity.id > 0){
+    if(pEntity != null && pEntity.id != null){
       dataObject = JSON.stringify(pEntity)
     }    
     localStorage.setItem("user_session", dataObject);  
@@ -136,7 +136,7 @@ export class SecurityService {
     
   public isValidUserSession() {       
     let userSession: UserSession = this.getUserSession();
-    return (userSession != null && userSession.id > 0);
+    return (userSession != null && userSession.id != null);
   }
 
   public isValidToken() : boolean {

@@ -19,7 +19,7 @@
         </ng-template>
     </div>
     <div class="footer">
-        <form class="form" autocomplete="off" [formGroup]="this.form" (ngSubmit)="this.sendMessage()">
+        <form class="form" autocomplete="off" [formGroup]="this.form" (ngSubmit)="this.sendMessageBroker()">
             <mat-form-field class="input">
                 <mat-label>Escreva sua mensagem</mat-label>
                 <input matInput name="message" formControlName="message" [(ngModel)]="this.message" placeholder="Olá" />

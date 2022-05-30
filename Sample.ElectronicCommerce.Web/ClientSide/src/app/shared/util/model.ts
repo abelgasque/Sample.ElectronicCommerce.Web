@@ -4,21 +4,15 @@ export interface ReturnDTO {
     resultObject: any;
 }
 
-export class UserWs {    
+export class UserDTO {    
     public mail: string = '';
     public password: string = '';
 }
 
 export class TokenDTO {
-    public idUserSession: number;
+    public idUserSession: string;
     public accessToken: string;
     public expiresIn: number;
-}
-
-export class LogAppType {
-    public id: number = 0;
-    public name: string = null;
-    public isActive: boolean = true;
 }
    
 export class Menu {
@@ -34,14 +28,14 @@ export class MenuItem {
 }
 
 export class UserRole {
-    public id: number = 0;
+    public id: string = null;
     public code: string = '';
     public name: string = '';
     public isActive: boolean = false;
 }
 
 export class User {
-    public id = 0;
+    public id: string = null;
     public dtCreation: Date = null;
     public dtLastUpdate: Date = null;
     public dtLastBlock: Date = null;
@@ -60,8 +54,8 @@ export class User {
 }
 
 export class UserSession {
-    public id = 0;
-    public idUser = 0;
+    public id: string = null;
+    public idUser: string = null;
     public dtCreation: Date = null;
     public dtLastUpdate: Date = null;
     public dtAccessTokenExpiration: Date = null;
@@ -77,7 +71,7 @@ export class UserSession {
     public isActive: boolean = true;
     public user: User = new User();
 }
- 
+
 export class LogApp {
     public id: number = 0;
     public dtCreation: Date = null;

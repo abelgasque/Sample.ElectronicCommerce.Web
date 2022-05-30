@@ -11,8 +11,8 @@ namespace Sample.ElectronicCommerce.Security.Configurations
     {
         public static IServiceCollection SetAuthConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
-            var tokenSettingsSection = configuration.GetSection("TokenSettings");
-            var tokenSettings = tokenSettingsSection.Get<TokenSettings>();
+            var securitySettingsSection = configuration.GetSection("SecuritySettings");
+            var securitySettings = securitySettingsSection.Get<SecuritySettings>();
 
             services.AddAuthentication(x =>
             {
@@ -26,7 +26,7 @@ namespace Sample.ElectronicCommerce.Security.Configurations
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenSettings.Secret)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(securitySettings.Secret)),
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };

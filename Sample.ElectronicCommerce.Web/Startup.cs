@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Sample.ElectronicCommerce.BrokerChat.Hubs;
 using Sample.ElectronicCommerce.Shared.Entities.Settings;
 using Sample.ElectronicCommerce.Web.Configurations;
-using Sample.ElectronicCommerce.WebSocket.Hubs;
 
 namespace Sample.ElectronicCommerce.Web
 {
@@ -46,7 +45,7 @@ namespace Sample.ElectronicCommerce.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
-                endpoints.MapHub<ChatHub>("/chat");
+                endpoints.MapHub<BrokerChatHub>("/broker/chat/all");
             });         
 
             app.UseSwagger();

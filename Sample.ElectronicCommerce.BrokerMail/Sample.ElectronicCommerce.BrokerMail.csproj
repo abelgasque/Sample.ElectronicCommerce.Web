@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<AssemblyVersion>1.1.2505.1</AssemblyVersion>
-		<FileVersion>1.1.2505.1</FileVersion>
-		<Version>1.1.2905.1</Version>
+		<AssemblyVersion>1.1.3005.2</AssemblyVersion>
+		<FileVersion>1.1.3005.2</FileVersion>
+		<Version>1.1.3005.2</Version>
 		<Copyright>Copyright ©  2022</Copyright>
 		<Company>Eletronic Commerce</Company>
 		<Authors>Eletronic Commerce</Authors>

@@ -19,9 +19,6 @@ namespace Sample.ElectronicCommerce.Shared.Entities.Settings
         [JsonProperty("Password")]
         public string Password { get; set; }
 
-        [JsonProperty("DocMessage")]
-        public string DocMessage { get; set; }
-
         public string GetConnectionString
         {
             get

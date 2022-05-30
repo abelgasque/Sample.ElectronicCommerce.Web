@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
-import { ReturnDTO, UserWs } from 'src/app/shared/util/model';
+import { ReturnDTO, UserDTO } from 'src/app/shared/util/model';
 
 import { CoreService } from 'src/app/core/core.service';
 import { SecurityService } from '../../security.service';
@@ -16,7 +16,7 @@ import { SharedService } from 'src/app/shared/shared.service';
 })
 export class LoginComponent implements OnInit {
 
-  public entity = new UserWs();
+  public entity = new UserDTO();
 
   constructor(
     private router: Router,

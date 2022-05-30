@@ -107,7 +107,7 @@ export class UserFormPersistComponent implements OnInit {
   }
 
   private persistEntity(){
-    if(this.data.id > 0){
+    if(this.data.id != null){
       this.update();
     }else{ 
       this.insert(); 

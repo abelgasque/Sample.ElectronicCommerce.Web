@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Sample.ElectronicCommerce.Security.Entities.EF.Mapping;
+using Sample.ElectronicCommerce.Security.Entities;
 using Sample.ElectronicCommerce.Security.Repositories;
 using Sample.ElectronicCommerce.Shared.Constants;
 using Sample.ElectronicCommerce.Shared.Entities.DTO;
@@ -21,7 +21,7 @@ namespace Sample.ElectronicCommerce.Security.Services
         #region Variables
         private readonly ILogger<UserSessionService> _logger;
         
-        private readonly TokenSettings _tokenSettings;
+        private readonly SecuritySettings _securitySettings;
 
         private readonly AppSettings _appSettings;
 
@@ -35,14 +35,14 @@ namespace Sample.ElectronicCommerce.Security.Services
         #region Constructor
         public UserSessionService(
             ILogger<UserSessionService> logger, 
-            IOptions<TokenSettings> tokenSettings, 
+            IOptions<SecuritySettings> securitySettings, 
             IOptions<AppSettings> appSettings, 
             UserSessionRepository repository, 
             UserService userService, 
             LogAppService logAppService
         ) {
             _logger = logger;
-            _tokenSettings = tokenSettings.Value;
+            _securitySettings = securitySettings.Value;
             _appSettings = appSettings.Value;
             _repository = repository;
             _userService = userService;
@@ -65,7 +65,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
                 _logger.LogError($"UserSessionService.InsertAsync => Exception: { ex.Message }");
             }
-            await _logAppService.AppInsertAsync(pEntity.Id, "UserSessionService.InsertAsync", pEntity, responseDTO);
+            await _logAppService.AppInsertAsync(0, "UserSessionService.InsertAsync", pEntity, responseDTO);
             _logger.LogInformation($"UserSessionService.InsertAsync => End");
             return new ReturnDTO(responseDTO);
         }
@@ -84,12 +84,12 @@ namespace Sample.ElectronicCommerce.Security.Services
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
                 _logger.LogError($"UserSessionService.UpdateAsync => Exception: { ex.Message }");
             }
-            await _logAppService.AppInsertAsync(pEntity.Id, "UserSessionService.UpdateAsync", pEntity, responseDTO);
+            await _logAppService.AppInsertAsync(0, "UserSessionService.UpdateAsync", pEntity, responseDTO);
             _logger.LogInformation($"UserSessionService.UpdateAsync => End");
             return new ReturnDTO(responseDTO);
         }
 
-        public async Task<ReturnDTO> GetById(long pId)
+        public async Task<ReturnDTO> GetById(string pId)
         {
             _logger.LogInformation($"UserSessionService.GetById => Start");
             ResponseDTO responseDTO;
@@ -116,13 +116,13 @@ namespace Sample.ElectronicCommerce.Security.Services
             return new ReturnDTO(responseDTO);
         }
 
-        public async Task<ReturnDTO> GetAll(bool? pIsActive)
+        public async Task<ReturnDTO> GetAll()
         {
             _logger.LogInformation($"UserSessionService.GetAll => Start");
             ResponseDTO responseDTO;
             try
             {
-                responseDTO = await _repository.GetAll(pIsActive);
+                responseDTO = await _repository.GetAll();
             }
             catch (Exception ex)
             {
@@ -174,17 +174,17 @@ namespace Sample.ElectronicCommerce.Security.Services
             return listValidate;
         }        
 
-        private TokenDTO GenerateToken(List<UserRoleEntity> pRoles)
+        private TokenDTO GenerateToken(ICollection<UserRoleEntity> pRoles)
         {
             _logger.LogInformation("UserSessionService.GenerateToken => Start");
             TokenDTO tokenWs;
             try
             {                
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_tokenSettings.Secret);
+                var key = Encoding.ASCII.GetBytes(_securitySettings.Secret);
                 SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
                 {
-                    Expires = DateTime.UtcNow.AddMinutes(_tokenSettings.ExpireIn),
+                    Expires = DateTime.UtcNow.AddMinutes(_securitySettings.ExpireIn),
                     NotBefore = DateTime.Now,
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
@@ -202,9 +202,9 @@ namespace Sample.ElectronicCommerce.Security.Services
                 tokenWs = new TokenDTO()
                 {
                     AccessToken = tokenHandler.WriteToken(token),
-                    ExpiresIn = _tokenSettings.ExpireIn
+                    ExpiresIn = _securitySettings.ExpireIn
                 };
-                _logger.LogInformation($"UserSessionService.GenerateToken => AccessToken: Generated, AccessToken Expire: { tokenWs.ExpiresIn.ToString("dd/MM/yyyy - HH:mm:ss") }");
+                _logger.LogInformation($"UserSessionService.GenerateToken => AccessToken: Generated, AccessToken Expire: { DateTime.UtcNow.AddMinutes(_securitySettings.ExpireIn).ToString("dd/MM/yyyy - HH:mm:ss") }");
             }
             catch (Exception ex)
             {
@@ -218,7 +218,7 @@ namespace Sample.ElectronicCommerce.Security.Services
         public async Task<ReturnDTO> Login(UserDTO pEntity, bool pIsUserSystem)
         {
             _logger.LogInformation($"UserSessionService.Login => Start");
-            long idUserSession = 0;
+            string idUserSession = null;
             ResponseDTO responseDTO;
             try
             {
@@ -241,7 +241,9 @@ namespace Sample.ElectronicCommerce.Security.Services
                     if (responseDTO.IsSuccess)
                     {
                         UserSessionEntity entity = (UserSessionEntity)responseDTO.DataObject;                        
-                        if (!isSuccess && (entity.NuAuthenticationAttempts + 1) > _appSettings.NuAuthenticationAttempts)
+                        if (!isSuccess 
+                            && entity  == null 
+                            && (entity.NuAuthenticationAttempts + 1) > _securitySettings.NuAuthenticationAttempts)
                         {
                             listValidate.Add("Usuário bloqueado!");
                             //Criar método para bloquear usuário e enviar e-mail de recuperação                            
@@ -249,7 +251,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                         else
                         {                            
                             entity.IsSuccess = isSuccess;
-                            entity.DeMessage = deMessage;
+                            entity.Message = deMessage;
                             entity.NuAuthenticationAttempts += 1;
                             if (isSuccess)
                             {
@@ -266,7 +268,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                         TokenDTO tokenWs = this.GenerateToken(user.Roles);
                         UserSessionEntity persistSession = new UserSessionEntity()
                         {
-                            Id = 0,
+                            Id = null,
                             IdUser = user.Id,
                             DtCreation = DateTime.Now,
                             DtLastUpdate = null,
@@ -274,8 +276,8 @@ namespace Sample.ElectronicCommerce.Security.Services
                             DtRefreshTokenExpiration = null,
                             AccessToken = (isSuccess) ? tokenWs.AccessToken : null,
                             RefreshToken = null,
-                            DeMessage = deMessage,
-                            NuVersion = _appSettings.Version,
+                            Message = deMessage,
+                            Version = _appSettings.Version,
                             NuAuthenticationAttempts = 1,
                             NuRefreshToken = null,
                             IsSuccess = isSuccess,
@@ -286,7 +288,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                         if (returnDTO.IsSuccess) { idUserSession = persistSession.Id; }
                     }
                 }
-                if (idUserSession > 0) { returnDTO = await this.GetById(idUserSession); }
+                if (!string.IsNullOrEmpty(idUserSession)) { returnDTO = await this.GetById(idUserSession); }
                 responseDTO = new ResponseDTO(returnDTO.IsSuccess, returnDTO.DeMessage, returnDTO.ResultObject);
             }
             catch (Exception ex)
@@ -294,7 +296,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
                 _logger.LogError($"UserSessionService.Login => Exception: { ex.Message }");
             }
-            await _logAppService.AppInsertAsync(idUserSession, "UserSession.Login", pEntity, responseDTO);
+            await _logAppService.AppInsertAsync(0, "UserSession.Login", pEntity, responseDTO);
             _logger.LogInformation($"UserSessionService.Login => End");
             return new ReturnDTO(responseDTO);
         }
@@ -329,7 +331,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
                 _logger.LogError($"UserSessionService.Refresh => Exception: { ex.Message }");
             }
-            await _logAppService.AppInsertAsync(pEntity.IdUserSession, "UserSession.Refresh", null, responseDTO);
+            await _logAppService.AppInsertAsync(0, "UserSession.Refresh", null, responseDTO);
             _logger.LogInformation($"UserSessionService.Refresh => End");
             return new ReturnDTO(responseDTO);
         }

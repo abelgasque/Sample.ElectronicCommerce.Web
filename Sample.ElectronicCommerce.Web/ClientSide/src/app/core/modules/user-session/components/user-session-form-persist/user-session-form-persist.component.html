@@ -24,7 +24,7 @@
 
     <div class="col-12">
         <button pButton pRipple type="button" class="p-button-outlined p-button-success" icon="pi pi-close"
-            (click)="this.persistEntity()" [label]="(this.data.id > 0) ? 'Atualizar' : 'Inserir'"></button>
+            (click)="this.persistEntity()" [label]="(this.data.id != null) ? 'Atualizar' : 'Inserir'"></button>
         <button pButton pRipple type="button" class="p-button-outlined p-button-danger" icon="pi pi-close"
             (click)="this.cancelPersist()" label="Cancelar"></button>
     </div>

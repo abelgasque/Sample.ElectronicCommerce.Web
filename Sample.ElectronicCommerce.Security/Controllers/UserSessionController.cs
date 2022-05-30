@@ -5,6 +5,7 @@ using Sample.ElectronicCommerce.Security.Services;
 using Sample.ElectronicCommerce.Shared.Constants;
 using Sample.ElectronicCommerce.Shared.Entities.DTO;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Sample.ElectronicCommerce.Security.Controllers
@@ -28,14 +29,14 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         #endregion
 
         #region End Points
-        /// GET: Core/UserSession/GetById/pId
+        /// GET: UserSession/GetById/pId
         /// <summary>
         /// End Point que busca sessao usuario por codigo
         /// </summary>             
         [HttpGet]
         [Authorize(Roles = UserRoleConstant.CodeAdmin)]
         [Route("GetById/{pId}")]
-        public async Task<ActionResult<ReturnDTO>> GetById(long pId)
+        public async Task<ActionResult<ReturnDTO>> GetById(string pId)
         {
             _logger.LogInformation("UserSessionController.GetById => Start");
             ReturnDTO returnDTO;
@@ -49,24 +50,24 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             {
                 _logger.LogError($"UserSessionController.GetById => Exception: { ex.Message }");
                 returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
+                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
             }
         }
 
-        /// GET: Core/UserSession/GetAll
+        /// GET: UserSession/GetAll
         /// <summary>
-        /// End Point que lista todos os sessoes usuarios
+        /// End Point que lista todos os sessoes usuarios ativos
         /// </summary>          
         [HttpGet]
         [Authorize(Roles = UserRoleConstant.CodeAdmin)]
         [Route("GetAll")]
-        public async Task<ActionResult<ReturnDTO>> GetAll([FromQuery] bool? pIsActive)
+        public async Task<ActionResult<ReturnDTO>> GetAll()
         {
             _logger.LogInformation("UserSessionController.GetAll => Start");
             ReturnDTO returnDTO;
             try
             {
-                returnDTO = await _service.GetAll(pIsActive);
+                returnDTO = await _service.GetAll();
                 _logger.LogInformation($"UserSessionController.GetAll => IsSuccess: { returnDTO.IsSuccess } => End");
                 return new OkObjectResult(returnDTO);
             }
@@ -74,7 +75,7 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             {
                 _logger.LogError($"UserSessionController.GetAll => Exception: { ex.Message }");
                 returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
+                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
             }
         }
         #endregion        

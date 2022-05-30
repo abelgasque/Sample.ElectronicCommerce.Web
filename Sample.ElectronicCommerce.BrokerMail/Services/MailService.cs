@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sample.ElectronicCommerce.BrokerMail.Entities.EF.Mapping;
+using Sample.ElectronicCommerce.BrokerMail.Entities;
 using Sample.ElectronicCommerce.BrokerMail.Repositories;
 using Sample.ElectronicCommerce.Shared.Constants;
 using Sample.ElectronicCommerce.Shared.Entities.DTO;
@@ -39,7 +39,6 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
             ResponseDTO responseDTO;
             try
             {
-                pEntity.DtCreation = DateTime.Now;
                 responseDTO = await _repository.InsertAsync(pEntity);
             }
             catch (Exception ex)
@@ -58,7 +57,6 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
             ResponseDTO responseDTO;
             try
             {
-                pEntity.DtLastUpdate = DateTime.Now;
                 responseDTO = await _repository.UpdateAsync(pEntity);
             }
             catch (Exception ex)
@@ -71,7 +69,7 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
             return new ReturnDTO(responseDTO);
         }
 
-        public async Task<ReturnDTO> GetById(long pId)
+        public async Task<ReturnDTO> GetById(string pId)
         {
             _logger.LogInformation($"MailService.GetById => Start");
             ResponseDTO responseDTO;
@@ -88,13 +86,13 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
             return new ReturnDTO(responseDTO);
         }
 
-        public async Task<ReturnDTO> GetAll(bool? pIsActive)
+        public async Task<ReturnDTO> GetAll()
         {
             _logger.LogInformation($"MailService.GetAll => Start");
             ResponseDTO responseDTO;
             try
             {
-                responseDTO = await _repository.GetAll(pIsActive);
+                responseDTO = await _repository.GetAll();
             }
             catch (Exception ex)
             {

@@ -6,7 +6,7 @@
             </app-user-grid-filter>
         </div>
     </mat-tab>
-    <mat-tab [label]="((this.dataForm.id > 0) ? 'Atualização' : 'Inserção') + ' de usuário'"> 
+    <mat-tab [label]="((this.dataForm.id != null) ? 'Atualização' : 'Inserção') + ' de usuário'"> 
         <div class="container">
             <app-user-form-persist [data]="this.dataForm" (eventPersist)="this.persist($event)"></app-user-form-persist>
         </div>

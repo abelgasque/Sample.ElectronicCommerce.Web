@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Sample.ElectronicCommerce.Security.Entities.EF.Mapping;
+using Sample.ElectronicCommerce.Security.Entities;
 using Sample.ElectronicCommerce.Security.Services;
 using Sample.ElectronicCommerce.Shared.Constants;
 using Sample.ElectronicCommerce.Shared.Entities.DTO;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Sample.ElectronicCommerce.Security.Controllers
 {
     [ApiController]
-    [Authorize(Roles = UserRoleConstant.CodeAdmin)]
+    //[Authorize(Roles = UserRoleConstant.CodeAdmin)]
     [Route("[controller]")]
     public class UserController : ControllerBase
     {
@@ -62,7 +63,7 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             {
                 _logger.LogError($"UserController.InsertAsync => Exception: { ex.Message }");
                 returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
+                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
             }
         }
 
@@ -92,7 +93,7 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             {
                 _logger.LogError($"UserController.UpdateAsync => Exception: { ex.Message }");
                 returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
+                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
             }             
         }
 
@@ -102,7 +103,7 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         /// </summary>        
         [HttpGet]
         [Route("GetById/{pId}")]
-        public async Task<ActionResult<ReturnDTO>> GetById(long pId)
+        public async Task<ActionResult<ReturnDTO>> GetById(string pId)
         {
             _logger.LogInformation("UserController.GetById => Start");
             ReturnDTO returnDTO;
@@ -116,23 +117,23 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             {
                 _logger.LogError($"UserController.GetById => Exception: { ex.Message }");
                 returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);                
-                return new BadRequestObjectResult(returnDTO);
+                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
             }
         }
 
         /// GET: User/GetAll
         /// <summary>
-        /// End Point que lista todos os usuarios
+        /// End Point que lista todos os usuarios ativos
         /// </summary>        
         [HttpGet]
         [Route("GetAll")]
-        public async Task<ActionResult<ReturnDTO>> GetAll([FromQuery] bool? pIsActive)
+        public async Task<ActionResult<ReturnDTO>> GetAll()
         {
             _logger.LogInformation("UserController.GetAll => Start");
             ReturnDTO returnDTO;
             try
             {
-                returnDTO = await _service.GetAll(pIsActive);
+                returnDTO = await _service.GetAll();
                 _logger.LogInformation($"UserController.GetAll => IsSuccess: { returnDTO.IsSuccess } => End");
                 return new OkObjectResult(returnDTO);
             }
@@ -140,23 +141,23 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             {
                 _logger.LogError($"UserController.GetAll => Exception: { ex.Message }");
                 returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
+                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
             }
         }
 
         /// GET: User/GetAll/Role
         /// <summary>
-        /// End Point que lista de todas permissoes de usuarios
+        /// End Point que lista de todas permissoes ativas de usuarios
         /// </summary>        
         [HttpGet]
         [Route("GetAll/Role")]
-        public async Task<ActionResult<ReturnDTO>> GetAllRole([FromQuery] bool? pIsActive)
+        public async Task<ActionResult<ReturnDTO>> GetAllRole()
         {
             _logger.LogInformation("UserController.GetAllRole => Start");
             ReturnDTO returnDTO;
             try
             {
-                returnDTO = await _userRoleService.GetAll(pIsActive);
+                returnDTO = await _userRoleService.GetAll();
                 _logger.LogInformation($"UserController.GetAllRole => IsSuccess: { returnDTO.IsSuccess } => End");
                 return new OkObjectResult(returnDTO);
             }
@@ -164,7 +165,7 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             {
                 _logger.LogError($"UserController.GetAllRole => Exception: { ex.Message }");
                 returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
+                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
             }
         }
         #endregion

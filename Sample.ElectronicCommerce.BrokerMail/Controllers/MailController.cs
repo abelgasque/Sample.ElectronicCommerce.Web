@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Sample.ElectronicCommerce.BrokerMail.Entities.EF.Mapping;
+using Sample.ElectronicCommerce.BrokerMail.Entities;
 using Sample.ElectronicCommerce.BrokerMail.Services;
 using Sample.ElectronicCommerce.Shared.Constants;
 using Sample.ElectronicCommerce.Shared.Entities.DTO;
@@ -87,7 +87,7 @@ namespace Sample.ElectronicCommerce.BrokerMail.Controllers
         /// </summary>
         [HttpGet]
         [Route("GetById/{pId}")]
-        public async Task<ActionResult<ReturnDTO>> GetById(long pId)
+        public async Task<ActionResult<ReturnDTO>> GetById(string pId)
         {
             _logger.LogInformation("MailController.GetById => Start");
             ReturnDTO returnDTO;
@@ -111,13 +111,13 @@ namespace Sample.ElectronicCommerce.BrokerMail.Controllers
         /// </summary>                
         [HttpGet]
         [Route("GetAll")]
-        public async Task<ActionResult<ReturnDTO>> GetAll([FromQuery] bool? pIsActive)
+        public async Task<ActionResult<ReturnDTO>> GetAll()
         {
             _logger.LogInformation("MailController.GetAll => Start");
             ReturnDTO returnDTO;
             try
             {
-                returnDTO = await _service.GetAll(pIsActive);
+                returnDTO = await _service.GetAll();
                 _logger.LogInformation($"MailController.GetAll => IsSuccess: { returnDTO.IsSuccess } => End");
                 return new OkObjectResult(returnDTO);
             }

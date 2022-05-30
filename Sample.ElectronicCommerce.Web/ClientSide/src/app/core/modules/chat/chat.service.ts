@@ -17,7 +17,7 @@ export class ChatService {
   constructor(    
     private http: HttpClient,     
   ) {
-    this.baseUrl =`${ environment.baseUrl }/Chat`; 
+    this.baseUrl =`${ environment.baseUrl }/BrokerChat`;
   }
 
   public GetAll() : Observable<any>  {

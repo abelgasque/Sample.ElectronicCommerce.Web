@@ -11,7 +11,7 @@ namespace ElectronicCommerceWS.Controllers.Core
 {
     [ApiController]
     [ApiExplorerSettings(IgnoreApi = true)]
-    [Authorize(Roles = UserRoleConstant.CodeSystem)]
+    //[Authorize(Roles = UserRoleConstant.CodeSystem)]
     [Route("[controller]")]
     public class ApplicationController : ControllerBase
     {
@@ -19,7 +19,6 @@ namespace ElectronicCommerceWS.Controllers.Core
         private readonly ILogger<ApplicationController> _logger;
 
         private readonly ApplicationService _service;
-
         #endregion
 
         #region Constructor
@@ -33,25 +32,25 @@ namespace ElectronicCommerceWS.Controllers.Core
         #endregion
 
         #region End Points
-        /// GET: Application/GetByApplication
+        /// GET: Application/GetAll
         /// <summary>
-        /// End Point que busca aplicações configurada para o projeto
+        /// End Point que busca lista de aplicações ativas
         /// </summary>
-        [Route("GetByApplication")]
+        [Route("GetAll")]
         [HttpGet]
-        public async Task<ActionResult<ReturnDTO>> GetByApplication()
+        public async Task<ActionResult<ReturnDTO>> GetAll()
         {
-            _logger.LogInformation("ApplicationController.GetByApplication => Start");
+            _logger.LogInformation("ApplicationController.GetAll => Start");
             ReturnDTO returnDTO;
             try
             {
-                returnDTO = await _service.GetByApplication();
-                _logger.LogInformation($"ApplicationController.GetByApplication => IsSuccess: { returnDTO.IsSuccess } => End");
+                returnDTO = await _service.GetAll();
+                _logger.LogInformation($"ApplicationController.GetAll => IsSuccess: { returnDTO.IsSuccess } => End");
                 return new OkObjectResult(returnDTO);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"ApplicationController.GetByApplication => Exception: { ex.Message }");
+                _logger.LogError($"ApplicationController.GetAll => Exception: { ex.Message }");
                 returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
                 return new BadRequestObjectResult(returnDTO);
             }

@@ -24,13 +24,13 @@ namespace Sample.ElectronicCommerce.Security.Services
         #endregion
 
         #region Methods        
-        public async Task<ReturnDTO> GetAll(bool? pIsActive)
+        public async Task<ReturnDTO> GetAll()
         {
             _logger.LogInformation("UserRoleService.GetAll => Start");
             ResponseDTO responseDTO;
             try
             {                
-                responseDTO = await _repository.GetAll(pIsActive);
+                responseDTO = await _repository.GetAll();
             }
             catch (Exception ex)
             {

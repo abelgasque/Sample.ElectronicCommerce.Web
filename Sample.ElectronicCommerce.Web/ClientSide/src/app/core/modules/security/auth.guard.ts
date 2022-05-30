@@ -19,8 +19,7 @@ export class AuthGuard implements CanActivate {
   public canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
     let isValid = false;      
     if(!this.securityService.isValidUserSession()) {            
-      //this.router.navigate(['/security/auth']); 
-      this.router.navigate(['']); 
+      this.router.navigate(['/security/auth']);
     }else if (!this.securityService.isValidToken()) {            
       this.securityService.refreshUserSession();
     } else if (next.data.roles && !this.securityService.hasAnyRole(next.data.roles)) {             

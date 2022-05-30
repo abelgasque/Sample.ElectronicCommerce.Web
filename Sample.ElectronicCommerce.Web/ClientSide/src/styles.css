@@ -24,14 +24,6 @@ div .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col
   background-color: #2194f3;
 }
 
-.container{
-  min-height: 89.4%
-}
-
-.row{
-  margin: 10px;
-}
-
 .color-red{
   color: #F44336;
 }

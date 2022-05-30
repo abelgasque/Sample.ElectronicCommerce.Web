@@ -15,7 +15,7 @@ namespace Sample.ElectronicCommerce.Shared.Entities.DTO
         #endregion
 
         #region Atributtes
-        public long IdUserSession { get; set; } = 0;
+        public string IdUserSession { get; set; } = null;
         public string AccessToken { get; set; } = null;
         public int ExpiresIn { get; set; } = 0;
         #endregion

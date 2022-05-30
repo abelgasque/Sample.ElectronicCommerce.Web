@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sample.ElectronicCommerce.Security.Entities.EF.Mapping;
+using Sample.ElectronicCommerce.Security.Entities;
 using Sample.ElectronicCommerce.Security.Repositories;
 using Sample.ElectronicCommerce.Shared.Constants;
 using Sample.ElectronicCommerce.Shared.Entities.DTO;
@@ -17,8 +17,6 @@ namespace Sample.ElectronicCommerce.Security.Services
 
         private readonly UserRepository _repository;
 
-        private readonly UserHasRoleService _userHasRoleService;
-
         private readonly LogAppService _logAppService;
         #endregion
 
@@ -26,12 +24,10 @@ namespace Sample.ElectronicCommerce.Security.Services
         public UserService(
             ILogger<UserService> logger, 
             UserRepository repository, 
-            UserHasRoleService userHasRoleService, 
             LogAppService logAppService
         ) {
             _logger = logger;
             _repository = repository;
-            _userHasRoleService = userHasRoleService;
             _logAppService = logAppService;
         }
         #endregion
@@ -43,16 +39,14 @@ namespace Sample.ElectronicCommerce.Security.Services
             ResponseDTO responseDTO;
             try
             {
-                List<UserRoleEntity> roles = pEntity.Roles;
-                pEntity.Roles = null;
-                pEntity.DtCreation = DateTime.Now;
-                responseDTO = await _repository.InsertAsync(pEntity);
-                if (responseDTO.IsSuccess && responseDTO.DataObject != null)
+                ReturnDTO returnDTO = await this.GetByMail(pEntity.Mail);
+                if (returnDTO.IsSuccess)
                 {
-                    ReturnDTO returnDTO = await _userHasRoleService.PersistAsync(pEntity.Id, roles);                    
-                    UserEntity entity = (UserEntity)responseDTO.DataObject;
-                    returnDTO = await this.GetById(entity.Id);
-                    responseDTO = new ResponseDTO(returnDTO.IsSuccess, returnDTO.DeMessage, returnDTO.ResultObject);
+                    responseDTO = new ResponseDTO(false, "E-mail já cadastrado no sistemas", null);
+                }
+                else
+                {
+                    responseDTO = await _repository.InsertAsync(pEntity);
                 }
             }
             catch (Exception ex)
@@ -60,7 +54,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
                 _logger.LogError($"UserService.InsertAsync => Exception: { ex.Message }");
             }
-            await _logAppService.AppInsertAsync(pEntity.IdUserSession, "UserService.InsertAsync", pEntity, responseDTO);
+            await _logAppService.AppInsertAsync(0, "UserService.InsertAsync", pEntity, responseDTO);
             _logger.LogInformation($"UserService.InsertAsync => End");
             return new ReturnDTO(responseDTO);
         }
@@ -71,30 +65,19 @@ namespace Sample.ElectronicCommerce.Security.Services
             ResponseDTO responseDTO;            
             try
             {
-                ReturnDTO returnDTO = await _userHasRoleService.PersistAsync(pEntity.Id, pEntity.Roles);
-                if (returnDTO.IsSuccess)
-                {
-                    responseDTO = await _repository.GetById(pEntity.Id);
-                    UserEntity entity = (UserEntity)responseDTO.DataObject;
-                    pEntity.Password = (string.IsNullOrEmpty(pEntity.Password)) ? entity.Password : pEntity.Password;
-                    pEntity.Roles = new List<UserRoleEntity>();
-                    pEntity.DtLastUpdate = DateTime.Now;
-                    responseDTO = await _repository.UpdateAsync(pEntity);
-                    returnDTO = await this.GetById(pEntity.Id);
-                }
-                responseDTO = new ResponseDTO(returnDTO.IsSuccess, returnDTO.DeMessage, returnDTO.ResultObject);
+                responseDTO = await _repository.UpdateAsync(pEntity);
             }
             catch (Exception ex)
             {
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
                 _logger.LogError($"UserService.UpdateAsync => Exception: { ex.Message }");
             }
-            await _logAppService.AppInsertAsync(pEntity.IdUserSession, "UserService.UpdateAsync", pEntity, responseDTO);
+            await _logAppService.AppInsertAsync(0, "UserService.UpdateAsync", pEntity, responseDTO);
             _logger.LogInformation($"UserService.UpdateAsync => End");
             return new ReturnDTO(responseDTO);
         }
 
-        public async Task<ReturnDTO> GetById(long pId)
+        public async Task<ReturnDTO> GetById(string pId)
         {
             _logger.LogInformation($"UserService.GetById => Start");
             ResponseDTO responseDTO;
@@ -128,13 +111,13 @@ namespace Sample.ElectronicCommerce.Security.Services
             return new ReturnDTO(responseDTO);
         }
 
-        public async Task<ReturnDTO> GetAll(bool? pIsActive)
+        public async Task<ReturnDTO> GetAll()
         {
             _logger.LogInformation($"UserService.GetAll => Start");
             ResponseDTO responseDTO;
             try
             {
-                responseDTO = await _repository.GetAll(pIsActive);                
+                responseDTO = await _repository.GetAll();                
             }
             catch (Exception ex)
             {

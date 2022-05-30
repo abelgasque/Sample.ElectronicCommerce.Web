@@ -32,7 +32,7 @@ export class UserSessionFormPersistComponent implements OnInit {
   }
 
   public persistEntity(){
-    if(this.data.id > 0){
+    if(this.data.id != null){
       this.update();
     }
   }

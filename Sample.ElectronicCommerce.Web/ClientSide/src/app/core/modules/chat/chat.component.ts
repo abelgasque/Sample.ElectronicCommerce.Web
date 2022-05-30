@@ -37,7 +37,7 @@ export class ChatComponent implements OnInit {
     private entityService: ChatService,
   ) {
     this.setForm();
-    this.connection = new signalR.HubConnectionBuilder().withUrl(`${ environment.baseUrl }/chat`).build();
+    this.connection = new signalR.HubConnectionBuilder().withUrl(`${ environment.baseUrl }/broker/chat/all`).build();
     this.startConnection();
     this.getAll();
   }
@@ -50,7 +50,7 @@ export class ChatComponent implements OnInit {
   }
 
   private startConnection(){
-    this.connection.on("ReceiveMessage", (userName: string, message: string) => {
+    this.connection.on("ReceiveMessageBroker", (userName: string, message: string) => {
       this.messages.push({ userName: userName, text: message } );
     });
 
@@ -63,9 +63,9 @@ export class ChatComponent implements OnInit {
     });
   }
 
-  public sendMessage() {
+  public sendMessageBroker() {
     if(this.message.length > 0) {
-      this.connection.send("SendMessage", this.getNameUserAuth(), this.message)
+      this.connection.send("SendMessageBroker", this.getNameUserAuth(), this.message)
       .then(() => {
         this.form.reset();
         this.message = null;

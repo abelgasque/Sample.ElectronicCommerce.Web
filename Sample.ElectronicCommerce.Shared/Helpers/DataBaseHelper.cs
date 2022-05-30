@@ -36,27 +36,7 @@ namespace Sample.ElectronicCommerce.Shared.Helpers
         }
         #endregion
 
-        #region Methods
-        public string AppConnectionStringSql()
-        {            
-            return _appSettings.DataBase.GetConnectionString;
-        }
-
-        public string BrokerMailConnectionStringSql()
-        {
-            return _brokerMailSettings.DataBase.GetConnectionString;
-        }
-
-        public string CoreConnectionStringSql()
-        {
-            return _coreSettings.DataBase.GetConnectionString;
-        }
-
-        public string SecurityConnectionStringSql()
-        {
-            return _securitySettings.DataBase.GetConnectionString;
-        }
-
+        #region Methods        
         public string SharedConnectionStringSql()
         {
             return _sharedSettings.DataBase.GetConnectionString;
