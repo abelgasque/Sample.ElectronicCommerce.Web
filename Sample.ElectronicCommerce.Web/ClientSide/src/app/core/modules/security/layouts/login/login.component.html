@@ -1,0 +1,39 @@
+<form class="row" #f="ngForm" autocomplete="off" (ngSubmit)="this.authenticate(f)" fxLayout="row" fxLayoutAlign="center center">                                
+    <div class="col-12 header-login">
+        <img src="./assets/img/Resources/icon-navbar.png" alt="Logo da empresa">
+        <h3>Login</h3>
+    </div>    
+
+    <div class="col-12 space-input p-fluid">
+        <span class="p-float-label">
+            <input type="text" name="mail" [(ngModel)]="entity.mail" maxlength="500" pInputText /> 
+            <label>E-mail</label>
+        </span>
+    </div>
+
+    <div class="col-12 space-input p-fluid">
+        <span class="p-float-label">
+            <p-password type="text" name="password" [(ngModel)]="entity.password" [toggleMask]="true" [feedback]="false" maxlength="50"></p-password> 
+            <label>Senha</label>
+        </span>
+        <a href="#" routerLinkActive="list-item-active" [routerLink]="['/']">Esqueceu sua senha ?</a>
+    </div>
+    
+    <div class="col-12 col-md-6" style="text-align: center;">
+        <button mat-stroked-button type="button" [routerLink]="['/']">
+            <mat-icon>person_add</mat-icon>
+            Criar conta
+        </button>
+    </div>
+
+    <div class="col-12 col-md-6" style="text-align: center;">
+        <button mat-stroked-button type="submit">
+            <mat-icon>login</mat-icon>
+            Confirmar
+        </button>
+    </div>
+
+    <div class="col-12" style="text-align: center;">        
+        <a href="#" routerLinkActive="list-item-active" [routerLink]="['/']">Voltar ao inicio!</a>  
+    </div>
+</form>

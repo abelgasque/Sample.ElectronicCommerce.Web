@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<AssemblyVersion>1.1.2505.1</AssemblyVersion>
+		<FileVersion>1.1.2505.1</FileVersion>
+		<Version>1.1.2905.1</Version>
+		<Copyright>Copyright ©  2022</Copyright>
+		<Company>Eletronic Commerce</Company>
+		<Authors>Eletronic Commerce</Authors>
+		<TargetFramework>net5.0</TargetFramework>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<Folder Include="Entities\" />
+		<Folder Include="Services\" />
+		<Folder Include="Repositories\" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\Sample.ElectronicCommerce.Shared\Sample.ElectronicCommerce.Shared.csproj" />
+	</ItemGroup>
+
+</Project>

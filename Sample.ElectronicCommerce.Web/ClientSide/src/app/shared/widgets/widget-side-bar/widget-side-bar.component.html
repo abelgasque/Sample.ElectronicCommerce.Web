@@ -1,0 +1,34 @@
+<mat-nav-list>
+    <div *ngIf="this.securityService.hasUserAuth">
+        <button mat-icon-button type="button" (click)="this.sharedService.closeSideBar()" *ngIf="this.securityService.hasUserAuth">
+            <mat-icon>close</mat-icon>
+        </button>
+
+        <div class="menu-header-user">
+            <img [src]="this.securityService.userSession.user?.imageUrl" alt="Foto perfil do usuário">            
+            <p>
+                <b>{{ this.securityService.userSession.user?.name }} {{ this.securityService.userSession.user?.lastName }}</b><br>
+                {{ this.securityService.userSession.user?.mail }}
+            </p>
+        </div>         
+        <mat-divider></mat-divider>
+    </div>        
+
+    <div *ngFor="let menu of this.sharedService.listMenu">  
+        <a class="menu-header" type="button" (click)="menu.isOpen = !menu.isOpen">            
+            <h2 matSubheader>             
+                <mat-icon>{{menu.icon}}</mat-icon>
+                {{menu.name}}
+                <mat-icon>{{ (menu.isOpen) ? 'expand_more' :  'expand_less' }}</mat-icon>
+            </h2>            
+        </a>      
+        
+        <div *ngFor="let menuItem of menu.items" [hidden]="!menu.isOpen">
+            <a mat-list-item routerLinkActive="list-item-active" [routerLink]="[menuItem.routerLink]">
+                <mat-icon>{{menuItem.icon}}</mat-icon>
+                {{menuItem.name}}
+            </a>
+        </div>
+        <mat-divider></mat-divider>
+    </div>
+</mat-nav-list>

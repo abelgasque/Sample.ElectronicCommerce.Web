@@ -1,0 +1,50 @@
+<div class="col-12">
+    <mat-card>
+        <p-table [value]="this.listGrid" [responsive]="true" [paginator]="true" [rows]="this.rows" [showCurrentPageReport]="true" [(first)]="this.first"
+            currentPageReportTemplate="Registro {first} até {last} com total {totalRecords} registros"
+            [rowsPerPageOptions]="[10,25,50,100]" appendTo="body">
+            <ng-template pTemplate="caption">
+                <div class="flex align-items-center justify-content-between">
+                    <p-button type="button" icon="pi pi-angle-double-left" styleClass="p-button-text" [disabled]="true"></p-button>
+                    <p-button type="button" icon="pi pi-angle-left" styleClass="p-button-text" [disabled]="true"></p-button>
+                    <p-button type="button" icon="pi pi-refresh" (click)="this.getAll()" styleClass="p-button-text"></p-button>
+                    <p-button type="button" icon="pi pi-plus" (click)="this.newEntity()" styleClass="p-button-text"></p-button>
+                    <p-button type="button" icon="pi pi-angle-right" styleClass="p-button-text" [disabled]="true"></p-button>
+                    <p-button type="button" icon="pi pi-angle-double-right" styleClass="p-button-text" [disabled]="true"></p-button>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 10pc;text-align: center;">Código</th>
+                    <th style="text-align: center;">Nome</th>
+                    <th style="width: 13pc;text-align: center;">Criação</th>
+                    <th style="width: 13pc;text-align: center;">Última Atualização</th>
+                    <th style="text-align: center;">E-mail</th>
+                    <th style="width: 7pc;text-align: center;">Ativo</th>
+                    <th style="width: 7pc;text-align: center;">Opções</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData>
+                <tr>
+                    <td style="text-align: center;">{{rowData.id}}</td>
+                    <td style="text-align: center;">{{rowData.name}}</td>
+                    <td style="text-align: center;">
+                        {{this.formatDatePtBr(rowData.dtCreation)}}
+                    </td>  
+                    <td style="text-align: center;">
+                        {{ (rowData.dtLastUpdate != null) ? this.formatDatePtBr(rowData.dtLastUpdate) : "" }}
+                    </td>                    
+                    <td style="text-align: center;">{{rowData.mail}}</td>
+                    <td style="text-align: center;" [style.color]="(rowData.isActive) ? 'green' : 'red'">
+                        {{ (rowData.isActive) ? 'Ativo' : 'Inativo' }}
+                    </td>
+                    <td style="text-align: center;">
+                        <button pButton pRipple type="button" icon="pi pi-pencil" class="p-button-rounded" (click)="this.getById(rowData.id)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </mat-card>
+</div>
+
+<app-mail-model-persist [data]="this.data" [isOpen]="this.isOpenDialog" (eventOpen)="this.isOpenDialog = $event" (eventPersist)="this.eventPersistUserModel($event)"></app-mail-model-persist>

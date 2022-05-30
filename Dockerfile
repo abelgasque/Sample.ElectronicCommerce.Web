@@ -2,25 +2,18 @@
 FROM mcr.microsoft.com/dotnet/aspnet:5.0-focal AS base
 WORKDIR /app
 
-# Start variables environment
-#ENV ASPNETCORE_ENVIRONMENT "Development"
-#ENV ASPNETCORE_ENVIRONMENT "Homolog"
-#ENV ASPNETCORE_ENVIRONMENT "Production"
-# End variables environment
-
-#Start
+#Passo 2
 RUN mkdir -pv /var/lib/docker/tmp/
 RUN chmod 777 -R  /var/lib/docker/tmp/
-EXPOSE 5000
+EXPOSE 9898
 EXPOSE 443
-EXPOSE 8080
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends libgdiplus libc6-dev
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/*
 #End
 
-#Passo 2
+#Passo 3
 FROM mcr.microsoft.com/dotnet/sdk:5.0-focal AS build
 WORKDIR /src
 
@@ -32,14 +25,19 @@ wget -qO- https://deb.nodesource.com/setup_16.x | bash - && \
 apt-get install -y build-essential nodejs 
 # End install Node.Js
 
+COPY ["Sample.ElectronicCommerce.BrokerMail/Sample.ElectronicCommerce.BrokerMail.csproj", "Sample.ElectronicCommerce.BrokerMail/"]
+COPY ["Sample.ElectronicCommerce.Core/Sample.ElectronicCommerce.Core.csproj", "Sample.ElectronicCommerce.Core/"]
+COPY ["Sample.ElectronicCommerce.Security/Sample.ElectronicCommerce.Security.csproj", "Sample.ElectronicCommerce.Security/"]
+COPY ["Sample.ElectronicCommerce.Shared/Sample.ElectronicCommerce.Shared.csproj", "Sample.ElectronicCommerce.Shared/"]
 COPY ["Sample.ElectronicCommerce.Web/Sample.ElectronicCommerce.Web.csproj", "Sample.ElectronicCommerce.Web/"]
+COPY ["Sample.ElectronicCommerce.WebSocket/Sample.ElectronicCommerce.WebSocket.csproj", "Sample.ElectronicCommerce.WebSocket/"]
 
-RUN dotnet restore "Sample.ElectronicCommerce.Web/Sample.ElectronicCommerce.Web.csproj"
+RUN dotnet restore "Sample.ElectronicCommerce.Web/Sample.ElectronicCommerce.Web.csproj" --disable-parallel
 COPY . .
 WORKDIR "/src/Sample.ElectronicCommerce.Web"
 RUN dotnet build "Sample.ElectronicCommerce.Web.csproj" -c Release -o /app/build
 
-#Passo 3
+#Passo 4
 FROM build AS publish
 RUN dotnet publish "Sample.ElectronicCommerce.Web.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
@@ -47,10 +45,8 @@ RUN dotnet publish "Sample.ElectronicCommerce.Web.csproj" -c Release -o /app/pub
 FROM base AS final
 WORKDIR /app
 
-#Start
-ENV ASPNETCORE_URLS=http://+:5000;http://+:443;http://+:8080
+ENV ASPNETCORE_URLS=http://+:9898;http://+:443
 ENV temp="%temp%"
-#End
 
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Sample.ElectronicCommerce.Web.dll"]

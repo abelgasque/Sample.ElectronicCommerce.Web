@@ -1,0 +1,51 @@
+<div class="row">
+    <div class="col-12 col-md-6 p-fluid">
+        <app-spinner-loading [isLoading]="this.loadingChartBar"></app-spinner-loading>
+        <app-widget-chart-dynamic *ngIf="!this.loadingChartBar" 
+            [chartData]="this.chartDataBar"
+            [chartType]="this.chartTypeBar"
+            [title]="this.titleBar"
+            [menuItems]="this.menuItemsBar">
+        </app-widget-chart-dynamic>
+    </div>
+
+    <div class="col-12 col-md-6 p-fluid">
+        <app-spinner-loading [isLoading]="this.loadingChartLine"></app-spinner-loading>
+        <app-widget-chart-dynamic *ngIf="!this.loadingChartLine" 
+            [chartData]="this.chartDataLine"
+            [chartType]="this.chartTypeLine"
+            [title]="this.titleLine"
+            [menuItems]="this.menuItemsLine">
+        </app-widget-chart-dynamic>
+    </div>
+
+    <div class="col-12">         
+        <mat-card>
+            <app-spinner-loading [isLoading]="this.loadinglistLogIntegration"></app-spinner-loading>
+            <p-table [value]="this.listLogIntegration" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50,100]"  appendTo="body" *ngIf="!this.loadinglistLogIntegration">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 10pc;text-align: center;">Código</th>
+                        <th style="text-align: center;">Mensagem</th>
+                        <th style="width: 25pc;text-align: center;">Método</th>            
+                        <th style="width: 13pc;text-align: center;">Data criação</th>
+                        <th style="width: 8pc;text-align: center;">Situação</th>   
+                        <th style="width: 8pc;text-align: center;">Versão</th> 
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData>
+                    <tr>
+                        <td style="text-align: center;">{{rowData.id}}</td>
+                        <td style="text-align: center;">{{rowData.deMessage}}</td>
+                        <td style="text-align: center;">{{rowData.nmMethod}}</td>            
+                        <td style="text-align: center;">{{this.formatDatePtBr(rowData.dtCreation)}}</td>                        
+                        <td style="text-align: center;" [style.color]="(rowData.isSuccess) ? 'green' : 'red'">
+                            {{(rowData.isSuccess) ? 'OK' : 'ERROR'}}
+                        </td>    
+                        <td style="text-align: center;">{{rowData.nuVersion}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>            
+        </mat-card>
+    </div>
+</div>

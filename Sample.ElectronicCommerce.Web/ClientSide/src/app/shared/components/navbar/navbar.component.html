@@ -1,0 +1,24 @@
+<mat-toolbar>
+    <mat-toolbar-row>
+        <button mat-icon-button type="button" (click)="this.sharedService.toggleSideBar()" *ngIf="this.securityService.hasUserAuth">
+            <mat-icon>menu</mat-icon>
+        </button>
+
+        <button mat-button type="button" class="button-icon-logo" [routerLink]="['/']">            
+            <mat-icon>add_shopping_cart</mat-icon>
+            E-Commerce
+        </button>  
+
+        <span class="example-spacer"></span>
+
+        <button mat-button type="button" [routerLink]="['/security','auth']" *ngIf="(!this.securityService.hasUserAuth)">
+            <mat-icon>login</mat-icon>
+            Login
+        </button>
+
+        <button mat-button type="button" (click)="this.securityService.loggout()" *ngIf="this.securityService.hasUserAuth">
+            <mat-icon>exit_to_app</mat-icon>
+            Loggout
+        </button>
+    </mat-toolbar-row>
+</mat-toolbar>

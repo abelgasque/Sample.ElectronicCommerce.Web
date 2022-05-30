@@ -1,0 +1,16 @@
+<mat-tab-group [selectedIndex]="this.selectedTab.value" (selectedIndexChange)="this.selectedTab.setValue($event)">
+    <mat-tab label="Consultar usuários"> 
+        <div class="row">
+            <app-user-grid-filter [listGrid]="this.listGrid" 
+                (eventReload)="this.reload($event)" (eventNewEntity)="this.newEntity($event)" (eventGetById)="this.getById($event)">
+            </app-user-grid-filter>
+        </div>
+    </mat-tab>
+    <mat-tab [label]="((this.dataForm.id > 0) ? 'Atualização' : 'Inserção') + ' de usuário'"> 
+        <div class="container">
+            <app-user-form-persist [data]="this.dataForm" (eventPersist)="this.persist($event)"></app-user-form-persist>
+        </div>
+    </mat-tab>    
+</mat-tab-group>
+
+

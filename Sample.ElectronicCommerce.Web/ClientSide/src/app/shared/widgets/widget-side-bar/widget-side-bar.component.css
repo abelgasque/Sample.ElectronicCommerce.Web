@@ -1,0 +1,27 @@
+mat-nav-list, h2, a{
+    color: #fff !important;
+}
+
+mat-divider{
+    background-color: #fff !important;
+}
+
+.menu-header {    
+    width: 100%;
+}
+
+.menu-header mat-icon {
+    padding-right: 10px;
+}
+
+.menu-header-user {    
+    text-align: center;
+    margin-top: -40px;
+}
+
+.menu-header-user img {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    align-items: center;
+}

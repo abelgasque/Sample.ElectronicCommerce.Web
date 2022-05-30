@@ -1,0 +1,9 @@
+<div class="form-group" [ngClass]="classeCss">
+    <label [attr.for]="id" class="control-label">{{ label }}</label>
+    <span class="p-input-icon-right">
+        <input [ngClass]="classeCss" class="form-control" [type]="type" [id]="id" [readonly]="!!isReadOnly"
+            [(ngModel)]="value" [placeholder]="placeholder" pInputText>
+        <i class="pi pi-times" style="color: #F44336;" *ngIf="!this.coreService.validField(control)"></i>
+    </span>
+    <app-message-control type="error" [message]="'Campo ' + label + ' inválido!'" *ngIf="!this.coreService.validField(control)"></app-message-control>
+</div>

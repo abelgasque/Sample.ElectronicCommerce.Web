@@ -1,0 +1,65 @@
+<form class="row" autocomplete="off" (ngSubmit)="this.persistEntity()" #f>
+    <div class="col-12 col-md-3 p-fluid">
+        <label>Código</label>
+        <input name="id" type="text" pInputText [(ngModel)]="this.data.id" disabled>
+    </div>
+
+    <div class="col-12 col-md-3 p-fluid">
+        <label>Criação</label>
+        <p-calendar name="dtCreation" [(ngModel)]="this.data.dtCreation" dateFormat="dd/mm/yy" 
+        [showIcon]="true" [showTime]="true" [showSeconds]="true" disabled></p-calendar>
+    </div>
+
+    <div class="col-12 col-md-3 p-fluid">
+        <label>Última atualização</label>
+        <p-calendar name="dtLastUpdate" [(ngModel)]="this.data.dtLastUpdate" dateFormat="dd/mm/yy" 
+        [showIcon]="true" [showTime]="true" [showSeconds]="true" disabled></p-calendar>
+    </div>
+
+    <div class="col-12 col-md-3 p-fluid">
+        <label>Código Agente</label>
+        <input name="code" type="text" pInputText [(ngModel)]="this.data.code" required>
+    </div>
+    
+    <div class="col-12 col-md-3 p-fluid">
+        <label>Nome</label>
+        <input name="name" type="text" pInputText [(ngModel)]="this.data.name" required>
+    </div>
+
+    <div class="col-12 col-md-3 p-fluid">
+        <label>Servidor</label>
+        <input name="server" type="text" pInputText [(ngModel)]="this.data.server" required>
+    </div>
+
+    <div class="col-12 col-md-3 p-fluid">
+        <label>Porta</label>
+        <input name="port" type="text" pInputText [(ngModel)]="this.data.port" required>
+    </div>
+
+    <div class="col-12 col-md-3 p-fluid">
+        <label>E-mail</label>
+        <input name="userName" type="text" pInputText [(ngModel)]="this.data.userName" required>
+    </div>
+
+    <div class="col-12 col-md-3 p-fluid">
+        <label>Senha</label>
+        <input name="password" type="text" pInputText [(ngModel)]="this.data.password" required>
+    </div>
+
+    <div class="col-12 col-md-3 p-fluid">
+        <label>Habilitar SSL</label>
+        <p-selectButton name="isEnabledSsl" [options]="this.listYesOrNo" [(ngModel)]="this.data.isEnabledSsl" optionLabel="name"
+            optionValue="value"></p-selectButton>
+    </div>
+
+    <div class="col-12 col-md-3 p-fluid">
+        <label>Ativo</label>
+        <p-selectButton name="isActive" [options]="this.listYesOrNo" [(ngModel)]="this.data.isActive" optionLabel="name"
+            optionValue="value"></p-selectButton>
+    </div>
+
+    <div class="col-12">
+        <button pButton pRipple type="submit" class="p-button-outlined p-button-success" icon="pi pi-close" [label]="(this.data.id > 0) ? 'Atualizar' : 'Inserir'"></button>
+        <button pButton pRipple type="button" class="p-button-outlined p-button-danger" icon="pi pi-close" (click)="this.cancelPersist()" label="Cancelar"></button>
+    </div>
+</form>

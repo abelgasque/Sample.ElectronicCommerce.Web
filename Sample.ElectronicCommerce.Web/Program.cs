@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
+using System.Net;
 
 namespace Sample.ElectronicCommerce.Web
 {
@@ -13,7 +12,34 @@ namespace Sample.ElectronicCommerce.Web
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            try
+            {
+                Log.Logger = new LoggerConfiguration()
+                    .MinimumLevel.Verbose()
+                    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                    .MinimumLevel.Override("System", LogEventLevel.Information)
+                    .Enrich.FromLogContext()
+                    .Enrich.WithProperty("AplicationName", "ElectronicCommerce")
+                    .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Debug)
+                    .WriteTo.File(
+                        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs/log.txt"),
+                        rollingInterval: RollingInterval.Day,
+                        restrictedToMinimumLevel: LogEventLevel.Verbose)
+                    .CreateLogger();
+
+                Log.Information("Application - Started");
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+                ServicePointManager.ServerCertificateValidationCallback += (se, cert, chain, sslerror) => { return true; };
+                CreateHostBuilder(args).Build().Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Fatal(ex, "Application - Fatal Error");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

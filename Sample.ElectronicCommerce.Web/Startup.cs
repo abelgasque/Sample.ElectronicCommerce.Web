@@ -1,64 +1,56 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Sample.ElectronicCommerce.Shared.Entities.Settings;
+using Sample.ElectronicCommerce.Web.Configurations;
+using Sample.ElectronicCommerce.WebSocket.Hubs;
 
 namespace Sample.ElectronicCommerce.Web
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
+        public IConfiguration _configuration { get; }
 
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<IISOptions>(o =>
-            {
-                o.ForwardClientCertificate = false;
-            });
-
-            //services.AddLogging(configure => configure.AddSerilog());
-            //services.AddCors();
-            services.AddControllers();
-            services.AddControllersWithViews();
-            //services.AddDbContext<AppDbContext>();
-            //services.AddDbContext<CoreDbContext>();
-
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy("Default", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-            //});
-
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientSide/dist";
-            });
+            services.MainConfiguration(_configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var appSettingsSection = _configuration.GetSection("AppSettings");
+            var appSettings = appSettingsSection.Get<AppSettings>();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            //app.UseCors("Default");
+            
+            app.UseCors("Default");
             //app.UseExceptionMiddleware();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseHttpsRedirection();
             app.UseRouting();
-            //app.UseAuthentication();
-            //app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
-            });
+                endpoints.MapHub<ChatHub>("/chat");
+            });         
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint($"v{appSettings.Version}/swagger.json", $"ElectronicCommerce v{appSettings.Version}"));
 
             app.UseSpa(spa =>
             {

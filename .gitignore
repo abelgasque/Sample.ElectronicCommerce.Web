@@ -1,6 +1,7 @@
 #Sample.ElectronicCommerce.Web
 /.vscode/
 /Sample.ElectronicCommerce.Web/.config/
+/Docs/Notes/
 
 # ClientSide
 /Sample.ElectronicCommerce.Web/ClientSide/dist

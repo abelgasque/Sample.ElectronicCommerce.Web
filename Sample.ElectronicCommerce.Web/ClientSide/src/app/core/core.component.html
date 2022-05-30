@@ -1,0 +1,12 @@
+<mat-drawer-container>
+    <mat-drawer mode="side" [opened]="this.sharedService.openedSideBar">
+        <app-widget-side-bar></app-widget-side-bar>
+    </mat-drawer>
+    <mat-drawer-content>
+        <app-navbar></app-navbar>
+        <router-outlet></router-outlet>
+    </mat-drawer-content>
+</mat-drawer-container>
+
+<app-messages></app-messages>
+<app-spinner></app-spinner>

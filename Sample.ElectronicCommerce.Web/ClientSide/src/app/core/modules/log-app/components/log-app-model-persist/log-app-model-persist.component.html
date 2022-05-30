@@ -1,0 +1,4 @@
+<p-dialog [header]="((this.data.id > 0) ? 'Atualização' : 'Inserção') + ' de histórico aplicação'" [closable]="true" [(visible)]="this.isOpen" [modal]="true"
+    [draggable]="false" [style]="{width: '90vw'}" [breakpoints]="{'1000px': '100vw'}" (onHide)="this.visableDialog(false)">
+    <app-log-app-form-persist [data]="this.data" (eventPersist)="this.eventPersistUserForm($event)"></app-log-app-form-persist>
+</p-dialog>
