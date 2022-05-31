@@ -1,9 +1,5 @@
 <mat-nav-list>
     <div *ngIf="this.securityService.hasUserAuth">
-        <button mat-icon-button type="button" (click)="this.sharedService.closeSideBar()" *ngIf="this.securityService.hasUserAuth">
-            <mat-icon>close</mat-icon>
-        </button>
-
         <div class="menu-header-user">
             <img [src]="this.securityService.userSession.user?.imageUrl" alt="Foto perfil do usuário">            
             <p>
