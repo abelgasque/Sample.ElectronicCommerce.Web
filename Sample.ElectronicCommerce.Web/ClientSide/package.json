@@ -1,6 +1,6 @@
 {
   "name": "sample.electroniccommerce.web",
-  "version": "1.1.3005.2",
+  "version": "1.1.0206.3",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

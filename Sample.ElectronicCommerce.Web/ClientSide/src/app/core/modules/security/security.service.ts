@@ -7,10 +7,13 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 
 import { environment } from 'src/environments/environment';
 
-import { ReturnDTO, TokenDTO, UserSession, UserDTO } from 'src/app/shared/util/model';
+import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
+import { UserDTO } from 'src/app/shared/util/EntitiesDTO/UserDTO';
+import { UserSessionEntity } from 'src/app/shared/util/Entities/UserSessionEntity';
 
 import { CoreService } from 'src/app/core/core.service';
 import { SharedService } from 'src/app/shared/shared.service';
+import { TokenDTO } from 'src/app/shared/util/EntitiesDTO/TokenDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +23,7 @@ export class SecurityService {
   private baseUrl: string;
   public hasUserAuth: boolean = false;
   public idUserSession: number = 0;
-  public userSession: UserSession = null;
+  public userSession: UserSessionEntity = null;
 
   constructor(      
     private router: Router,       
@@ -43,10 +46,10 @@ export class SecurityService {
   public refreshUserSession(){       
     if(this.isValidUserSession()) {
       this.sharedService.openSpinner();
-      let userSession: UserSession = this.getUserSession();
+      let userSession: UserSessionEntity = this.getUserSession();
       let token: TokenDTO = new TokenDTO();
       token.idUserSession = userSession.id;
-      token.accessToken = (userSession.refreshToken != null) ? userSession.refreshToken : userSession.accessToken;
+      token.accessToken = userSession.accessToken;
       this.Refresh(token).subscribe({
         next: (returnDTO: ReturnDTO) => {
           if(returnDTO.isSuccess) {            
@@ -63,15 +66,12 @@ export class SecurityService {
     }   
   }
 
-  public authenticateUser(pEntity: UserSession) {    
-    this.hasUserAuth = (pEntity != null && pEntity.isSuccess);
+  public authenticateUser(pEntity: UserSessionEntity) {    
+    this.hasUserAuth = (pEntity != null);
     if(pEntity != null){
       this.userSession = pEntity;      
       this.setUserSession(this.userSession);   
       let token: string = this.userSession.accessToken;
-      if(this.hasUserAuth && this.userSession.refreshToken != null) {
-        token = this.userSession.refreshToken;
-      }
       this.setToken(token);
     }else{
       this.setUserSession(null);
@@ -80,15 +80,15 @@ export class SecurityService {
   }
 
   public loggout() {      
-    this.sharedService.closeSideBar();
+    this.sharedService.closeAllSidebar();
     this.authenticateUser(null);
     this.router.navigate(['']);     
   }
 
   public hasRole(pRole: string) : boolean {     
     let hasRole = false;
-    let userSession: UserSession = this.getUserSession();
-    for (const role of userSession.user.roles) {      
+    let userSession: UserSessionEntity = this.getUserSession();
+    for (const role of userSession.roles) {      
       if (role.code == pRole) {
         return true;
       }
@@ -121,7 +121,7 @@ export class SecurityService {
     return this.jwtHelperService.isTokenExpired(pToken);
   }
 
-  private setUserSession(pEntity: UserSession) {
+  private setUserSession(pEntity: UserSessionEntity) {
     let dataObject: string = null;
     if(pEntity != null && pEntity.id != null){
       dataObject = JSON.stringify(pEntity)
@@ -129,13 +129,13 @@ export class SecurityService {
     localStorage.setItem("user_session", dataObject);  
   }
 
-  public getUserSession() : UserSession {
+  public getUserSession() : UserSessionEntity {
     let dataObject: string = localStorage.getItem("user_session");
     return (dataObject != null && dataObject.length > 0) ? JSON.parse(dataObject) : null;
   }
     
   public isValidUserSession() {       
-    let userSession: UserSession = this.getUserSession();
+    let userSession: UserSessionEntity = this.getUserSession();
     return (userSession != null && userSession.id != null);
   }
 

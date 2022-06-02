@@ -1,16 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Sample.ElectronicCommerce.Shared.Constants;
-using Sample.ElectronicCommerce.Shared.Entities.DTO;
+using Sample.ElectronicCommerce.Core.Constants;
+using Sample.ElectronicCommerce.Core.Entities.DTO;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Sample.ElectronicCommerce.Shared.Entities.Settings;
+using Sample.ElectronicCommerce.Core.Entities.Settings;
 using MongoDB.Driver;
 using Microsoft.Extensions.Options;
 using System.Linq.Expressions;
 using MongoDB.Bson;
 using Sample.ElectronicCommerce.Security.Entities;
+using AppMongoClient = Sample.ElectronicCommerce.Core.Entities.Settings;
 
 namespace Sample.ElectronicCommerce.Security.Repositories
 {
@@ -19,7 +20,7 @@ namespace Sample.ElectronicCommerce.Security.Repositories
         #region Variables
         private readonly ILogger<UserSessionRepository> _logger;
         
-        private readonly SecuritySettings _securitySettings;
+        private readonly AppMongoClient.MongoClientSettings _mongoClientSettings;
         
         private readonly IMongoCollection<UserSessionEntity> _collection;
         #endregion
@@ -27,13 +28,13 @@ namespace Sample.ElectronicCommerce.Security.Repositories
         #region Constructor
         public UserSessionRepository(
             ILogger<UserSessionRepository> logger,
-            IOptions<SecuritySettings> securitySettings
+            IOptions<AppMongoClient.MongoClientSettings> mongoClientSettings
         ) {
             _logger = logger;
-            _securitySettings = securitySettings.Value;
-            var mongoClient = new MongoClient(_securitySettings.MongoClient.GetConnectionString);
-            var mongoDatabase = mongoClient.GetDatabase(_securitySettings.MongoClient.DataBase);
-            _collection = mongoDatabase.GetCollection<UserSessionEntity>(_securitySettings.UserSessionColletion);
+            _mongoClientSettings = mongoClientSettings.Value;
+            var mongoClient = new MongoClient(_mongoClientSettings.GetConnectionString);
+            var mongoDatabase = mongoClient.GetDatabase(_mongoClientSettings.DataBaseProduction);
+            _collection = mongoDatabase.GetCollection<UserSessionEntity>(_mongoClientSettings.UserSessionColletion);
         }
         #endregion
 
@@ -64,7 +65,7 @@ namespace Sample.ElectronicCommerce.Security.Repositories
             ResponseDTO responseDTO;
             try
             {
-                Expression<Func<UserSessionEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pEntity.Id));
+                Expression<Func<UserSessionEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
                 UserSessionEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
                 bool isSuccess = (entity != null) ? true : false;
                 string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
@@ -106,13 +107,34 @@ namespace Sample.ElectronicCommerce.Security.Repositories
             return responseDTO;
         }
 
+        public async Task<ResponseDTO> GetByIdUser(string pIdUser)
+        {
+            _logger.LogInformation("UserSessionRepository.GetById => Start");
+            ResponseDTO responseDTO;
+            try
+            {
+                Expression<Func<UserSessionEntity, bool>> filter = x => x.IdUser.Equals(pIdUser);
+                UserSessionEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+                string deMessage = (entity != null) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
+                bool isSuccess = (entity != null) ? true : false;
+                responseDTO = new ResponseDTO(isSuccess, deMessage, entity);
+            }
+            catch (Exception ex)
+            {
+                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
+                _logger.LogError($"UserSessionRepository.GetById => Exception: {ex.Message}");
+            }
+            _logger.LogInformation("UserSessionRepository.GetById > Finish");
+            return responseDTO;
+        }
+
         public async Task<ResponseDTO> GetAll()
         {
             _logger.LogInformation("UserSessionRepository.GetAll => Start");
             ResponseDTO responseDTO;
             try
             {
-                Expression<Func<UserSessionEntity, bool>> filter = x => x.IsActive.Equals(true);
+                Expression<Func<UserSessionEntity, bool>> filter = x => x.IsActive == true;
                 List<UserSessionEntity> listEntities = await _collection.Find(filter).ToListAsync();                
                 responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, listEntities);
             }
@@ -122,31 +144,6 @@ namespace Sample.ElectronicCommerce.Security.Repositories
                 _logger.LogError($"UserSessionRepository.GetAll => Exception: { ex.Message }");
             }
             _logger.LogInformation("UserSessionRepository.GetAll > Finish");
-            return responseDTO;
-        }
-
-        public async Task<ResponseDTO> GetByIdUserWithAuthFailed(string pIdUser)
-        {
-            _logger.LogInformation("UserSessionRepository.GetByIdUserWithAuthFailed => Start");
-            ResponseDTO responseDTO;
-            try
-            {                
-                Expression<Func<UserSessionEntity, bool>> filter = x => (x.IdUser.Equals(pIdUser) 
-                                                                            && x.IsSuccess.Equals(false) 
-                                                                            && x.DtCreation >= DateTime.Now.AddMinutes(-5) 
-                                                                            && x.DtCreation <= DateTime.Now);
-                UserSessionEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
-                string deMessage = (entity != null) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-                bool isSuccess = (entity != null) ? true : false;
-                _logger.LogInformation("UserSessionRepository.GetByIdUserWithAuthFailed => OK");
-                responseDTO = new ResponseDTO(isSuccess, deMessage, entity);
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"UserSessionRepository.GetByIdUserWithAuthFailed => Exception: { ex.Message }");
-            }
-            _logger.LogInformation("UserSessionRepository.GetByIdUserWithAuthFailed > Finish");
             return responseDTO;
         }
         #endregion

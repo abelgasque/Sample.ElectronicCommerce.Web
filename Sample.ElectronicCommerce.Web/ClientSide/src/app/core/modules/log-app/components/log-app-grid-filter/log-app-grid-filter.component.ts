@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+
+import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
+import { LogAppEntity } from 'src/app/shared/util/Entities/LogAppEntity';
+
 import { CoreService } from 'src/app/core/core.service';
 import { SharedService } from 'src/app/shared/shared.service';
-import { LogApp, ReturnDTO } from 'src/app/shared/util/model';
 import { LogAppService } from '../../log-app.service';
 
 @Component({
@@ -15,7 +18,7 @@ export class LogAppGridFilterComponent implements OnInit {
   public first = 0;
   public rows = 100;
   public isOpenDialog: boolean = false;
-  public data: LogApp = new LogApp();
+  public data: LogAppEntity = new LogAppEntity();
 
   constructor(
     private coreService: CoreService,
@@ -82,7 +85,7 @@ export class LogAppGridFilterComponent implements OnInit {
           if(this.data.dtLastUpdate != null){ 
             this.data.dtLastUpdate = new Date(this.data.dtLastUpdate);
           }
-          this.sharedService.closeSideBar();
+          this.sharedService.closeAllSidebar();
           this.isOpenDialog = true;
         }
         this.sharedService.closeSpinner();

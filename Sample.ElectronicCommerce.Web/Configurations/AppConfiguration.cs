@@ -1,21 +1,18 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Sample.ElectronicCommerce.BrokerChat.Repositories;
-using Sample.ElectronicCommerce.BrokerChat.Services;
-using Sample.ElectronicCommerce.BrokerMail.Repositories;
-using Sample.ElectronicCommerce.BrokerMail.Services;
 using Sample.ElectronicCommerce.Core.Repositories;
 using Sample.ElectronicCommerce.Core.Services;
-using Sample.ElectronicCommerce.Security.Configurations;
+using Sample.ElectronicCommerce.Core.Entities.EF;
+using Sample.ElectronicCommerce.Core.Entities.Settings;
+using Sample.ElectronicCommerce.Core.Helpers;
+using Serilog;
+using Sample.ElectronicCommerce.BrokerMail.Repositories;
+using Sample.ElectronicCommerce.BrokerMail.Services;
 using Sample.ElectronicCommerce.Security.Repositories;
 using Sample.ElectronicCommerce.Security.Services;
-using Sample.ElectronicCommerce.Shared.Entities.EF;
-using Sample.ElectronicCommerce.Shared.Entities.Settings;
-using Sample.ElectronicCommerce.Shared.Helpers;
-using Sample.ElectronicCommerce.Shared.Repositories;
-using Sample.ElectronicCommerce.Shared.Services;
-using Serilog;
+using Sample.ElectronicCommerce.BrokerChat.Repositories;
+using Sample.ElectronicCommerce.BrokerChat.Services;
 
 namespace Sample.ElectronicCommerce.Web.Configurations
 {
@@ -35,7 +32,7 @@ namespace Sample.ElectronicCommerce.Web.Configurations
 
             services.AddCors(options =>
             {
-                options.AddPolicy("Default", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+                options.AddPolicy("AllowOrigin", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
 
             services.AddSpaStaticFiles(configuration =>
@@ -51,23 +48,27 @@ namespace Sample.ElectronicCommerce.Web.Configurations
 
             //Configure settings
             services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
-            services.Configure<BrokerChatSettings>(configuration.GetSection("BrokerChatSettings"));
-            services.Configure<BrokerMailSettings>(configuration.GetSection("BrokerMailSettings"));
-            services.Configure<CoreSettings>(configuration.GetSection("CoreSettings"));
+            services.Configure<MongoClientSettings>(configuration.GetSection("MongoClientSettings"));
             services.Configure<SecuritySettings>(configuration.GetSection("SecuritySettings"));
-            services.Configure<SharedSettings>(configuration.GetSection("SharedSettings"));            
+            services.Configure<SharedSettings>(configuration.GetSection("SharedSettings"));
 
             //BrokerMail
             services.AddTransient<MailRepository>();
-            services.AddTransient<BrokerMailRepository>();
+            services.AddTransient<MailBrokerRepository>();
             services.AddTransient<MailMessageRepository>();
             services.AddTransient<MailService>();
-            services.AddTransient<BrokerMailService>();
+            services.AddTransient<MailBrokerService>();
             services.AddTransient<MailMessageService>();
 
             //Core
+            services.AddDbContext<SharedDbContext>();
+            services.AddTransient<MailHelper>();
             services.AddTransient<ApplicationRepository>();
-            services.AddTransient<ApplicationService>();
+            services.AddTransient<ApplicationService>();            
+            services.AddTransient<LogAppRepository>();
+            services.AddTransient<LogAppService>();
+            services.AddTransient<UserSessionRepository>();
+            services.AddTransient<UserSessionService>();
 
             //Security
             services.AddTransient<UserRepository>();
@@ -75,18 +76,9 @@ namespace Sample.ElectronicCommerce.Web.Configurations
             services.AddTransient<UserService>();
             services.AddTransient<UserRoleService>();
 
-            //Shared
-            services.AddDbContext<SharedDbContext>();
-            services.AddTransient<DataBaseHelper>();
-            services.AddTransient<MailHelper>();
-            services.AddTransient<LogAppRepository>();
-            services.AddTransient<LogAppService>();
-            services.AddTransient<UserSessionRepository>();            
-            services.AddTransient<UserSessionService>();
-
             //WebSocket
-            services.AddTransient<BrokerChatRepository>();
-            services.AddTransient<BrokerChatService>();
+            services.AddTransient<ChatBrokerRepository>();
+            services.AddTransient<ChatBrokerService>();
 
             return services;
         }

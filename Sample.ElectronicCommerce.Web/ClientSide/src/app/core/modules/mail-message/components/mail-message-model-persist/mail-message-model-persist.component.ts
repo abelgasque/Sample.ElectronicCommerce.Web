@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { MailMessage } from 'src/app/shared/util/model';
-
+import { MailMessageEntity } from 'src/app/shared/util/Entities/MailMessageEntity';
 
 @Component({
   selector: 'app-mail-message-model-persist',
@@ -10,7 +9,7 @@ import { MailMessage } from 'src/app/shared/util/model';
 })
 export class MailMessageModelPersistComponent implements OnInit {
 
-  @Input() data: MailMessage;
+  @Input() data: MailMessageEntity;
   @Input() isOpen: boolean = false;  
   @Output() eventOpen: EventEmitter<any> = new EventEmitter();
   @Output() eventPersist: EventEmitter<any> = new EventEmitter();
@@ -31,5 +30,4 @@ export class MailMessageModelPersistComponent implements OnInit {
     }
     this.eventPersist.emit(pEvent);
   }
-
 }

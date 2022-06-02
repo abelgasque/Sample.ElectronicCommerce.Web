@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 
-import { ReturnDTO } from 'src/app/shared/util/model';
+import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class ChatService {
   constructor(    
     private http: HttpClient,     
   ) {
-    this.baseUrl =`${ environment.baseUrl }/BrokerChat`;
+    this.baseUrl =`${ environment.baseUrl }/Chat/Broker`;
   }
 
   public GetAll() : Observable<any>  {

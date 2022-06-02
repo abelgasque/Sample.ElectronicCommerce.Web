@@ -3,10 +3,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Sample.ElectronicCommerce.Security.Entities;
 using Sample.ElectronicCommerce.Security.Repositories;
-using Sample.ElectronicCommerce.Shared.Constants;
-using Sample.ElectronicCommerce.Shared.Entities.DTO;
-using Sample.ElectronicCommerce.Shared.Entities.Settings;
-using Sample.ElectronicCommerce.Shared.Services;
+using Sample.ElectronicCommerce.Core.Constants;
+using Sample.ElectronicCommerce.Core.Entities.DTO;
+using Sample.ElectronicCommerce.Core.Entities.Settings;
+using Sample.ElectronicCommerce.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -99,7 +99,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                 if (responseDTO.IsSuccess)
                 {
                     UserSessionEntity entity = (UserSessionEntity)responseDTO.DataObject;
-                    ReturnDTO returnDTO = await _userService.GetById(entity.IdUser);
+                    ReturnDTO returnDTO = await _userService.GetById(entity.IdUser.ToString());
                     if (returnDTO.IsSuccess && responseDTO.DataObject != null)
                     {
                         UserEntity user = (UserEntity)returnDTO.ResultObject;
@@ -134,52 +134,13 @@ namespace Sample.ElectronicCommerce.Security.Services
         }
         #endregion
 
-        #region Methods Token
-        private List<string> ValidateUserSession(UserDTO pEntity, UserEntity pUser, bool pIsUserSystem)
-        {
-            List<string> listValidate = new List<string>();
-
-            if (pIsUserSystem)
-            {
-                int count = 0;
-                foreach (UserRoleEntity role in pUser.Roles)
-                {
-                    if (role.Code.Equals(UserRoleConstant.CodeSystem))
-                    {
-                        count++;
-                    }
-                }
-
-                if (count <= 0)
-                {
-                    listValidate.Add("Usuário não possui permissão de sistema!");
-                }
-            }
-
-            if (!pUser.IsActive)
-            {
-                listValidate.Add("Usuário inativo!");
-            }
-
-            if (pUser.IsBlock)
-            {
-                listValidate.Add("Usuário bloqueado!");
-            }
-
-            if (!pUser.Password.Equals(pEntity.Password))
-            {
-                listValidate.Add("Senha incorreta!");
-            }
-
-            return listValidate;
-        }        
-
-        private TokenDTO GenerateToken(ICollection<UserRoleEntity> pRoles)
+        #region Methods Token    
+        private string GenerateToken(ICollection<RoleEntity> pRoles)
         {
             _logger.LogInformation("UserSessionService.GenerateToken => Start");
             TokenDTO tokenWs;
             try
-            {                
+            {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(_securitySettings.Secret);
                 SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
@@ -191,7 +152,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                 if (pRoles != null && pRoles.Count > 0)
                 {
                     List<Claim> roles = new List<Claim>();
-                    foreach (UserRoleEntity role in pRoles)
+                    foreach (RoleEntity role in pRoles)
                     {
                         Claim claim = new Claim(ClaimTypes.Role, role.Code);
                         roles.Add(claim);
@@ -204,92 +165,70 @@ namespace Sample.ElectronicCommerce.Security.Services
                     AccessToken = tokenHandler.WriteToken(token),
                     ExpiresIn = _securitySettings.ExpireIn
                 };
-                _logger.LogInformation($"UserSessionService.GenerateToken => AccessToken: Generated, AccessToken Expire: { DateTime.UtcNow.AddMinutes(_securitySettings.ExpireIn).ToString("dd/MM/yyyy - HH:mm:ss") }");
+                _logger.LogInformation($"UserSessionService.GenerateToken => AccessToken: Generated, AccessToken Expire: {DateTime.UtcNow.AddMinutes(_securitySettings.ExpireIn).ToString("dd/MM/yyyy - HH:mm:ss")}");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"UserSessionService.GenerateToken => Exception: { ex.Message }");
+                _logger.LogError($"UserSessionService.GenerateToken => Exception: {ex.Message}");
                 tokenWs = null;
             }
             _logger.LogInformation("UserSessionService.GenerateToken => End");
-            return tokenWs;
+            return tokenWs.AccessToken;
         }
-        
-        public async Task<ReturnDTO> Login(UserDTO pEntity, bool pIsUserSystem)
+
+        public async Task<ReturnDTO> Login(UserDTO pEntity)
         {
             _logger.LogInformation($"UserSessionService.Login => Start");
-            string idUserSession = null;
             ResponseDTO responseDTO;
             try
             {
                 ReturnDTO returnDTO = await _userService.GetByMail(pEntity.Mail);
                 UserEntity user = (UserEntity)returnDTO.ResultObject;
-                returnDTO = new ReturnDTO(false, AppConstant.DeMessageDataNotFoundWS, null);
-
                 if (user == null)
                 {
                     responseDTO = new ResponseDTO(false, AppConstant.DeMessageDataNotFoundWS, null);
                 }
-                else
-                {
-                    responseDTO = await _repository.GetByIdUserWithAuthFailed(user.Id);
-                    List<string> listValidate = this.ValidateUserSession(pEntity, user, pIsUserSystem);
-                    bool isSuccess = (listValidate.Count <= 0);
-                    string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageInvalidModel;
-                    object dataObject = (isSuccess) ? null : listValidate;
-                    returnDTO = new ReturnDTO(isSuccess, deMessage, dataObject);
-                    if (responseDTO.IsSuccess)
+                else 
+                {                    
+                    responseDTO = await _repository.GetByIdUser(user.Id);
+                    UserSessionEntity entity;                    
+                    if ((!user.IsActive) || (user.IsBlock))
                     {
-                        UserSessionEntity entity = (UserSessionEntity)responseDTO.DataObject;                        
-                        if (!isSuccess 
-                            && entity  == null 
-                            && (entity.NuAuthenticationAttempts + 1) > _securitySettings.NuAuthenticationAttempts)
-                        {
-                            listValidate.Add("Usuário bloqueado!");
-                            //Criar método para bloquear usuário e enviar e-mail de recuperação                            
-                        }
-                        else
-                        {                            
-                            entity.IsSuccess = isSuccess;
-                            entity.Message = deMessage;
-                            entity.NuAuthenticationAttempts += 1;
-                            if (isSuccess)
-                            {
-                                TokenDTO tokenWs = this.GenerateToken(user.Roles);
-                                entity.AccessToken = tokenWs.AccessToken;
-                                entity.DtAccessTokenExpiration = DateTime.Now.AddMinutes(tokenWs.ExpiresIn);
-                            }
-                            returnDTO = await this.UpdateAsync(entity);
-                            if (returnDTO.IsSuccess) { idUserSession = entity.Id; }
-                        }
+                        responseDTO = new ResponseDTO(false, "Usuário inátivo ou bloqueado!", null);
+                    }
+                    else if ((!responseDTO.IsSuccess) || (responseDTO.DataObject == null))
+                    {
+                        entity = new UserSessionEntity();
+                        entity.IdUser = user.Id;
+                        entity.User = user;
+                        entity.Version = _appSettings.Version;
+                        entity.IsTest = _appSettings.IsTest;
+                        entity.Password = "1";
+                        entity.AccessToken = this.GenerateToken(new List<RoleEntity>());
+                        responseDTO = await _repository.InsertAsync(entity);
                     }
                     else
                     {
-                        TokenDTO tokenWs = this.GenerateToken(user.Roles);
-                        UserSessionEntity persistSession = new UserSessionEntity()
+                        entity = (UserSessionEntity)responseDTO.DataObject;
+                        bool isSuccess = false;
+                        string deMessage = AppConstant.DeMessageSuccessWS;
+                        if (!entity.Password.Equals(pEntity.Password))
+                        {                            
+                            entity.NuFailsToken += 1;
+                            deMessage = "Senha incorreta!";
+                        }
+                        else
                         {
-                            Id = null,
-                            IdUser = user.Id,
-                            DtCreation = DateTime.Now,
-                            DtLastUpdate = null,
-                            DtAccessTokenExpiration = (isSuccess) ? DateTime.Now.AddMinutes(tokenWs.ExpiresIn) : null,
-                            DtRefreshTokenExpiration = null,
-                            AccessToken = (isSuccess) ? tokenWs.AccessToken : null,
-                            RefreshToken = null,
-                            Message = deMessage,
-                            Version = _appSettings.Version,
-                            NuAuthenticationAttempts = 1,
-                            NuRefreshToken = null,
-                            IsSuccess = isSuccess,
-                            IsTest = _appSettings.IsTest,
-                            IsActive = true,
-                        };
-                        returnDTO = await this.InsertAsync(persistSession);
-                        if (returnDTO.IsSuccess) { idUserSession = persistSession.Id; }
+                            isSuccess = true;
+                            entity.NuSuccessToken += 1;
+                            entity.AccessToken = this.GenerateToken(entity.Roles);                            
+                            
+                        }
+                        entity.NuAuthAttemptsToken += 1;
+                        returnDTO = await this.UpdateAsync(entity);
+                        responseDTO = new ResponseDTO(isSuccess, deMessage, returnDTO.ResultObject);
                     }
-                }
-                if (!string.IsNullOrEmpty(idUserSession)) { returnDTO = await this.GetById(idUserSession); }
-                responseDTO = new ResponseDTO(returnDTO.IsSuccess, returnDTO.DeMessage, returnDTO.ResultObject);
+                }                
             }
             catch (Exception ex)
             {
@@ -311,18 +250,10 @@ namespace Sample.ElectronicCommerce.Security.Services
                 if (returnDTO.IsSuccess)
                 {
                     UserSessionEntity entity = (UserSessionEntity)returnDTO.ResultObject;
-                    if (DateTime.Now >= entity.DtAccessTokenExpiration)
-                    {
-                        TokenDTO tokenWs = this.GenerateToken(entity.User.Roles);
-                        entity.RefreshToken = tokenWs.AccessToken;
-                        entity.DtRefreshTokenExpiration = DateTime.Now.AddMinutes(tokenWs.ExpiresIn);
-                        await this.UpdateAsync(entity);
-                        returnDTO = await this.GetById(pEntity.IdUserSession);
-                    }
-                    else
-                    {
-                        returnDTO = new ReturnDTO(true, "Token de acesso ainda está ativo!", entity);
-                    }
+                    entity.NuSuccessToken += 1;
+                    entity.AccessToken = this.GenerateToken(entity.Roles);
+                    await this.UpdateAsync(entity);
+                    returnDTO = await this.GetById(pEntity.IdUserSession);
                 }
                 responseDTO = new ResponseDTO(returnDTO.IsSuccess, returnDTO.DeMessage, returnDTO.ResultObject);
             }

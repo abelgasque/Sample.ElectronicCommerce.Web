@@ -4,14 +4,13 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Sample.ElectronicCommerce.BrokerMail.Entities;
-using Sample.ElectronicCommerce.Shared.Constants;
-using Sample.ElectronicCommerce.Shared.Entities.DTO;
-using Sample.ElectronicCommerce.Shared.Entities.Settings;
+using Sample.ElectronicCommerce.Core.Constants;
+using Sample.ElectronicCommerce.Core.Entities.DTO;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using AppMongoClient = Sample.ElectronicCommerce.Core.Entities.Settings;
 
 namespace Sample.ElectronicCommerce.BrokerMail.Repositories
 {
@@ -20,7 +19,7 @@ namespace Sample.ElectronicCommerce.BrokerMail.Repositories
         #region Variables
         private readonly ILogger<MailMessageRepository> _logger;
 
-        private readonly BrokerMailSettings _brokerMailSettings;
+        private readonly AppMongoClient.MongoClientSettings _mongoClientSettings;
 
         private readonly IMongoCollection<MailMessageEntity> _collection;
         #endregion
@@ -28,24 +27,24 @@ namespace Sample.ElectronicCommerce.BrokerMail.Repositories
         #region Constructor
         public MailMessageRepository(
             ILogger<MailMessageRepository> logger,            
-            IOptions<BrokerMailSettings> brokerMailSettings
+            IOptions<AppMongoClient.MongoClientSettings> mongoClientSettings
         ) {
             _logger = logger;
-            _brokerMailSettings = brokerMailSettings.Value;            
-            var mongoClient = new MongoClient(_brokerMailSettings.MongoClient.GetConnectionString);
-            var mongoDatabase = mongoClient.GetDatabase(_brokerMailSettings.MongoClient.DataBase);
-            _collection = mongoDatabase.GetCollection<MailMessageEntity>(_brokerMailSettings.MailMessageColletion);            
+            _mongoClientSettings = mongoClientSettings.Value;            
+            var mongoClient = new MongoClient(_mongoClientSettings.GetConnectionString);
+            var mongoDatabase = mongoClient.GetDatabase(_mongoClientSettings.DataBaseProduction);
+            _collection = mongoDatabase.GetCollection<MailMessageEntity>(_mongoClientSettings.MailMessageColletion);            
         }
         #endregion
 
-        #region Methods
+        #region Methods Crud
         public async Task<ResponseDTO> InsertAsync(MailMessageEntity pEntity)
         {
             _logger.LogInformation("MailMessageRepository.InsertAsync => Start");
             ResponseDTO responseDTO;
             try
             {
-                pEntity.DtCreation = DateTime.Now;       
+                pEntity.DtCreation = DateTime.Now;
                 await _collection.InsertOneAsync(pEntity);
                 _logger.LogInformation("MailMessageRepository.InsertAsync => OK");
                 responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, pEntity);
@@ -53,7 +52,7 @@ namespace Sample.ElectronicCommerce.BrokerMail.Repositories
             catch (Exception ex)
             {
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"MailMessageRepository.InsertAsync => Exception: { ex.Message }");
+                _logger.LogError($"MailMessageRepository.InsertAsync => Exception: {ex.Message}");
             }
             _logger.LogInformation("MailMessageRepository.InsertAsync > Finish");
             return responseDTO;
@@ -65,22 +64,22 @@ namespace Sample.ElectronicCommerce.BrokerMail.Repositories
             ResponseDTO responseDTO;
             try
             {
-                Expression<Func<MailMessageEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pEntity.Id));
+                Expression<Func<MailMessageEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
                 MailMessageEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
                 bool isSuccess = (entity != null) ? true : false;
                 string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
                 object dataObject = (isSuccess) ? pEntity : null;
                 if (isSuccess)
-                {   
+                {
                     pEntity.DtLastUpdate = DateTime.Now;
-                    await _collection.ReplaceOneAsync(filter, pEntity); 
+                    await _collection.ReplaceOneAsync(filter, pEntity);
                 }
                 responseDTO = new ResponseDTO(isSuccess, deMessage, dataObject);
             }
             catch (Exception ex)
             {
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"MailMessageRepository.UpdateAsync => Exception: { ex.Message }");
+                _logger.LogError($"MailMessageRepository.UpdateAsync => Exception: {ex.Message}");
             }
             _logger.LogInformation("MailMessageRepository.UpdateAsync > Finish");
             return responseDTO;
@@ -101,7 +100,7 @@ namespace Sample.ElectronicCommerce.BrokerMail.Repositories
             catch (Exception ex)
             {
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"MailMessageRepository.GetById => Exception: { ex.Message }");
+                _logger.LogError($"MailMessageRepository.GetById => Exception: {ex.Message}");
             }
             _logger.LogInformation("MailMessageRepository.GetById > Finish");
             return responseDTO;
@@ -113,14 +112,14 @@ namespace Sample.ElectronicCommerce.BrokerMail.Repositories
             ResponseDTO responseDTO;
             try
             {
-                Expression<Func<MailMessageEntity, bool>> filter = x => x.IsActive.Equals(true);
-                ICollection<MailMessageEntity> listEntities = await _collection.Find(filter).ToListAsync();                
+                Expression<Func<MailMessageEntity, bool>> filter = x => x.IsActive == true;
+                List<MailMessageEntity> listEntities = await _collection.Find(filter).ToListAsync();
                 responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, listEntities);
             }
             catch (Exception ex)
             {
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"MailMessageRepository.GetAll => Exception: { ex.Message }");
+                _logger.LogError($"MailMessageRepository.GetAll => Exception: {ex.Message}");
             }
             _logger.LogInformation("MailMessageRepository.GetAll > Finish");
             return responseDTO;

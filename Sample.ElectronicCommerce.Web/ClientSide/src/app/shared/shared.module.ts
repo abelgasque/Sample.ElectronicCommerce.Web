@@ -32,10 +32,15 @@ import { MessagesComponent } from './components/messages/messages.component';
 
 import { WidgetChartDynamicComponent } from './widgets/widget-chart-dynamic/widget-chart-dynamic.component';
 import { WidgetChartPieComponent } from './widgets/widget-chart-pie/widget-chart-pie.component';
-import { WidgetSideBarComponent } from './widgets/widget-side-bar/widget-side-bar.component';
 import { MessageControlComponent } from './components/message-control/message-control.component';
 import { MessageDialogComponent } from './components/message-dialog/message-dialog.component';
 import { InputFieldComponent } from './components/input-field/input-field.component';
+import { MatButtonBarUserComponent } from './components/mat-button-bar-user/mat-button-bar-user.component';
+import { MatButtonBarSystemComponent } from './components/mat-button-bar-system/mat-button-bar-system.component';
+import { MatButtonBarSearchComponent } from './components/mat-button-bar-search/mat-button-bar-search.component';
+import { WidgetSidebarChatComponent } from './widgets/widget-sidebar-chat/widget-sidebar-chat.component';
+import { WidgetSidebarMenuComponent } from './widgets/widget-sidebar-menu/widget-sidebar-menu.component';
+import { WidgetSidebarUserComponent } from './widgets/widget-sidebar-user/widget-sidebar-user.component';
 
 @NgModule({
   declarations: [
@@ -49,8 +54,13 @@ import { InputFieldComponent } from './components/input-field/input-field.compon
 
     WidgetChartDynamicComponent,
     WidgetChartPieComponent,
-    WidgetSideBarComponent,
     InputFieldComponent,
+    MatButtonBarUserComponent,
+    MatButtonBarSystemComponent,
+    MatButtonBarSearchComponent,
+    WidgetSidebarChatComponent,
+    WidgetSidebarMenuComponent,
+    WidgetSidebarUserComponent,
   ],
   imports: [
     CommonModule,    
@@ -86,7 +96,9 @@ import { InputFieldComponent } from './components/input-field/input-field.compon
     
     WidgetChartDynamicComponent,
     WidgetChartPieComponent,
-    WidgetSideBarComponent,
+    WidgetSidebarChatComponent,
+    WidgetSidebarMenuComponent,
+    WidgetSidebarUserComponent,
   ],
   providers:[
     CoreService,

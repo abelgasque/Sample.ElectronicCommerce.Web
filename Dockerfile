@@ -29,7 +29,6 @@ COPY ["Sample.ElectronicCommerce.BrokerChat/Sample.ElectronicCommerce.BrokerChat
 COPY ["Sample.ElectronicCommerce.BrokerMail/Sample.ElectronicCommerce.BrokerMail.csproj", "Sample.ElectronicCommerce.BrokerMail/"]
 COPY ["Sample.ElectronicCommerce.Core/Sample.ElectronicCommerce.Core.csproj", "Sample.ElectronicCommerce.Core/"]
 COPY ["Sample.ElectronicCommerce.Security/Sample.ElectronicCommerce.Security.csproj", "Sample.ElectronicCommerce.Security/"]
-COPY ["Sample.ElectronicCommerce.Shared/Sample.ElectronicCommerce.Shared.csproj", "Sample.ElectronicCommerce.Shared/"]
 COPY ["Sample.ElectronicCommerce.Web/Sample.ElectronicCommerce.Web.csproj", "Sample.ElectronicCommerce.Web/"]
 
 RUN dotnet restore "Sample.ElectronicCommerce.Web/Sample.ElectronicCommerce.Web.csproj" --disable-parallel

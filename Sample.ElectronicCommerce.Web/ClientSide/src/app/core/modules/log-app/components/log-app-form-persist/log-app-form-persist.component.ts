@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { LogApp, ReturnDTO } from 'src/app/shared/util/model';
+import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
+import { LogAppEntity } from 'src/app/shared/util/Entities/LogAppEntity';
 
 import { CoreService } from 'src/app/core/core.service';
 import { LogAppService } from '../../log-app.service';
@@ -13,7 +14,7 @@ import { SharedService } from 'src/app/shared/shared.service';
 })
 export class LogAppFormPersistComponent implements OnInit {
 
-  @Input() data: LogApp;
+  @Input() data: LogAppEntity;
   @Output() eventPersist: EventEmitter<boolean> = new EventEmitter();
 
   public listActive: any[] = [
@@ -47,7 +48,7 @@ export class LogAppFormPersistComponent implements OnInit {
     this.entityService.Update(this.data).subscribe({
       next: (response: ReturnDTO) => {
         if(response.isSuccess){
-          let entity: LogApp = response.resultObject;          
+          let entity: LogAppEntity = response.resultObject;          
           entity.dtCreation = new Date(entity.dtCreation);
           entity.dtLastUpdate = (entity.dtLastUpdate != null) ? new Date(entity.dtLastUpdate) : null;
           this.data = entity;

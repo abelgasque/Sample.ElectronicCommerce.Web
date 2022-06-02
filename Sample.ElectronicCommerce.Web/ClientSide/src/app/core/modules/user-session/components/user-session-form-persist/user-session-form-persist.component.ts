@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { ReturnDTO, UserSession } from 'src/app/shared/util/model';
+import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
+import { UserSessionEntity } from 'src/app/shared/util/Entities/UserSessionEntity';
+
 import { CoreService } from 'src/app/core/core.service';
 import { SharedService } from 'src/app/shared/shared.service';
 import { UserSessionService } from '../../user-session.service';
@@ -12,7 +14,7 @@ import { UserSessionService } from '../../user-session.service';
 })
 export class UserSessionFormPersistComponent implements OnInit {
 
-  @Input() data: UserSession;
+  @Input() data: UserSessionEntity;
   @Output() eventPersist: EventEmitter<boolean> = new EventEmitter();
   public listActive: any[] = [
     { name: 'Ativo', value: true },
@@ -42,7 +44,7 @@ export class UserSessionFormPersistComponent implements OnInit {
     this.entityService.Update(this.data).subscribe({
       next: (response: ReturnDTO) => {
         if(response.isSuccess){
-          let entity: UserSession = response.resultObject;          
+          let entity: UserSessionEntity = response.resultObject;          
           entity.dtCreation = new Date(entity.dtCreation);
           entity.dtLastUpdate = (entity.dtLastUpdate != null) ? new Date(entity.dtLastUpdate) : null;
           this.data = entity;

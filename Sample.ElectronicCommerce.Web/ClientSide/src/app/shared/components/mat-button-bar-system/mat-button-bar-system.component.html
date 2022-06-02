@@ -1,0 +1,8 @@
+<button mat-icon-button type="button" (click)="this.sharedService.toggleSidebarMenu()" *ngIf="this.securityService.hasUserAuth">
+    <mat-icon>menu</mat-icon>
+</button>
+
+<button mat-button type="button" class="button-icon-logo" [routerLink]="['/']">                
+    <img src="./favicon.ico" alt="Foto perfil do usuário">  
+    E-Commerce
+</button>  

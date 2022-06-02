@@ -1,13 +1,19 @@
 <app-navbar class="fixed-top"></app-navbar>
 <mat-drawer-container>
-    <mat-drawer mode="side" [opened]="this.sharedService.openedSideBar">
-        <app-widget-side-bar></app-widget-side-bar>
+    <mat-drawer mode="side" [opened]="this.sharedService.openedSidebarMenu">
+        <app-widget-sidebar-menu></app-widget-sidebar-menu>
     </mat-drawer>
     <mat-drawer-content>        
         <div class="container-box">
             <router-outlet></router-outlet>
         </div>
-    </mat-drawer-content>
+    </mat-drawer-content>    
+    <mat-drawer mode="side" [opened]="this.sharedService.openedSidebarChat" position="end">
+        <app-widget-sidebar-chat></app-widget-sidebar-chat>
+    </mat-drawer>
+    <mat-drawer mode="side" [opened]="this.sharedService.openedSidebarUser" position="end">
+        <app-widget-sidebar-user></app-widget-sidebar-user>
+    </mat-drawer>
 </mat-drawer-container> 
 <app-footer class="fixed-bottom"></app-footer>
 

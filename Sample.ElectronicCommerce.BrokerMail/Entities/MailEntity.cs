@@ -1,48 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Sample.ElectronicCommerce.Core.Entities.Base;
 
 namespace Sample.ElectronicCommerce.BrokerMail.Entities 
 {
-    public class MailEntity
-    {
-		[BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        [BsonElement("id")]
-        public string Id { get; set; }
-
-		[BsonElement("dtCreation")]
-		public DateTime DtCreation { get; set; }
-
-		[BsonElement("dtLastUpdate")]
-		public DateTime? DtLastUpdate { get; set; }
-
+    public class MailEntity : MongoBaseEntity
+	{
 		[BsonElement("body")]
 		public string Body { get; set; }
 		
 		[BsonElement("title")]
 		public string Title { get; set; }
 
-		[BsonElement("name")]
-		public string Name { get; set; }
-
-		[BsonElement("code")]
-		public string Code { get; set; }
-
-		[BsonElement("vlMailUnit")]
+		[BsonElement("vl_mail_unit")]
 		public decimal VlMailUnit { get; set; }
 
-		[BsonElement("vlMailMass")]
+		[BsonElement("vl_mail_mass")]
 		public decimal VlMailMass { get; set; }
 
-		[BsonElement("isPriority")]
+		[BsonElement("is_priority")]
 		public bool IsPriority { get; set; }
 
-		[BsonElement("isActive")]
-		public bool IsActive { get; set; }
-
 		[BsonElement("brokers")]
-		public ICollection<BrokerMailEntity> Brokers { get; set; }
+		public ICollection<MailBrokerEntity> Brokers { get; set; }
 	}
 }

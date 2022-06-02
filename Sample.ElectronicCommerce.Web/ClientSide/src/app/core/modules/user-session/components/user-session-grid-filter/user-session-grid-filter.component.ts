@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 
-import { ReturnDTO, UserSession } from 'src/app/shared/util/model';
+import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
+
+import { UserSessionEntity } from 'src/app/shared/util/Entities/UserSessionEntity';
+
 import { CoreService } from 'src/app/core/core.service';
-import { UserSessionService } from '../../user-session.service';
 import { SharedService } from 'src/app/shared/shared.service';
+import { UserSessionService } from 'src/app/core/modules/user-session/user-session.service';
 
 @Component({
   selector: 'app-user-session-grid-filter',
@@ -16,7 +19,7 @@ export class UserSessionGridFilterComponent implements OnInit {
   public first = 0;
   public rows = 100;
   public isOpenDialog: boolean = false;
-  public data: UserSession = new UserSession();
+  public data: UserSessionEntity = new UserSessionEntity();
 
   constructor(
     private coreService: CoreService,
@@ -83,7 +86,7 @@ export class UserSessionGridFilterComponent implements OnInit {
           if(this.data.dtLastUpdate != null){ 
             this.data.dtLastUpdate = new Date(this.data.dtLastUpdate);
           }
-          this.sharedService.closeSideBar();
+          this.sharedService.closeAllSidebar();
           this.isOpenDialog = true;
         }
         this.sharedService.closeSpinner();

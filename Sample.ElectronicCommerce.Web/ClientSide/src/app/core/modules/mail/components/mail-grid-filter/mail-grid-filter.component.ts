@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { ReturnDTO, Mail } from 'src/app/shared/util/model';
+import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
+import { MailEntity } from 'src/app/shared/util/Entities/MailEntity';
 
 import { CoreService } from 'src/app/core/core.service';
 import { MailService } from 'src/app/core/modules/mail/mail.service';
@@ -17,7 +18,7 @@ export class MailGridFilterComponent implements OnInit {
   public first = 0;
   public rows = 100;
   public isOpenDialog: boolean = false;
-  public data: Mail = new Mail();
+  public data: MailEntity = new MailEntity();
 
   constructor(
     private coreService: CoreService,    
@@ -40,8 +41,8 @@ export class MailGridFilterComponent implements OnInit {
   }
 
   public newEntity() {
-    this.data = new Mail();
-    this.sharedService.closeSideBar();
+    this.data = new MailEntity();
+    this.sharedService.closeAllSidebar();
     this.isOpenDialog = true;
   }
 
@@ -91,7 +92,7 @@ export class MailGridFilterComponent implements OnInit {
           if(this.data.dtLastUpdate != null) {
             this.data.dtLastUpdate = new Date(this.data.dtLastUpdate);
           }
-          this.sharedService.closeSideBar();
+          this.sharedService.closeAllSidebar();
           this.isOpenDialog = true;
         }
         this.sharedService.closeSpinner();

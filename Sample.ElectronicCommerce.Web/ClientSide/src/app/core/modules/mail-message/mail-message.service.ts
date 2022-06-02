@@ -5,7 +5,8 @@ import { Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 
-import { ReturnDTO } from 'src/app/shared/util/model';
+import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
+
 import { CoreService } from 'src/app/core/core.service';
 
 @Injectable({

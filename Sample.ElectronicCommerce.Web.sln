@@ -11,9 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.ElectronicCommerce.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.ElectronicCommerce.BrokerMail", "Sample.ElectronicCommerce.BrokerMail\Sample.ElectronicCommerce.BrokerMail.csproj", "{BECFCD90-137B-4120-9B5E-F7E6E7F02699}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.ElectronicCommerce.Shared", "Sample.ElectronicCommerce.Shared\Sample.ElectronicCommerce.Shared.csproj", "{822E383E-564F-4B9F-B3C6-266AA8D51064}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.ElectronicCommerce.BrokerChat", "Sample.ElectronicCommerce.BrokerChat\Sample.ElectronicCommerce.BrokerChat.csproj", "{1F7F6823-BA3B-48E7-B9FE-821E6AE8104D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.ElectronicCommerce.BrokerChat", "Sample.ElectronicCommerce.BrokerChat\Sample.ElectronicCommerce.BrokerChat.csproj", "{1F7F6823-BA3B-48E7-B9FE-821E6AE8104D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +35,6 @@ Global
 		{BECFCD90-137B-4120-9B5E-F7E6E7F02699}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BECFCD90-137B-4120-9B5E-F7E6E7F02699}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BECFCD90-137B-4120-9B5E-F7E6E7F02699}.Release|Any CPU.Build.0 = Release|Any CPU
-		{822E383E-564F-4B9F-B3C6-266AA8D51064}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{822E383E-564F-4B9F-B3C6-266AA8D51064}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{822E383E-564F-4B9F-B3C6-266AA8D51064}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{822E383E-564F-4B9F-B3C6-266AA8D51064}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1F7F6823-BA3B-48E7-B9FE-821E6AE8104D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1F7F6823-BA3B-48E7-B9FE-821E6AE8104D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F7F6823-BA3B-48E7-B9FE-821E6AE8104D}.Release|Any CPU.ActiveCfg = Release|Any CPU

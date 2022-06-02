@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
-import { ReturnDTO, User } from 'src/app/shared/util/model';
+import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
+import { UserEntity } from 'src/app/shared/util/Entities/UserEntity';
 
 import { CoreService } from 'src/app/core/core.service';
-import { MailMessageService } from '../../mail-message.service';
 import { SharedService } from 'src/app/shared/shared.service';
+import { MailMessageService } from 'src/app/core/modules/mail-message/mail-message.service';
 
 @Component({
   selector: 'app-mail-message-grid-filter',
@@ -17,7 +18,7 @@ export class MailMessageGridFilterComponent implements OnInit {
   public first = 0;
   public rows = 100;
   public isOpenDialog: boolean = false;
-  public data: User = new User();
+  public data: UserEntity = new UserEntity();
 
   constructor(
     private coreService: CoreService,    
@@ -40,8 +41,8 @@ export class MailMessageGridFilterComponent implements OnInit {
   }
 
   public newEntity() {
-    this.data = new User();
-    this.sharedService.closeSideBar();
+    this.data = new UserEntity();
+    this.sharedService.closeAllSidebar();
     this.isOpenDialog = true;
   }
 
@@ -90,7 +91,7 @@ export class MailMessageGridFilterComponent implements OnInit {
           if(this.data.dtLastUpdate != null) {
             this.data.dtLastUpdate = new Date(this.data.dtLastUpdate);
           }
-          this.sharedService.closeSideBar();
+          this.sharedService.closeAllSidebar();
           this.isOpenDialog = true;
         }
         this.sharedService.closeSpinner();

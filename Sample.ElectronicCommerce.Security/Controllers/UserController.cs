@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Sample.ElectronicCommerce.Security.Entities;
 using Sample.ElectronicCommerce.Security.Services;
-using Sample.ElectronicCommerce.Shared.Constants;
-using Sample.ElectronicCommerce.Shared.Entities.DTO;
+using Sample.ElectronicCommerce.Core.Constants;
+using Sample.ElectronicCommerce.Core.Entities.DTO;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -20,19 +19,15 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         private readonly ILogger<UserController> _logger;
 
         private readonly UserService _service;
-
-        private readonly UserRoleService _userRoleService;
         #endregion
 
         #region Constructor
         public UserController(
             ILogger<UserController> logger, 
-            UserService service, 
-            UserRoleService userRoleService
+            UserService service
         ) {
             _logger = logger;
             _service = service;
-            _userRoleService = userRoleService;
         }
         #endregion
 
@@ -140,30 +135,6 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"UserController.GetAll => Exception: { ex.Message }");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
-        }
-
-        /// GET: User/GetAll/Role
-        /// <summary>
-        /// End Point que lista de todas permissoes ativas de usuarios
-        /// </summary>        
-        [HttpGet]
-        [Route("GetAll/Role")]
-        public async Task<ActionResult<ReturnDTO>> GetAllRole()
-        {
-            _logger.LogInformation("UserController.GetAllRole => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _userRoleService.GetAll();
-                _logger.LogInformation($"UserController.GetAllRole => IsSuccess: { returnDTO.IsSuccess } => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"UserController.GetAllRole => Exception: { ex.Message }");
                 returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
                 return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
             }

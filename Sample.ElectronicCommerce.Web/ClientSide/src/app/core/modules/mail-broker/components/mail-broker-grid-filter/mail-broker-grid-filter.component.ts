@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
+import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
+import { MailBrokerEntity } from 'src/app/shared/util/Entities/MailBrokerEntity';
+
 import { CoreService } from 'src/app/core/core.service';
-import { MailBroker, ReturnDTO } from 'src/app/shared/util/model';
-import { MailBrokerService } from '../../mail-broker.service';
 import { SharedService } from 'src/app/shared/shared.service';
+import { MailBrokerService } from '../../mail-broker.service';
 
 @Component({
   selector: 'app-mail-broker-grid-filter',
@@ -16,7 +18,7 @@ export class MailBrokerGridFilterComponent implements OnInit {
   public first = 0;
   public rows = 100;
   public isOpenDialog: boolean = false;
-  public data: MailBroker = new MailBroker();
+  public data: MailBrokerEntity = new MailBrokerEntity();
 
   constructor(
     private coreService: CoreService,    
@@ -39,8 +41,8 @@ export class MailBrokerGridFilterComponent implements OnInit {
   }
 
   public newEntity() {
-    this.data = new MailBroker();
-    this.sharedService.closeSideBar();
+    this.data = new MailBrokerEntity();
+    this.sharedService.closeAllSidebar();
     this.isOpenDialog = true;
   }
 
@@ -89,7 +91,7 @@ export class MailBrokerGridFilterComponent implements OnInit {
           if(this.data.dtLastUpdate != null) {
             this.data.dtLastUpdate = new Date(this.data.dtLastUpdate);
           }
-          this.sharedService.closeSideBar();
+          this.sharedService.closeAllSidebar();
           this.isOpenDialog = true;
         }
         this.sharedService.closeSpinner();

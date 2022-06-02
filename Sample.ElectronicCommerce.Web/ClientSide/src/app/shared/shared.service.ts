@@ -6,10 +6,12 @@ import { MessageService } from 'primeng/api';
   providedIn: 'root'
 })
 export class SharedService 
-{  
+{    
   public listMenu: any[] = [];
-  public openedSideBar: boolean = false;
-  public openedSpinner: boolean = false;
+  public openedSpinner: boolean = false;  
+  public openedSidebarMenu: boolean = false;
+  public openedSidebarChat: boolean = false;
+  public openedSidebarUser: boolean = false;
 
   constructor(private messageService: MessageService) {}
 
@@ -40,16 +42,34 @@ export class SharedService
     ];
   }
 
-  public toggleSideBar(){
-    this.openedSideBar = !this.openedSideBar;
+  public closeAllSidebar() {
+    this.openedSidebarMenu = false;
+    this.openedSidebarChat = false;
+    this.openedSidebarUser = false;
   }
 
-  public openSideBar(){
-    this.openedSideBar = true;
+  public toggleSidebarMenu() {
+    if (this.openedSidebarChat == true || this.openedSidebarUser == true) {
+      this.openedSidebarChat = false;
+      this.openedSidebarUser = false;
+    }
+    this.openedSidebarMenu = !this.openedSidebarMenu;
   }
 
-  public closeSideBar(){
-    this.openedSideBar = false;
+  public toggleSidebarChat() {
+    if (this.openedSidebarMenu == true || this.openedSidebarUser == true) {
+      this.openedSidebarMenu = false;
+      this.openedSidebarUser = false;
+    }
+    this.openedSidebarChat = !this.openedSidebarChat;
+  }
+
+  public toggleSidebarUser() {
+    if (this.openedSidebarMenu == true || this.openedSidebarChat == true) {
+      this.openedSidebarMenu = false;
+      this.openedSidebarChat = false;
+    }
+    this.openedSidebarUser = !this.openedSidebarUser;
   }
 
   public openSpinner(){

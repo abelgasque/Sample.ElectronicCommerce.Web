@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <AssemblyVersion>1.1.3005.2</AssemblyVersion>
-    <FileVersion>1.1.3005.2</FileVersion>
-    <Version>1.1.3005.2</Version>
+    <AssemblyVersion>1.1.0206.3</AssemblyVersion>
+    <FileVersion>1.1.0206.3</FileVersion>
+    <Version>1.1.0206.3</Version>
     <Copyright>Copyright ©  2022</Copyright>
     <Company>Eletronic Commerce</Company>
     <Authors>Eletronic Commerce</Authors>
@@ -28,7 +28,6 @@
     <ProjectReference Include="..\Sample.ElectronicCommerce.BrokerMail\Sample.ElectronicCommerce.BrokerMail.csproj" />
     <ProjectReference Include="..\Sample.ElectronicCommerce.Core\Sample.ElectronicCommerce.Core.csproj" />
     <ProjectReference Include="..\Sample.ElectronicCommerce.Security\Sample.ElectronicCommerce.Security.csproj" />
-    <ProjectReference Include="..\Sample.ElectronicCommerce.Shared\Sample.ElectronicCommerce.Shared.csproj" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">    

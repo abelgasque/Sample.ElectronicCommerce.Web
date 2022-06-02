@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
+using Sample.ElectronicCommerce.Security.Entities;
 using Sample.ElectronicCommerce.Security.Repositories;
-using Sample.ElectronicCommerce.Shared.Constants;
-using Sample.ElectronicCommerce.Shared.Entities.DTO;
+using Sample.ElectronicCommerce.Core.Constants;
+using Sample.ElectronicCommerce.Core.Entities.DTO;
+using Sample.ElectronicCommerce.Core.Services;
 using System;
 using System.Threading.Tasks;
 
@@ -13,17 +15,73 @@ namespace Sample.ElectronicCommerce.Security.Services
         private readonly ILogger<UserRoleService> _logger;
 
         private readonly UserRoleRepository _repository;
+
+        private readonly LogAppService _logAppService;
         #endregion
 
         #region Constructor
-        public UserRoleService(ILogger<UserRoleService> logger, UserRoleRepository repository)
+        public UserRoleService(ILogger<UserRoleService> logger, UserRoleRepository repository, LogAppService logAppService)
         {
             _logger = logger;
             _repository = repository;
+            _logAppService = logAppService; 
         }
         #endregion
 
-        #region Methods        
+        #region Methods  
+        public async Task<ReturnDTO> InsertAsync(RoleEntity pEntity)
+        {
+            _logger.LogInformation($"UserRoleService.InsertAsync => Start");
+            ResponseDTO responseDTO;
+            try
+            {
+                responseDTO = await _repository.InsertAsync(pEntity);
+            }
+            catch (Exception ex)
+            {
+                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
+                _logger.LogError($"UserRoleService.InsertAsync => Exception: {ex.Message}");
+            }
+            await _logAppService.AppInsertAsync(0, "UserRoleService.InsertAsync", pEntity, responseDTO);
+            _logger.LogInformation($"UserRoleService.InsertAsync => End");
+            return new ReturnDTO(responseDTO);
+        }
+
+        public async Task<ReturnDTO> UpdateAsync(RoleEntity pEntity)
+        {
+            _logger.LogInformation($"UserRoleService.UpdateAsync => Start");
+            ResponseDTO responseDTO;
+            try
+            {
+                responseDTO = await _repository.UpdateAsync(pEntity);
+            }
+            catch (Exception ex)
+            {
+                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
+                _logger.LogError($"UserRoleService.UpdateAsync => Exception: {ex.Message}");
+            }
+            await _logAppService.AppInsertAsync(0, "UserRoleService.UpdateAsync", pEntity, responseDTO);
+            _logger.LogInformation($"UserRoleService.UpdateAsync => End");
+            return new ReturnDTO(responseDTO);
+        }
+
+        public async Task<ReturnDTO> GetById(string pId)
+        {
+            _logger.LogInformation($"UserRoleService.GetById => Start");
+            ResponseDTO responseDTO;
+            try
+            {
+                responseDTO = await _repository.GetById(pId);
+            }
+            catch (Exception ex)
+            {
+                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
+                _logger.LogError($"UserRoleService.GetById => Exception: {ex.Message}");
+            }
+            _logger.LogInformation($"UserRoleService.GetById => End");
+            return new ReturnDTO(responseDTO);
+        }
+
         public async Task<ReturnDTO> GetAll()
         {
             _logger.LogInformation("UserRoleService.GetAll => Start");

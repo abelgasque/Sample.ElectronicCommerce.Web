@@ -3,7 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CoreService } from 'src/app/core/core.service';
 import { SharedService } from 'src/app/shared/shared.service';
 
-import { ReturnDTO, User } from 'src/app/shared/util/model';
+import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
+import { UserEntity } from 'src/app/shared/util/Entities/UserEntity';
+
 import { UserService } from 'src/app/core/modules/user/user.service';
 
 @Component({
@@ -13,7 +15,7 @@ import { UserService } from 'src/app/core/modules/user/user.service';
 })
 export class UserFormPersistComponent implements OnInit {
 
-  @Input() data: User;
+  @Input() data: UserEntity;
 
   @Output() eventPersist: EventEmitter<boolean> = new EventEmitter();  
 
@@ -62,7 +64,7 @@ export class UserFormPersistComponent implements OnInit {
   
   private resetForm() {
     this.form.reset();
-    this.form.patchValue(new User());
+    this.form.patchValue(new UserEntity());
   }
 
   private insert(){    
@@ -70,7 +72,7 @@ export class UserFormPersistComponent implements OnInit {
     this.entityService.Insert(this.data).subscribe({
       next: (response: ReturnDTO) => {
         if(response.isSuccess){
-          let entity: User = response.resultObject;          
+          let entity: UserEntity = response.resultObject;          
           entity.dtCreation = new Date(entity.dtCreation);                  
           this.form.patchValue(entity);
         }else{
@@ -90,7 +92,7 @@ export class UserFormPersistComponent implements OnInit {
     this.entityService.Update(this.data).subscribe({
       next: (response: ReturnDTO) => {
         if(response.isSuccess){
-          let entity: User = response.resultObject;          
+          let entity: UserEntity = response.resultObject;          
           entity.dtCreation = new Date(entity.dtCreation);
           entity.dtLastUpdate = new Date(entity.dtLastUpdate);
           this.form.patchValue(entity);

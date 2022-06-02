@@ -1,0 +1,1177 @@
+{
+	"info": {
+		"_postman_id": "2e0c98d7-e155-4a42-8e80-6fff735f8550",
+		"name": "Sample.ElectronicCommerce.Web_1.1.3005.2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost",
+			"item": [
+				{
+					"name": "Broker Mail",
+					"item": [
+						{
+							"name": "SingleMailSending",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"deMail\": \"abelgasque20@gmail.com\",\r\n  \"deTitle\": \"[Interno] Envio de e-mail único\",\r\n  \"deBody\": \"<h1>Teste de envio de e-mail único, disparando novo e-mail.</h1>\",\r\n  \"isPriority\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrlLocal}}/ws/Mail/SingleMailSending",
+									"host": [
+										"{{baseUrlLocal}}"
+									],
+									"path": [
+										"ws",
+										"Mail",
+										"SingleMailSending"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "MultipleMailSending",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n    {\r\n        \"deMail\": \"abelgasque20@gmail.com\",\r\n        \"deTitle\": \"[Interno] Envio de e-mail múltiplo\",\r\n        \"deBody\": \"<h1>Teste de envio de e-mail múltiplo, disparando novo e-mail.</h1>\",\r\n        \"isPriority\": true\r\n    },\r\n    {\r\n        \"deMail\": \"abelgasque21@gmail.com\",\r\n        \"deTitle\": \"[Interno] Envio de e-mail múltiplo\",\r\n        \"deBody\": \"<h1>Teste de envio de e-mail múltiplo, disparando novo e-mail.</h1>\",\r\n        \"isPriority\": true\r\n    }\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrlLocal}}/ws/Mail/MultipleMailSending",
+									"host": [
+										"{{baseUrlLocal}}"
+									],
+									"path": [
+										"ws",
+										"Mail",
+										"MultipleMailSending"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Security",
+					"item": [
+						{
+							"name": "User Role",
+							"item": [
+								{
+									"name": "Insert",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const bodyRes = pm.response.json();\r",
+													"pm.collectionVariables.set(\"idUserRole\", bodyRes.resultObject.id);\r",
+													"pm.collectionVariables.set(\"userRoleDtCreation\", bodyRes.resultObject.dtCreation);\r",
+													"pm.collectionVariables.set(\"userRoleCode\", bodyRes.resultObject.code);\r",
+													"pm.collectionVariables.set(\"userRoleName\", bodyRes.resultObject.name);\r",
+													"pm.collectionVariables.set(\"userRoleIsActive\", bodyRes.resultObject.isActive);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{accessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{    \r\n  \"code\": \"{{userRoleCode}}\",\r\n  \"name\": \"{{userRoleName}}\",\r\n  \"dtCreation\": null,\r\n  \"dtLastUpdate\": null,\r\n  \"isActive\": true\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrlLocal}}/User/Role/InsertAsync",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"User",
+												"Role",
+												"InsertAsync"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const bodyRes = pm.response.json();\r",
+													"pm.collectionVariables.set(\"idUserRole\", bodyRes.resultObject.id);\r",
+													"pm.collectionVariables.set(\"userRoleDtCreation\", bodyRes.resultObject.dtCreation);\r",
+													"pm.collectionVariables.set(\"userRoleCode\", bodyRes.resultObject.code);\r",
+													"pm.collectionVariables.set(\"userRoleName\", bodyRes.resultObject.name);\r",
+													"pm.collectionVariables.set(\"userRoleIsActive\", bodyRes.resultObject.isActive);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{accessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"id\": \"{{idUserRole}}\",    \r\n    \"dtCreation\": \"{{userRoleDtCreation}}\",\r\n    \"code\": \"{{userRoleCode}}\",\r\n    \"name\": \"{{userRoleName}}\",\r\n    \"dtLastUpdate\": null,\r\n    \"isActive\": {{userRoleIsActive}}\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrlLocal}}/User/Role/UpdateAsync",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"User",
+												"Role",
+												"UpdateAsync"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get By Id",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const bodyRes = pm.response.json();\r",
+													"pm.collectionVariables.set(\"idUserRole\", bodyRes.resultObject.id);\r",
+													"pm.collectionVariables.set(\"userRoleDtCreation\", bodyRes.resultObject.dtCreation);\r",
+													"pm.collectionVariables.set(\"userRoleCode\", bodyRes.resultObject.code);\r",
+													"pm.collectionVariables.set(\"userRoleName\", bodyRes.resultObject.name);\r",
+													"pm.collectionVariables.set(\"userRoleIsActive\", bodyRes.resultObject.isActive);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{accessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/User/Role/GetById/{{idUserRole}}",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"User",
+												"Role",
+												"GetById",
+												"{{idUserRole}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get All",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{accessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/User/Role/GetAll",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"User",
+												"Role",
+												"GetAll"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "User",
+							"item": [
+								{
+									"name": "Insert",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const bodyRes = pm.response.json();\r",
+													"pm.collectionVariables.set(\"idUser\", bodyRes.resultObject.id);\r",
+													"pm.collectionVariables.set(\"mail\", bodyRes.resultObject.mail);\r",
+													"pm.collectionVariables.set(\"userName\", bodyRes.resultObject.name);\r",
+													"pm.collectionVariables.set(\"userLastName\", bodyRes.resultObject.lastName);\r",
+													"pm.collectionVariables.set(\"userImageUrl\", bodyRes.resultObject.imageUrl);\r",
+													"pm.collectionVariables.set(\"userNuCellPhone\", bodyRes.resultObject.nuCellPhone);\r",
+													"pm.collectionVariables.set(\"userDtCreation\", bodyRes.resultObject.dtCreation);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{accessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{    \r\n    \"name\": \"{{userName}}\",\r\n    \"lastName\": \"{{userLastName}}\",\r\n    \"imageUrl\": \"{{userImageUrl}}\",\r\n    \"mail\": \"{{mail}}\",\r\n    \"nuCellPhone\": \"{{userNuCellPhone}}\",\r\n    \"codeDesblock\": null,    \r\n    \"code\": null,    \r\n    \"dtCreation\": null,\r\n    \"dtLastUpdate\": null,\r\n    \"isBlock\": false,\r\n    \"isActive\": true\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrlLocal}}/User/InsertAsync",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"User",
+												"InsertAsync"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const bodyRes = pm.response.json();\r",
+													"pm.collectionVariables.set(\"idUser\", bodyRes.resultObject.id);\r",
+													"pm.collectionVariables.set(\"mail\", bodyRes.resultObject.mail);\r",
+													"pm.collectionVariables.set(\"userName\", bodyRes.resultObject.name);\r",
+													"pm.collectionVariables.set(\"userLastName\", bodyRes.resultObject.lastName);\r",
+													"pm.collectionVariables.set(\"userImageUrl\", bodyRes.resultObject.imageUrl);\r",
+													"pm.collectionVariables.set(\"userNuCellPhone\", bodyRes.resultObject.nuCellPhone);\r",
+													"pm.collectionVariables.set(\"userDtCreation\", bodyRes.resultObject.dtCreation);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{accessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{    \r\n    \"id\": \"{{idUser}}\",    \r\n    \"name\": \"{{userName}}\",\r\n    \"lastName\": \"{{userLastName}}\",\r\n    \"imageUrl\": \"{{userImageUrl}}\",\r\n    \"mail\": \"{{mail}}\",\r\n    \"nuCellPhone\": \"{{userNuCellPhone}}\",\r\n    \"dtCreation\": \"{{userDtCreation}}\",\r\n    \"codeDesblock\": null,    \r\n    \"code\": null,\r\n    \"isBlock\": false,\r\n    \"isActive\": true\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrlLocal}}/User/UpdateAsync",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"User",
+												"UpdateAsync"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get By Id",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const bodyRes = pm.response.json();\r",
+													"pm.collectionVariables.set(\"idUser\", bodyRes.resultObject.id);\r",
+													"pm.collectionVariables.set(\"mail\", bodyRes.resultObject.mail);\r",
+													"pm.collectionVariables.set(\"userName\", bodyRes.resultObject.name);\r",
+													"pm.collectionVariables.set(\"userLastName\", bodyRes.resultObject.lastName);\r",
+													"pm.collectionVariables.set(\"userImageUrl\", bodyRes.resultObject.imageUrl);\r",
+													"pm.collectionVariables.set(\"userNuCellPhone\", bodyRes.resultObject.nuCellPhone);\r",
+													"pm.collectionVariables.set(\"userDtCreation\", bodyRes.resultObject.dtCreation);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{accessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/User/GetById/{{idUser}}",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"User",
+												"GetById",
+												"{{idUser}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get All",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{accessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/User/GetAll",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"User",
+												"GetAll"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Token",
+							"item": [
+								{
+									"name": "Login",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const bodyRes = pm.response.json();\r",
+													"pm.collectionVariables.set(\"accessToken\", bodyRes.resultObject.accessToken);\r",
+													"pm.collectionVariables.set(\"idUserSession\", bodyRes.resultObject.id);\r",
+													"pm.collectionVariables.set(\"userSessionDtCreation\", bodyRes.resultObject.dtCreation);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"mail\": \"{{mail}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrlLocal}}/Token/Login",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"Token",
+												"Login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Refresh",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const bodyRes = pm.response.json();\r",
+													"pm.collectionVariables.set(\"accessToken\", bodyRes.resultObject.accessToken);\r",
+													"pm.collectionVariables.set(\"idUserSession\", bodyRes.resultObject.id);\r",
+													"pm.collectionVariables.set(\"userSessionDtCreation\", bodyRes.resultObject.dtCreation);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"idUserSession\": \"{{idUserSession}}\",\r\n  \"accessToken\": \"{{accessToken}}\",\r\n  \"expiresIn\": 0\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrlLocal}}/Token/Refresh",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"Token",
+												"Refresh"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "User Session",
+							"item": [
+								{
+									"name": "Insert",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{accessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{  \r\n    \"idUser\": \"{{idUser}}\",  \r\n    \"accessToken\": {{accessToken}},\r\n    \"dtLastBlock\": null,\r\n    \"dtLastDesblock\": null,\r\n    \"version\": \"1.1.3005.2\",\r\n    \"password\": \"1\",\r\n    \"roles\": null,\r\n    \"code\": null,\r\n    \"name\": null,\r\n    \"nuRefreshToken\": 0,\r\n    \"nuAuthAttemptsToken\": 0,\r\n    \"nuSuccessToken\": 0,\r\n    \"nuFailsToken\": 0,    \r\n    \"dtCreation\": null,\r\n    \"dtLastUpdate\": null,\r\n    \"isTest\": false,\r\n    \"isLoggout\": false,\r\n    \"isActive\": true,  \r\n    \"user\": {\r\n        \"lastName\": \"Gasque L. Silva\",\r\n        \"imageUrl\": \"./assets/img/Resources/img-user-default.png\",\r\n        \"mail\": \"abelgasque20@gmail.com\",\r\n        \"nuCellPhone\": \"(48) 99137-7315\",\r\n        \"codeDesblock\": null,\r\n        \"isBlock\": false,\r\n        \"id\": \"6297b5a7717bc2ad9c730acf\",\r\n        \"code\": null,\r\n        \"name\": \"Abel\",\r\n        \"dtCreation\": \"2022-06-01T18:53:27.516Z\",\r\n        \"dtLastUpdate\": null,\r\n        \"isActive\": true\r\n    }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrlLocal}}/User/Session/InsertAsync",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"User",
+												"Session",
+												"InsertAsync"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{accessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"id\": \"{{idUserSession}}\",\r\n    \"idUser\": \"{{idUser}}\",\r\n    \"accessToken\": \"{{accessToken}}\",     \r\n    \"password\": \"{{password}}\",\r\n    \"code\": null,\r\n    \"name\": null,\r\n    \"dtCreation\": null,\r\n    \"dtLastUpdate\": null,    \r\n    \"dtLastBlock\": null,\r\n    \"dtLastDesblock\": null,\r\n    \"version\": null,\r\n    \"nuRefreshToken\": 0,\r\n    \"nuAuthAttemptsToken\": 0,\r\n    \"nuSuccessToken\": 0,\r\n    \"nuFailsToken\": 0,\r\n    \"isTest\": false,\r\n    \"isLoggout\": false,\r\n    \"isActive\": true,\r\n    \"user\": {\r\n        \"id\": \"{{idUser}}\",\r\n        \"lastName\": \"Gasque L. Silva\",\r\n        \"imageUrl\": \"./assets/img/Resources/img-user-default.png\",\r\n        \"mail\": \"abelgasque20@gmail.com\",\r\n        \"nuCellPhone\": \"(48) 99137-7315\",\r\n        \"codeDesblock\": null,\r\n        \"isBlock\": false,        \r\n        \"code\": null,\r\n        \"name\": \"Abel\",\r\n        \"dtCreation\": \"2022-06-01T23:27:59.685Z\",\r\n        \"dtLastUpdate\": \"2022-06-01T23:28:06.447Z\",\r\n        \"isActive\": true\r\n    },\r\n    \"roles\": [\r\n        {\r\n            \"id\": \"{{idUserRole}}\",\r\n            \"dtCreation\": \"{{userRoleDtCreation}}\",\r\n            \"code\": \"{{userRoleCode}}\",\r\n            \"name\": \"{{userRoleName}}\",                        \r\n            \"isActive\": {{userRoleIsActive}},\r\n            \"dtLastUpdate\": null\r\n        }\r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrlLocal}}/User/Session/UpdateAsync",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"User",
+												"Session",
+												"UpdateAsync"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get By Id",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{accessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/User/Session/GetById/{{idUserSession}}",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"User",
+												"Session",
+												"GetById",
+												"{{idUserSession}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get All",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{accessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/User/Session/GetAll",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"User",
+												"Session",
+												"GetAll"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Core",
+					"item": [
+						{
+							"name": "Application",
+							"item": [
+								{
+									"name": "Get All",
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/Application/GetAll",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"Application",
+												"GetAll"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Log App",
+							"item": [
+								{
+									"name": "GetLogIntegrationForChartDynamic",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/LogApp/GetLogAppForChartDynamic?pMustFilterYear=true",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"LogApp",
+												"GetLogAppForChartDynamic"
+											],
+											"query": [
+												{
+													"key": "pMustFilterYear",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "GetLogIntegrationForChartPie",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/ws/LogIntegration/GetLogIntegrationForChartPie",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"ws",
+												"LogIntegration",
+												"GetLogIntegrationForChartPie"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get Log App Day",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/LogApp/GetLogAppDay",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"LogApp",
+												"GetLogAppDay"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Deploy New Environment",
+			"item": [
+				{
+					"name": "00 - Gerar usuário do sistema",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const bodyRes = pm.response.json();\r",
+									"pm.collectionVariables.set(\"idUserSystem\", bodyRes.resultObject.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{    \r\n    \"name\": \"Usuário\",\r\n    \"lastName\": \"Padão do Sistema\",\r\n    \"imageUrl\": \"./assets/img/Resources/img-user-default.png\",\r\n    \"mail\": \"{{mailSystem}}\",\r\n    \"nuCellPhone\": \"(99) 99999-9999\",\r\n    \"codeDesblock\": null,    \r\n    \"code\": null,    \r\n    \"dtCreation\": null,\r\n    \"dtLastUpdate\": null,\r\n    \"isBlock\": false,\r\n    \"isActive\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/User/InsertAsync",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"User",
+								"InsertAsync"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "01 - Autenticar usuário do sistema",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const bodyRes = pm.response.json();\r",
+									"pm.collectionVariables.set(\"accessTokenSystem\", bodyRes.resultObject.accessToken);\r",
+									"pm.collectionVariables.set(\"idUserSessionSystem\", bodyRes.resultObject.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"mail\": \"{{mailSystem}}\",\r\n  \"password\": \"{{passwordSystem}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrlLocal}}/Token/Login",
+							"host": [
+								"{{baseUrlLocal}}"
+							],
+							"path": [
+								"Token",
+								"Login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02 - Salvar permissões de usuários",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlLocal}}/User/Role/GetAll",
+							"host": [
+								"{{baseUrlLocal}}"
+							],
+							"path": [
+								"User",
+								"Role",
+								"GetAll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "03 - Inserir usuário admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const bodyRes = pm.response.json();\r",
+									"pm.collectionVariables.set(\"idUser\", bodyRes.resultObject.id);\r",
+									"pm.collectionVariables.set(\"mail\", bodyRes.resultObject.mail);\r",
+									"pm.collectionVariables.set(\"userName\", bodyRes.resultObject.name);\r",
+									"pm.collectionVariables.set(\"userLastName\", bodyRes.resultObject.lastName);\r",
+									"pm.collectionVariables.set(\"userImageUrl\", bodyRes.resultObject.imageUrl);\r",
+									"pm.collectionVariables.set(\"userNuCellPhone\", bodyRes.resultObject.nuCellPhone);\r",
+									"pm.collectionVariables.set(\"userDtCreation\", bodyRes.resultObject.dtCreation);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{    \r\n    \"name\": \"{{userName}}\",\r\n    \"lastName\": \"{{userLastName}}\",\r\n    \"imageUrl\": \"{{userImageUrl}}\",\r\n    \"mail\": \"{{mail}}\",\r\n    \"nuCellPhone\": \"{{userNuCellPhone}}\",\r\n    \"codeDesblock\": null,    \r\n    \"code\": null,    \r\n    \"dtCreation\": null,\r\n    \"dtLastUpdate\": null,\r\n    \"isBlock\": false,\r\n    \"isActive\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrlLocal}}/User/InsertAsync",
+							"host": [
+								"{{baseUrlLocal}}"
+							],
+							"path": [
+								"User",
+								"InsertAsync"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "04 - Inserir usuário teste",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const bodyRes = pm.response.json();\r",
+									"pm.collectionVariables.set(\"idUser\", bodyRes.resultObject.id);\r",
+									"pm.collectionVariables.set(\"mail\", bodyRes.resultObject.mail);\r",
+									"pm.collectionVariables.set(\"userName\", bodyRes.resultObject.name);\r",
+									"pm.collectionVariables.set(\"userLastName\", bodyRes.resultObject.lastName);\r",
+									"pm.collectionVariables.set(\"userImageUrl\", bodyRes.resultObject.imageUrl);\r",
+									"pm.collectionVariables.set(\"userNuCellPhone\", bodyRes.resultObject.nuCellPhone);\r",
+									"pm.collectionVariables.set(\"userDtCreation\", bodyRes.resultObject.dtCreation);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{    \r\n    \"name\": \"{{userName}}\",\r\n    \"lastName\": \"{{userLastName}}\",\r\n    \"imageUrl\": \"{{userImageUrl}}\",\r\n    \"mail\": \"{{mail}}\",\r\n    \"nuCellPhone\": \"{{userNuCellPhone}}\",\r\n    \"codeDesblock\": null,    \r\n    \"code\": null,    \r\n    \"dtCreation\": null,\r\n    \"dtLastUpdate\": null,\r\n    \"isBlock\": false,\r\n    \"isActive\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrlLocal}}/User/InsertAsync",
+							"host": [
+								"{{baseUrlLocal}}"
+							],
+							"path": [
+								"User",
+								"InsertAsync"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://localhost:5001",
+			"type": "default"
+		},
+		{
+			"key": "baseUrlProduction",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "baseUrlDesenv",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "baseUrlLocal",
+			"value": "https://localhost:5001",
+			"type": "string"
+		},
+		{
+			"key": "mailSystem",
+			"value": "user.system@test.com",
+			"type": "default"
+		},
+		{
+			"key": "passwordSystem",
+			"value": "1",
+			"type": "default"
+		},
+		{
+			"key": "mailDefault",
+			"value": "user.default@test.com",
+			"type": "default"
+		},
+		{
+			"key": "passwordDefault",
+			"value": "1",
+			"type": "default"
+		},
+		{
+			"key": "mail",
+			"value": "usuário.test@test.com",
+			"type": "default"
+		},
+		{
+			"key": "password",
+			"value": "1",
+			"type": "default"
+		},
+		{
+			"key": "idUserSystem",
+			"value": ""
+		},
+		{
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"key": "idUserSession",
+			"value": ""
+		},
+		{
+			"key": "userSessionDtCreation",
+			"value": ""
+		}
+	]
+}

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { MailBroker, ReturnDTO } from 'src/app/shared/util/model';
+import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
+import { MailBrokerEntity } from 'src/app/shared/util/Entities/MailBrokerEntity';
 
 import { CoreService } from 'src/app/core/core.service';
 import { MailBrokerService } from '../../mail-broker.service';
@@ -13,7 +14,7 @@ import { SharedService } from 'src/app/shared/shared.service';
 })
 export class MailBrokerFormPersistComponent implements OnInit {
 
-  @Input() data: MailBroker;
+  @Input() data: MailBrokerEntity;
   @Output() eventPersist: EventEmitter<boolean> = new EventEmitter();
 
   public listActive: any[] = [
@@ -52,7 +53,7 @@ export class MailBrokerFormPersistComponent implements OnInit {
     this.entityService.Insert(this.data).subscribe({
       next: (response: ReturnDTO) => {
         if(response.isSuccess){
-          let entity: MailBroker = response.resultObject;          
+          let entity: MailBrokerEntity = response.resultObject;          
           entity.dtCreation = new Date(entity.dtCreation);
           this.data = entity;
           this.eventPersist.emit(true);
@@ -70,7 +71,7 @@ export class MailBrokerFormPersistComponent implements OnInit {
     this.entityService.Update(this.data).subscribe({
       next: (response: ReturnDTO) => {
         if(response.isSuccess){
-          let entity: MailBroker = response.resultObject;          
+          let entity: MailBrokerEntity = response.resultObject;          
           entity.dtCreation = new Date(entity.dtCreation);
           entity.dtLastUpdate = (entity.dtLastUpdate != null) ? new Date(entity.dtLastUpdate) : null;
           this.data = entity;

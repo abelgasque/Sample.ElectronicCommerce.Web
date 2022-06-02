@@ -4,14 +4,14 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Sample.ElectronicCommerce.Security.Entities;
-using Sample.ElectronicCommerce.Shared.Constants;
-using Sample.ElectronicCommerce.Shared.Entities.DTO;
-using Sample.ElectronicCommerce.Shared.Entities.Settings;
+using Sample.ElectronicCommerce.Core.Constants;
+using Sample.ElectronicCommerce.Core.Entities.DTO;
+using Sample.ElectronicCommerce.Core.Entities.Settings;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using AppMongoClient = Sample.ElectronicCommerce.Core.Entities.Settings;
 
 namespace Sample.ElectronicCommerce.Security.Repositories
 {
@@ -19,22 +19,22 @@ namespace Sample.ElectronicCommerce.Security.Repositories
     {
         #region Variables
         private readonly ILogger<UserRepository> _logger;
-                
-        private readonly SecuritySettings _securitySettings;
-        
+
+        private readonly AppMongoClient.MongoClientSettings _mongoClientSettings;
+
         private readonly IMongoCollection<UserEntity> _collection;
         #endregion
 
         #region Constructor
         public UserRepository(
             ILogger<UserRepository> logger,
-            IOptions<SecuritySettings> securitySettings
+            IOptions<AppMongoClient.MongoClientSettings> mongoClientSettings
         ) {
             _logger = logger;
-            _securitySettings = securitySettings.Value;
-            var mongoClient = new MongoClient(_securitySettings.MongoClient.GetConnectionString);
-            var mongoDatabase = mongoClient.GetDatabase(_securitySettings.MongoClient.DataBase);
-            _collection = mongoDatabase.GetCollection<UserEntity>(_securitySettings.UserColletion);
+            _mongoClientSettings = mongoClientSettings.Value;
+            var mongoClient = new MongoClient(_mongoClientSettings.GetConnectionString);
+            var mongoDatabase = mongoClient.GetDatabase(_mongoClientSettings.DataBaseProduction);
+            _collection = mongoDatabase.GetCollection<UserEntity>(_mongoClientSettings.UserColletion);
         }
         #endregion
 
@@ -65,7 +65,7 @@ namespace Sample.ElectronicCommerce.Security.Repositories
             ResponseDTO responseDTO;
             try
             {
-                Expression<Func<UserEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pEntity.Id));
+                Expression<Func<UserEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
                 UserEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
                 bool isSuccess = (entity != null) ? true : false;
                 string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;

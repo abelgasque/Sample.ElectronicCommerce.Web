@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Sample.ElectronicCommerce.BrokerChat.Hubs;
-using Sample.ElectronicCommerce.Shared.Entities.Settings;
+using Sample.ElectronicCommerce.BrokerChat.Services;
+using Sample.ElectronicCommerce.Core.Entities.Settings;
 using Sample.ElectronicCommerce.Web.Configurations;
 
 namespace Sample.ElectronicCommerce.Web
@@ -34,7 +34,7 @@ namespace Sample.ElectronicCommerce.Web
                 app.UseDeveloperExceptionPage();
             }
             
-            app.UseCors("Default");
+            app.UseCors("AllowOrigin");
             //app.UseExceptionMiddleware();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
@@ -45,7 +45,7 @@ namespace Sample.ElectronicCommerce.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
-                endpoints.MapHub<BrokerChatHub>("/broker/chat/all");
+                endpoints.MapHub<ChatBrokerAllConsumer>("/chat/broker/all");
             });         
 
             app.UseSwagger();
@@ -56,6 +56,7 @@ namespace Sample.ElectronicCommerce.Web
                 spa.Options.SourcePath = "ClientSide";
                 if (env.IsDevelopment())
                 {
+                    //spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });

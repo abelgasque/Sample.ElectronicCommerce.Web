@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { User } from 'src/app/shared/util/model';
+import { UserEntity } from 'src/app/shared/util/Entities/UserEntity';
 
 import { CoreService } from 'src/app/core/core.service';
 
@@ -20,7 +20,7 @@ export class UserGridFilterComponent implements OnInit {
   @Output() eventNewEntity: EventEmitter<any> = new EventEmitter();
   @Output() eventGetById: EventEmitter<any> = new EventEmitter();
 
-  public data: User = new User();
+  public data: UserEntity = new UserEntity();
 
   constructor(
     public coreService: CoreService,

@@ -6,23 +6,23 @@
         <ng-template ngFor let-message [ngForOf]="messages" let-i="index">
             <div *ngIf="message.userName == this.getNameUserAuth()" class="message-line me">
                 <div class="message me">
-                    <div class="user-name me">{{message.userName}}</div>
-                    <div>{{message.text}}</div>
+                    <div class="user-name me">{{message.name}}</div>
+                    <div>{{message.message}}</div>
                 </div>
             </div>
             <div *ngIf="message.userName != this.getNameUserAuth()" class="message-line other">
                 <div class="message other">
-                    <div class="user-name other">{{message.userName}}</div>
-                    <div>{{message.text}}</div>
+                    <div class="user-name other">{{message.name}}</div>
+                    <div>{{message.message}}</div>
                 </div>
             </div>
         </ng-template>
     </div>
     <div class="footer">
-        <form class="form" autocomplete="off" [formGroup]="this.form" (ngSubmit)="this.sendMessageBroker()">
+        <form class="form" autocomplete="off" [formGroup]="this.form" (ngSubmit)="this.sendMessageChatBrokerAll()">
             <mat-form-field class="input">
                 <mat-label>Escreva sua mensagem</mat-label>
-                <input matInput name="message" formControlName="message" [(ngModel)]="this.message" placeholder="Olá" />
+                <input matInput name="message" formControlName="message" [(ngModel)]="this.message" placeholder="Insira o texto que deseja enviar" />
             </mat-form-field>
             <button type="submit" color="primary" mat-mini-fab arial-label="Enviar">
                 <mat-icon>send</mat-icon>

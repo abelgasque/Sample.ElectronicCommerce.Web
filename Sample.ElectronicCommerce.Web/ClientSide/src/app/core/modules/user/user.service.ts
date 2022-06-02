@@ -5,9 +5,9 @@ import { Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 
-import { CoreService } from 'src/app/core/core.service';
-import { ReturnDTO } from 'src/app/shared/util/model';
+import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
 
+import { CoreService } from 'src/app/core/core.service';
 
 @Injectable({
   providedIn: 'root'
@@ -44,7 +44,7 @@ export class UserService {
   }
 
   public GetAllRole(pIsActive: boolean) : Observable<any> {
-    let endpoint: string = `${this.baseUrl}/GetAll/Role`;
+    let endpoint: string = `${this.baseUrl}/Role/GetAll`;
     if(pIsActive != null){
       endpoint += `?pIsActive=${pIsActive}`;
     }

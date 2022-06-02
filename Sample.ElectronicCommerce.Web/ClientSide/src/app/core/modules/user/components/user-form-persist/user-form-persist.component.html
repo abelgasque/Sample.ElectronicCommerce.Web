@@ -34,13 +34,6 @@
             *ngIf="this.coreService.validField(this.form.get('lastName'))"></app-message-control>
     </div>
 
-    <div class="col-12 col-md-2 p-fluid">
-        <label>Provedor</label>
-        <span class="p-input-icon-right">
-            <input name="provider" formControlName="provider" [(ngModel)]="this.data.provider" type="text" pInputText>
-        </span>
-    </div>
-
     <div class="col-12 col-md-8 p-fluid" [ngClass]="this.coreService.aplicaCssErro(this.form.get('mail'))">
         <label>E-mail</label>
         <span class="p-input-icon-right">
@@ -67,15 +60,15 @@
             *ngIf="this.coreService.validField(this.form.get('nuCellPhone'))"></app-message-control>
     </div>
 
-    <div class="col-12 col-md-3 p-fluid" [ngClass]="this.coreService.aplicaCssErro(this.form.get('password'))">
+    <!-- <div class="col-12 col-md-3 p-fluid" [ngClass]="this.coreService.aplicaCssErro(this.form.get('password'))">
         <label>Senha</label>
         <span class="p-input-icon-right">
             <div class="p-inputgroup">
-                <!-- <span class="p-inputgroup-addon">
+                <span class="p-inputgroup-addon">
                     <p-checkbox name="isValidPassword" formControlName="isValidPassword"
                         [(ngModel)]="this.isValidPassword" [binary]="true" inputId="binary"
                         (onChange)="this.onChangedValidPassword(this.form)"></p-checkbox>
-                </span> -->
+                </span>
                 <input name="password" formControlName="password" [(ngModel)]="this.data.password"
                     [type]="this.isVisablePassword ? 'text' : 'password'" placeholder="Inserir senha"
                     [ngClass]="this.coreService.aplicaCssErro(this.form.get('password'))" pInputText>
@@ -88,16 +81,16 @@
         </span>
         <app-message-control type="error" message="Campo Senha obrigatório!"
             *ngIf="this.coreService.validField(this.form.get('password'))"></app-message-control>
-    </div>
+    </div> -->
 
-    <div class="col-12 col-md-3 p-fluid " [ngClass]="this.coreService.aplicaCssErro(this.form.get('roles'))">
+    <!-- <div class="col-12 col-md-3 p-fluid " [ngClass]="this.coreService.aplicaCssErro(this.form.get('roles'))">
         <label>Permissões</label>
         <p-multiSelect name="roles" formControlName="roles" [(ngModel)]="this.data.roles" [options]="this.listRole"
             [filter]="true" [ngClass]="this.coreService.aplicaCssErro(this.form.get('roles'))"
             defaultLabel="Selecionar permissões" optionLabel="name" appendTo="body"></p-multiSelect>
         <app-message-control type="error" message="Selecione pelo menos uma permissão!"
             *ngIf="(this.coreService.validField(this.form.get('roles')))"></app-message-control>
-    </div>
+    </div> -->
 
     <div class="col-12 col-md-2 p-fluid">
         <label>Código Desbloqueio</label>
@@ -131,7 +124,7 @@
             dateFormat="dd/mm/yy" [showIcon]="true" [showTime]="true" [showSeconds]="true"></p-calendar>
     </div>
 
-    <div class="col-12 col-md-3 p-fluid">
+    <!-- <div class="col-12 col-md-3 p-fluid">
         <label>Data Último Bloqueio</label>
         <p-calendar name="dtLastBlock" formControlName="dtLastBlock" [(ngModel)]="this.data.dtLastBlock"
             dateFormat="dd/mm/yy" [showIcon]="true" [showTime]="true" [showSeconds]="true"></p-calendar>
@@ -141,7 +134,7 @@
         <label>Data Último Desbloqueio</label>
         <p-calendar name="dtLastDesblock" formControlName="dtLastDesblock" [(ngModel)]="this.data.dtLastDesblock"
             dateFormat="dd/mm/yy" [showIcon]="true" [showTime]="true" [showSeconds]="true"></p-calendar>
-    </div>
+    </div> -->
 
     <div class="col-12">
         <button pButton pRipple type="submit" class="p-button-outlined p-button-success" icon="pi pi-check"

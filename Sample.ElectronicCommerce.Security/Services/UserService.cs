@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sample.ElectronicCommerce.Security.Entities;
 using Sample.ElectronicCommerce.Security.Repositories;
-using Sample.ElectronicCommerce.Shared.Constants;
-using Sample.ElectronicCommerce.Shared.Entities.DTO;
-using Sample.ElectronicCommerce.Shared.Services;
+using Sample.ElectronicCommerce.Core.Constants;
+using Sample.ElectronicCommerce.Core.Entities.DTO;
+using Sample.ElectronicCommerce.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

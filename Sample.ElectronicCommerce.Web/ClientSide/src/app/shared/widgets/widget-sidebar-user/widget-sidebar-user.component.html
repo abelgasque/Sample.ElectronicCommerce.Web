@@ -1,0 +1,19 @@
+<mat-nav-list>
+    <div *ngIf="this.securityService.hasUserAuth">
+        <div class="menu-header-user">
+            <img [src]="this.securityService.userSession.user?.imageUrl" alt="Foto perfil do usuário">            
+            <p>
+                <b>{{ this.securityService.userSession.user?.name }} {{ this.securityService.userSession.user?.lastName }}</b><br>
+                {{ this.securityService.userSession.user?.mail }}
+            </p>
+        </div>         
+        <mat-divider></mat-divider>
+        <div class="menu-user-session" *ngFor="let userSession of this.listUserSessions">                        
+            <p>
+                <img [src]="userSession.user?.imageUrl" alt="Foto perfil do usuário">
+                <b>{{ userSession.user?.name }} {{ userSession.user?.lastName }}</b><br>
+            </p>
+            <mat-divider></mat-divider>
+        </div>  
+    </div>
+</mat-nav-list>

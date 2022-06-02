@@ -1,64 +1,70 @@
 ﻿using System;
+using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
+using Sample.ElectronicCommerce.Core.Entities.Base;
 
 namespace Sample.ElectronicCommerce.Security.Entities
 {
-    public class UserSessionEntity
+    public class UserSessionEntity : MongoBaseEntity
     {
         public UserSessionEntity() { }
 
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        [BsonElement("id")]
-        public string Id { get; set; }
-
-        [BsonElement("idUser")]
+        [BsonElement("id_user")]
+        [JsonProperty("idUser")]
         public string IdUser { get; set; }
+        
+        [BsonElement("dt_last_block")]
+        [JsonProperty("dtLastBlock")]
+        public DateTime? DtLastBlock { get; set; } = null;
 
-        [BsonElement("dtCreation")]
-        public DateTime DtCreation { get; set; }
+        [BsonElement("dt_last_desblock")]
+        [JsonProperty("dtLastDesblock")]
+        public DateTime? DtLastDesblock { get; set; } = null;
 
-        [BsonElement("dtLastUpdate")]
-        public DateTime? DtLastUpdate { get; set; }
-
-        [BsonElement("dtAccessTokenExpiration")]
-        public DateTime? DtAccessTokenExpiration { get; set; }
-
-        [BsonElement("dtRefreshTokenExpiration")]
-        public DateTime? DtRefreshTokenExpiration { get; set; }
-
-        [BsonElement("accessToken")]
-        public string AccessToken { get; set; }
-
-        [BsonElement("refreshToken")]
-        public string RefreshToken { get; set; }
-
-        [BsonElement("message")]
-        public string Message { get; set; }
+        [BsonElement("access_token")]
+        [JsonProperty("accessToken")]
+        public string AccessToken { get; set; } = null;
 
         [BsonElement("version")]
-        public string Version { get; set; }
+        [JsonProperty("version")]
+        public string Version { get; set; } = null;
 
-        [BsonElement("nuAuthenticationAttempts")]
-        public int NuAuthenticationAttempts { get; set; }
+        [BsonElement("password")]
+        [JsonProperty("password")]
+        public string Password { get; set; } = null;
 
-        [BsonElement("nuRefreshToken")]
-        public int? NuRefreshToken { get; set; }
+        [BsonElement("nu_refresh_token")]
+        [JsonProperty("nuRefreshToken")]
+        public int NuRefreshToken { get; set; } = 0;
 
-        [BsonElement("isSuccess")]
-        public bool IsSuccess { get; set; }
+        [BsonElement("nu_auth_attempts_token")]
+        [JsonProperty("nuAuthAttemptsToken")]
+        public int NuAuthAttemptsToken { get; set; } = 1;
 
-        [BsonElement("isTest")]
-        public bool IsTest { get; set; }
+        [BsonElement("nu_success_token")]
+        [JsonProperty("nuSuccessToken")]
+        public int NuSuccessToken { get; set; } = 0;
 
-        [BsonElement("isFinalized")]
-        public bool IsFinalized { get; set; }
+        [BsonElement("nu_fails_token")]
+        [JsonProperty("nuFailsToken")]
+        public int NuFailsToken { get; set; } = 0;
 
-        [BsonElement("isActive")]
-        public bool IsActive { get; set; }
+        [BsonElement("is_test")]
+        [JsonProperty("isTest")]
+        public bool IsTest { get; set; } = false;
+
+        [BsonElement("is_loggout")]
+        [JsonProperty("isLoggout")]
+        public bool IsLoggout { get; set; } = false;
 
         [BsonElement("user")]
-        public UserEntity User { get; set; }
+        [JsonProperty("user")]
+        public UserEntity User { get; set; } = null;
+
+        [BsonElement("roles")]
+        [JsonProperty("roles")]
+        public ICollection<RoleEntity> Roles { get; set; }
     }
 } 

@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sample.ElectronicCommerce.BrokerMail.Entities;
 using Sample.ElectronicCommerce.BrokerMail.Repositories;
-using Sample.ElectronicCommerce.Shared.Constants;
-using Sample.ElectronicCommerce.Shared.Entities.DTO;
-using Sample.ElectronicCommerce.Shared.Services;
+using Sample.ElectronicCommerce.Core.Constants;
+using Sample.ElectronicCommerce.Core.Entities.DTO;
+using Sample.ElectronicCommerce.Core.Services;
 using System;
 using System.Threading.Tasks;
 
@@ -31,8 +31,7 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
         }
         #endregion
 
-        #region Methods
-
+        #region Methods  
         public async Task<ReturnDTO> InsertAsync(MailEntity pEntity)
         {
             _logger.LogInformation($"MailService.InsertAsync => Start");
@@ -44,7 +43,7 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
             catch (Exception ex)
             {
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"MailService.InsertAsync => Exception: { ex.Message }");
+                _logger.LogError($"MailService.InsertAsync => Exception: {ex.Message}");
             }
             await _logAppService.AppInsertAsync(0, "MailService.InsertAsync", pEntity, responseDTO);
             _logger.LogInformation($"MailService.InsertAsync => End");
@@ -62,7 +61,7 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
             catch (Exception ex)
             {
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"MailService.UpdateAsync => Exception: { ex.Message }");
+                _logger.LogError($"MailService.UpdateAsync => Exception: {ex.Message}");
             }
             await _logAppService.AppInsertAsync(0, "MailService.UpdateAsync", pEntity, responseDTO);
             _logger.LogInformation($"MailService.UpdateAsync => End");
@@ -80,7 +79,7 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
             catch (Exception ex)
             {
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"MailService.GetById => Exception: { ex.Message }");
+                _logger.LogError($"MailService.GetById => Exception: {ex.Message}");
             }
             _logger.LogInformation($"MailService.GetById => End");
             return new ReturnDTO(responseDTO);
@@ -88,7 +87,7 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
 
         public async Task<ReturnDTO> GetAll()
         {
-            _logger.LogInformation($"MailService.GetAll => Start");
+            _logger.LogInformation("MailService.GetAll => Start");
             ResponseDTO responseDTO;
             try
             {
@@ -97,9 +96,9 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
             catch (Exception ex)
             {
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"MailService.GetAll => Exception: { ex.Message }");
+                _logger.LogError($"MailService.GetAll => Exception: {ex.Message}");
             }
-            _logger.LogInformation($"MailService.GetAll => End");
+            _logger.LogInformation("MailService.GetAll > Finish");
             return new ReturnDTO(responseDTO);
         }
         #endregion

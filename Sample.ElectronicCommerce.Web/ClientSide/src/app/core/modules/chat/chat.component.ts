@@ -5,17 +5,13 @@ import * as signalR from "@microsoft/signalr";
 
 import { environment } from 'src/environments/environment';
 
+import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
+import { ChatMessageEntity } from 'src/app/shared/util/Entities/ChatMessageEntity';
+
 import { SharedService } from 'src/app/shared/shared.service';
-import { ReturnDTO } from 'src/app/shared/util/model';
-
-import { CoreService } from '../../core.service';
-import { SecurityService } from '../security/security.service';
-import { ChatService } from './chat.service';
-
-interface Message {
-  userName: string;
-  text: string;
-}
+import { CoreService } from 'src/app/core/core.service';
+import { SecurityService } from 'src/app/core/modules/security/security.service';
+import { ChatService } from 'src/app/core/modules/chat/chat.service';
 
 @Component({
   selector: 'app-chat',
@@ -24,7 +20,7 @@ interface Message {
 })
 export class ChatComponent implements OnInit {
 
-  public messages: Message[] = [];
+  public messages: ChatMessageEntity[] = [];
   public message: string = null;
   public form: FormGroup;
   public connection;
@@ -37,7 +33,7 @@ export class ChatComponent implements OnInit {
     private entityService: ChatService,
   ) {
     this.setForm();
-    this.connection = new signalR.HubConnectionBuilder().withUrl(`${ environment.baseUrl }/broker/chat/all`).build();
+    this.connection = new signalR.HubConnectionBuilder().withUrl(`${ environment.baseUrl }/chat/broker/all`).build();
     this.startConnection();
     this.getAll();
   }
@@ -50,8 +46,8 @@ export class ChatComponent implements OnInit {
   }
 
   private startConnection(){
-    this.connection.on("ReceiveMessageBroker", (userName: string, message: string) => {
-      this.messages.push({ userName: userName, text: message } );
+    this.connection.on("ReceiveMessageChatBrokerAll", (data: ChatMessageEntity, message: string) => {
+      this.messages.push(data);
     });
 
     this.connection.start();
@@ -63,9 +59,13 @@ export class ChatComponent implements OnInit {
     });
   }
 
-  public sendMessageBroker() {
+  public sendMessageChatBrokerAll() {
     if(this.message.length > 0) {
-      this.connection.send("SendMessageBroker", this.getNameUserAuth(), this.message)
+      let newMessage = new ChatMessageEntity();
+      newMessage.name = this.getNameUserAuth();
+      newMessage.idUserSender = this.securityService.userSession.IdUser;
+      newMessage.message = this.message;
+      this.connection.send("SendMessageChatBrokerAll", newMessage)
       .then(() => {
         this.form.reset();
         this.message = null;

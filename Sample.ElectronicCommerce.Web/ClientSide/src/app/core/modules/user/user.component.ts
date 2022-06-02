@@ -5,7 +5,8 @@ import { CoreService } from 'src/app/core/core.service';
 import { SharedService } from 'src/app/shared/shared.service';
 import { UserService } from 'src/app/core/modules/user/user.service';
 
-import { ReturnDTO, User } from 'src/app/shared/util/model';
+import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
+import { UserEntity } from 'src/app/shared/util/Entities/UserEntity';
 
 @Component({
   selector: 'app-user',
@@ -15,7 +16,7 @@ import { ReturnDTO, User } from 'src/app/shared/util/model';
 export class UserComponent implements OnInit {
 
   public listGrid: any[] = [];
-  public dataForm: User = new User();
+  public dataForm: UserEntity = new UserEntity();
   public selectedTab = new FormControl(0);
   
   constructor(
@@ -49,14 +50,14 @@ export class UserComponent implements OnInit {
     this.entityService.GetById(pId).subscribe({
       next: (response: ReturnDTO) => {
         if(response.isSuccess){          
-          let entity: User = response.resultObject;  
+          let entity: UserEntity = response.resultObject;  
           entity.dtCreation = new Date(entity.dtCreation);
           if(entity.dtLastUpdate != null) {
             entity.dtLastUpdate = new Date(entity.dtLastUpdate);
           }
           this.dataForm = entity;
           this.selectedTab.setValue(1);
-          this.sharedService.closeSideBar();
+          this.sharedService.closeAllSidebar();
         }
         this.sharedService.closeSpinner();
       },
@@ -68,7 +69,7 @@ export class UserComponent implements OnInit {
 
   public newEntity(pEvent: boolean) {
     if(pEvent) {
-      this.dataForm = new User();
+      this.dataForm = new UserEntity();
       this.selectedTab.setValue(1);
     }
   }

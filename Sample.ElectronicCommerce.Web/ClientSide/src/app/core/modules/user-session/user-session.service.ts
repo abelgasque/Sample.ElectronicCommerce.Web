@@ -5,8 +5,9 @@ import { Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 
+import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
+
 import { CoreService } from 'src/app/core/core.service';
-import { ReturnDTO } from 'src/app/shared/util/model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ export class UserSessionService {
     private coreService: CoreService,
   ) 
   { 
-    this.baseUrl =`${ environment.baseUrl }/UserSession`; 
+    this.baseUrl =`${ environment.baseUrl }/User/Session`; 
   }
   
   public Insert(pEntity: any) : Observable<any> {

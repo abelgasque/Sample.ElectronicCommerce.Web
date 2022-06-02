@@ -2,10 +2,10 @@
 using Microsoft.Extensions.Options;
 using Sample.ElectronicCommerce.BrokerMail.Entities;
 using Sample.ElectronicCommerce.BrokerMail.Repositories;
-using Sample.ElectronicCommerce.Shared.Constants;
-using Sample.ElectronicCommerce.Shared.Entities.DTO;
-using Sample.ElectronicCommerce.Shared.Entities.Settings;
-using Sample.ElectronicCommerce.Shared.Services;
+using Sample.ElectronicCommerce.Core.Constants;
+using Sample.ElectronicCommerce.Core.Entities.DTO;
+using Sample.ElectronicCommerce.Core.Entities.Settings;
+using Sample.ElectronicCommerce.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -24,7 +24,7 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
 
         private readonly MailMessageRepository _repository;
         
-        private readonly BrokerMailRepository _mailBrokerRepository;
+        private readonly MailBrokerRepository _mailBrokerRepository;
 
         private readonly LogAppService _logAppService;
         #endregion
@@ -34,7 +34,7 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
             ILogger<MailMessageService> logger, 
             IOptions<AppSettings> appSettings, 
             MailMessageRepository repository, 
-            BrokerMailRepository mailBrokerRepository,
+            MailBrokerRepository mailBrokerRepository,
             LogAppService logAppService
         ) {
             _logger = logger;
@@ -44,84 +44,6 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
             _logAppService = logAppService;
         }
         #endregion
-
-        #region Methods
-        public async Task<ReturnDTO> InsertAsync(MailMessageEntity pEntity)
-        {
-            _logger.LogInformation($"MailMessageService.InsertAsync => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                pEntity.Version = _appSettings.Version;
-                responseDTO = await _repository.InsertAsync(pEntity);
-                if (responseDTO.IsSuccess)
-                {                    
-                    ReturnDTO returnDTO = await this.SingleMailSending(pEntity);
-                    responseDTO = new ResponseDTO(returnDTO.IsSuccess, returnDTO.DeMessage, returnDTO.ResultObject);
-                }
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"MailMessageService.InsertAsync => Exception: { ex.Message }");
-            }
-            await _logAppService.AppInsertAsync(0, "MailMessageService.InsertAsync", pEntity, responseDTO);
-            _logger.LogInformation($"MailMessageService.InsertAsync => End");
-            return new ReturnDTO(responseDTO);
-        }
-
-        public async Task<ReturnDTO> UpdateAsync(MailMessageEntity pEntity)
-        {
-            _logger.LogInformation($"MailMessageService.UpdateAsync => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                responseDTO = await _repository.UpdateAsync(pEntity);
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"MailMessageService.UpdateAsync => Exception: { ex.Message }");
-            }
-            await _logAppService.AppInsertAsync(0, "MailMessageService.UpdateAsync", pEntity, responseDTO);
-            _logger.LogInformation($"MailMessageService.UpdateAsync => End");
-            return new ReturnDTO(responseDTO);
-        }
-
-        public async Task<ReturnDTO> GetById(string pId)
-        {
-            _logger.LogInformation($"MailMessageService.GetById => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                responseDTO = await _repository.GetById(pId);
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"MailMessageService.GetById => Exception: { ex.Message }");
-            }
-            _logger.LogInformation($"MailMessageService.GetById => End");
-            return new ReturnDTO(responseDTO);
-        }
-
-        public async Task<ReturnDTO> GetAll()
-        {
-            _logger.LogInformation($"MailMessageService.GetAll => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                responseDTO = await _repository.GetAll();
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"MailMessageService.GetAll => Exception: { ex.Message }");
-            }
-            _logger.LogInformation($"MailMessageService.GetAll => End");
-            return new ReturnDTO(responseDTO);
-        }
-        #endregion     
 
         #region Methods Sending Mail
         public async Task<ReturnDTO> MultipleMailSending(List<MailMessageEntity> pListEntity)
@@ -159,7 +81,7 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
             try
             {
                 responseDTO = await _mailBrokerRepository.GetById(pEntity.IdMailBroker);
-                BrokerMailEntity mailBroker = (BrokerMailEntity)responseDTO.DataObject;
+                MailBrokerEntity mailBroker = (MailBrokerEntity)responseDTO.DataObject;
 
                 if (mailBroker == null)
                 {
@@ -207,6 +129,78 @@ namespace Sample.ElectronicCommerce.BrokerMail.Services
             }
             await _logAppService.AppInsertAsync(0, "MailHelper.SendMailAsync", pEntity, responseDTO);
             _logger.LogInformation("MailHelper.SendMailAsync => End");
+            return new ReturnDTO(responseDTO);
+        }
+        #endregion
+
+        #region Methods  
+        public async Task<ReturnDTO> InsertAsync(MailMessageEntity pEntity)
+        {
+            _logger.LogInformation($"MailMessageService.InsertAsync => Start");
+            ResponseDTO responseDTO;
+            try
+            {
+                responseDTO = await _repository.InsertAsync(pEntity);
+            }
+            catch (Exception ex)
+            {
+                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
+                _logger.LogError($"MailMessageService.InsertAsync => Exception: {ex.Message}");
+            }
+            await _logAppService.AppInsertAsync(0, "MailMessageService.InsertAsync", pEntity, responseDTO);
+            _logger.LogInformation($"MailMessageService.InsertAsync => End");
+            return new ReturnDTO(responseDTO);
+        }
+
+        public async Task<ReturnDTO> UpdateAsync(MailMessageEntity pEntity)
+        {
+            _logger.LogInformation($"MailMessageService.UpdateAsync => Start");
+            ResponseDTO responseDTO;
+            try
+            {
+                responseDTO = await _repository.UpdateAsync(pEntity);
+            }
+            catch (Exception ex)
+            {
+                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
+                _logger.LogError($"MailMessageService.UpdateAsync => Exception: {ex.Message}");
+            }
+            await _logAppService.AppInsertAsync(0, "MailMessageService.UpdateAsync", pEntity, responseDTO);
+            _logger.LogInformation($"MailMessageService.UpdateAsync => End");
+            return new ReturnDTO(responseDTO);
+        }
+
+        public async Task<ReturnDTO> GetById(string pId)
+        {
+            _logger.LogInformation($"MailMessageService.GetById => Start");
+            ResponseDTO responseDTO;
+            try
+            {
+                responseDTO = await _repository.GetById(pId);
+            }
+            catch (Exception ex)
+            {
+                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
+                _logger.LogError($"MailMessageService.GetById => Exception: {ex.Message}");
+            }
+            _logger.LogInformation($"MailMessageService.GetById => End");
+            return new ReturnDTO(responseDTO);
+        }
+
+        public async Task<ReturnDTO> GetAll()
+        {
+            _logger.LogInformation("MailMessageService.GetAll => Start");
+            ResponseDTO responseDTO;
+            try
+            {
+                responseDTO = await _repository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
+                _logger.LogError($"MailMessageService.GetAll => Exception: {ex.Message}");
+            }
+            _logger.LogInformation("MailMessageService.GetAll > Finish");
             return new ReturnDTO(responseDTO);
         }
         #endregion

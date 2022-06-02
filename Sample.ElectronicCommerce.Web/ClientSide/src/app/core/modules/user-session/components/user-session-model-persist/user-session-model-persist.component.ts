@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { UserSession } from 'src/app/shared/util/model';
+import { UserSessionEntity } from 'src/app/shared/util/Entities/UserSessionEntity';
 
 @Component({
   selector: 'app-user-session-model-persist',
@@ -9,7 +9,7 @@ import { UserSession } from 'src/app/shared/util/model';
 })
 export class UserSessionModelPersistComponent implements OnInit {
 
-  @Input() data: UserSession;
+  @Input() data: UserSessionEntity;
   @Input() isOpen: boolean = false;  
   @Output() eventOpen: EventEmitter<any> = new EventEmitter();
   @Output() eventPersist: EventEmitter<any> = new EventEmitter();

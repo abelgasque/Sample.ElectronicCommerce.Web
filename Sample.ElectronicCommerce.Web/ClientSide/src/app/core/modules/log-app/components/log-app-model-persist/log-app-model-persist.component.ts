@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { LogApp } from 'src/app/shared/util/model';
+
+import { LogAppEntity } from 'src/app/shared/util/Entities/LogAppEntity';
 
 @Component({
   selector: 'app-log-app-model-persist',
@@ -8,7 +9,7 @@ import { LogApp } from 'src/app/shared/util/model';
 })
 export class LogAppModelPersistComponent implements OnInit {
 
-  @Input() data: LogApp;
+  @Input() data: LogAppEntity;
   @Input() isOpen: boolean = false;  
   @Output() eventOpen: EventEmitter<any> = new EventEmitter();
   @Output() eventPersist: EventEmitter<any> = new EventEmitter();

@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 
-import { ReturnDTO, UserDTO } from 'src/app/shared/util/model';
+import { UserDTO } from 'src/app/shared/util/EntitiesDTO/UserDTO';
+import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
 
 import { CoreService } from 'src/app/core/core.service';
-import { SecurityService } from '../../security.service';
-import { Router } from '@angular/router';
+import { SecurityService } from 'src/app/core/modules/security/security.service';
 
 import { SharedService } from 'src/app/shared/shared.service';
 

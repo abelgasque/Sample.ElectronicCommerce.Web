@@ -1,18 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Sample.ElectronicCommerce.BrokerMail.Entities;
 using Sample.ElectronicCommerce.BrokerMail.Services;
-using Sample.ElectronicCommerce.Shared.Constants;
-using Sample.ElectronicCommerce.Shared.Entities.DTO;
+using Sample.ElectronicCommerce.Core.Constants;
+using Sample.ElectronicCommerce.Core.Entities.DTO;
 using System;
 using System.Threading.Tasks;
 
 namespace Sample.ElectronicCommerce.BrokerMail.Controllers
 {
     [ApiController]
-    [ApiExplorerSettings(IgnoreApi = true)]
-    [Authorize]
+    //[Authorize]
     [Route("[controller]")]
     public class MailMessageController : ControllerBase
     {

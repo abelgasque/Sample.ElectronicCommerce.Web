@@ -2,7 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CoreService } from 'src/app/core/core.service';
 import { SharedService } from 'src/app/shared/shared.service';
 
-import { MailMessage, ReturnDTO } from 'src/app/shared/util/model';
+import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
+import { MailMessageEntity } from 'src/app/shared/util/Entities/MailMessageEntity';
+
 import { MailMessageService } from '../../mail-message.service';
 
 @Component({
@@ -12,7 +14,7 @@ import { MailMessageService } from '../../mail-message.service';
 })
 export class MailMessageFormPersistComponent implements OnInit {
 
-  @Input() data: MailMessage;
+  @Input() data: MailMessageEntity;
   @Output() eventPersist: EventEmitter<boolean> = new EventEmitter();
 
   public listActive: any[] = [
@@ -51,7 +53,7 @@ export class MailMessageFormPersistComponent implements OnInit {
     this.entityService.Insert(this.data).subscribe({
       next: (response: ReturnDTO) => {
         if(response.isSuccess){
-          let entity: MailMessage = response.resultObject;          
+          let entity: MailMessageEntity = response.resultObject;          
           entity.dtCreation = new Date(entity.dtCreation);
           this.data = entity;
           this.eventPersist.emit(true);
@@ -69,7 +71,7 @@ export class MailMessageFormPersistComponent implements OnInit {
     this.entityService.Update(this.data).subscribe({
       next: (response: ReturnDTO) => {
         if(response.isSuccess){
-          let entity: MailMessage = response.resultObject;          
+          let entity: MailMessageEntity = response.resultObject;          
           entity.dtCreation = new Date(entity.dtCreation);
           entity.dtLastUpdate = (entity.dtLastUpdate != null) ? new Date(entity.dtLastUpdate) : null;
           this.data = entity;

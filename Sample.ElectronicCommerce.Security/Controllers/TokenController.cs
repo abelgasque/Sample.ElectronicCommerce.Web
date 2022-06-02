@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Sample.ElectronicCommerce.Security.Services;
-using Sample.ElectronicCommerce.Shared.Constants;
-using Sample.ElectronicCommerce.Shared.Entities.DTO;
+using Sample.ElectronicCommerce.Core.Constants;
+using Sample.ElectronicCommerce.Core.Entities.DTO;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -44,7 +44,7 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             ReturnDTO returnDTO;
             try
             {
-                returnDTO = await _service.Login(pEntity, false);
+                returnDTO = await _service.Login(pEntity);
                 _logger.LogInformation($"UserSessionController.Login => IsSuccess: {returnDTO.IsSuccess} => End");
                 if (returnDTO.IsSuccess) 
                 {
