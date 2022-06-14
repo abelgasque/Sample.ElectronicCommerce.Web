@@ -19,9 +19,12 @@ namespace Sample.ElectronicCommerce.Security.Services
         private readonly LogAppService _logAppService;
         #endregion
 
-        #region Constructor
-        public UserRoleService(ILogger<UserRoleService> logger, UserRoleRepository repository, LogAppService logAppService)
-        {
+        #region Constructors
+        public UserRoleService(
+            ILogger<UserRoleService> logger,
+            UserRoleRepository repository, 
+            LogAppService logAppService
+        ) {
             _logger = logger;
             _repository = repository;
             _logAppService = logAppService; 
@@ -29,7 +32,7 @@ namespace Sample.ElectronicCommerce.Security.Services
         #endregion
 
         #region Methods  
-        public async Task<ReturnDTO> InsertAsync(RoleEntity pEntity)
+        public async Task<ReturnDTO> InsertAsync(UserRoleEntity pEntity)
         {
             _logger.LogInformation($"UserRoleService.InsertAsync => Start");
             ResponseDTO responseDTO;
@@ -47,7 +50,7 @@ namespace Sample.ElectronicCommerce.Security.Services
             return new ReturnDTO(responseDTO);
         }
 
-        public async Task<ReturnDTO> UpdateAsync(RoleEntity pEntity)
+        public async Task<ReturnDTO> UpdateAsync(UserRoleEntity pEntity)
         {
             _logger.LogInformation($"UserRoleService.UpdateAsync => Start");
             ResponseDTO responseDTO;

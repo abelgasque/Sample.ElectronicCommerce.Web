@@ -11,26 +11,18 @@ namespace Sample.ElectronicCommerce.Security.Entities
 
         [BsonElement("last_name")]
         [JsonProperty("lastName")]
-        public string LastName { get; set; }
+        public string LastName { get; set; } = null;
 
         [BsonElement("image_url")]
         [JsonProperty("imageUrl")]
-        public string ImageUrl { get; set; }
+        public string ImageUrl { get; set; } = null;
 
         [BsonElement("mail")]
         [JsonProperty("mail")]
-        public string Mail { get; set; }
+        public string Mail { get; set; } = null;
 
         [BsonElement("nu_cell_phone")]
         [JsonProperty("nuCellPhone")]
-        public string NuCellPhone { get; set; }
-
-        [BsonElement("code_desblock")]
-        [JsonProperty("codeDesblock")]
-        public string CodeDesblock { get; set; }
-
-        [BsonElement("is_block")]
-        [JsonProperty("isBlock")]
-        public bool IsBlock { get; set; }
+        public string NuCellPhone { get; set; } = null;
     }
 }

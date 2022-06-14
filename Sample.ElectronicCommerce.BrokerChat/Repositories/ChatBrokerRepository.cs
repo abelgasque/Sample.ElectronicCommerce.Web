@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using Sample.ElectronicCommerce.BrokerChat.Entities;
+using Sample.ElectronicCommerce.Core.Entities.MongoDb;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

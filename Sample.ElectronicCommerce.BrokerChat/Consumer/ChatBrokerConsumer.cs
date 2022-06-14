@@ -1,22 +1,23 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using Sample.ElectronicCommerce.BrokerChat.Entities;
+using Sample.ElectronicCommerce.BrokerChat.Services;
+using Sample.ElectronicCommerce.Core.Entities.MongoDb;
 using System;
 using System.Threading.Tasks;
 
-namespace Sample.ElectronicCommerce.BrokerChat.Services
+namespace Sample.ElectronicCommerce.BrokerChat.Consumer
 {
-    public class ChatBrokerAllConsumer : Hub
+    public class ChatBrokerConsumer : Hub
     {
         #region Variables
-        private readonly ILogger<ChatBrokerAllConsumer> _logger;
+        private readonly ILogger<ChatBrokerConsumer> _logger;
 
         private readonly ChatBrokerService _service;
         #endregion
 
         #region Constructors
-        public ChatBrokerAllConsumer(
-            ILogger<ChatBrokerAllConsumer> logger,
+        public ChatBrokerConsumer(
+            ILogger<ChatBrokerConsumer> logger,
             ChatBrokerService service
         ) {
             _logger = logger;

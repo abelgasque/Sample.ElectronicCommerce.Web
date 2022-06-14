@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 
 namespace Sample.ElectronicCommerce.Core.Entities.DTO
 {
@@ -6,18 +6,17 @@ namespace Sample.ElectronicCommerce.Core.Entities.DTO
     {
         #region Constructor
         public TokenDTO() { }
-
-        public TokenDTO(string accessToken, int expiresIn)
-        {
-            AccessToken = accessToken;
-            ExpiresIn = expiresIn;
-        }
         #endregion
 
         #region Atributtes
-        public string IdUserSession { get; set; } = null;
-        public string AccessToken { get; set; } = null;
-        public int ExpiresIn { get; set; } = 0;
+        [JsonProperty("access_token")]
+        public string AccessToken { get; set; }
+
+        [JsonProperty("token_type")]
+        public string TokenType { get; set; }
+
+        [JsonProperty("expires_in")]
+        public int ExpiresIn { get; set; }
         #endregion
     }
 }

@@ -4,9 +4,21 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Sample.ElectronicCommerce.BrokerChat.Consumer;
+using Sample.ElectronicCommerce.BrokerChat.Repositories;
 using Sample.ElectronicCommerce.BrokerChat.Services;
+using Sample.ElectronicCommerce.BrokerMail.Repositories;
+using Sample.ElectronicCommerce.BrokerMail.Services;
+using Sample.ElectronicCommerce.Core.Entities.EF;
 using Sample.ElectronicCommerce.Core.Entities.Settings;
-using Sample.ElectronicCommerce.Web.Configurations;
+using Sample.ElectronicCommerce.Core.Extensions;
+using Sample.ElectronicCommerce.Core.Helpers;
+using Sample.ElectronicCommerce.Core.Repositories;
+using Sample.ElectronicCommerce.Core.Services;
+using Sample.ElectronicCommerce.Security.Extensions;
+using Sample.ElectronicCommerce.Security.Repositories;
+using Sample.ElectronicCommerce.Security.Services;
+using Serilog;
 
 namespace Sample.ElectronicCommerce.Web
 {
@@ -21,7 +33,51 @@ namespace Sample.ElectronicCommerce.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.MainConfiguration(_configuration);
+            services.AddControllers();
+            services.AddLogging(configure => configure.AddSerilog());            
+            services.AddSignalR(o => { o.EnableDetailedErrors = true; });
+            services.Configure<IISOptions>(o => { o.ForwardClientCertificate = false; });
+            services.AddCors(o => { o.AddPolicy("AllowOrigin", b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); });
+            services.AddSpaStaticFiles(o => { o.RootPath = "ClientSide/dist"; });
+
+            //Extensions
+            services.AddSwagger(_configuration);
+            services.AddJsonWebToken(_configuration);
+
+            //Configure settings
+            services.Configure<AppSettings>(_configuration.GetSection("AppSettings"));
+            services.Configure<MongoClientSettings>(_configuration.GetSection("MongoClientSettings"));
+            services.Configure<SecuritySettings>(_configuration.GetSection("SecuritySettings"));
+            services.Configure<SharedSettings>(_configuration.GetSection("SharedSettings"));
+
+            //BrokerMail
+            services.AddTransient<MailRepository>();
+            services.AddTransient<MailBrokerRepository>();
+            services.AddTransient<MailMessageRepository>();
+            services.AddTransient<MailService>();
+            services.AddTransient<MailBrokerService>();
+            services.AddTransient<MailMessageService>();
+
+            //Core
+            services.AddDbContext<SharedDbContext>();
+            services.AddTransient<MailHelper>();
+            services.AddTransient<OrganizationRepository>();
+            services.AddTransient<OrganizationService>();            
+            services.AddTransient<LogAppRepository>();
+            services.AddTransient<LogAppService>();
+
+            //Security
+            services.AddTransient<JsonWebTokenService>();
+            services.AddTransient<UserRepository>();
+            services.AddTransient<UserRoleRepository>();            
+            services.AddTransient<UserSessionRepository>();
+            services.AddTransient<UserSessionService>();
+            services.AddTransient<UserService>();
+            services.AddTransient<UserRoleService>();
+
+            //WebSocket Chat
+            services.AddTransient<ChatBrokerRepository>();
+            services.AddTransient<ChatBrokerService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -35,7 +91,6 @@ namespace Sample.ElectronicCommerce.Web
             }
             
             app.UseCors("AllowOrigin");
-            //app.UseExceptionMiddleware();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseHttpsRedirection();
@@ -45,7 +100,7 @@ namespace Sample.ElectronicCommerce.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
-                endpoints.MapHub<ChatBrokerAllConsumer>("/chat/broker/all");
+                endpoints.MapHub<ChatBrokerConsumer>("/chat/broker");                
             });         
 
             app.UseSwagger();

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sample.ElectronicCommerce.BrokerChat.Entities;
 using Sample.ElectronicCommerce.BrokerChat.Repositories;
+using Sample.ElectronicCommerce.Core.Entities.MongoDb;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

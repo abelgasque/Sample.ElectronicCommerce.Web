@@ -5,11 +5,11 @@ using Microsoft.IdentityModel.Tokens;
 using Sample.ElectronicCommerce.Core.Entities.Settings;
 using System.Text;
 
-namespace Sample.ElectronicCommerce.Web.Configurations
+namespace Sample.ElectronicCommerce.Security.Extensions
 {
-    public static class AuthConfiguration
+    public static class JsonWebTokenExtension
     {
-        public static IServiceCollection SetAuthConfiguration(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddJsonWebToken(this IServiceCollection services, IConfiguration configuration)
         {
             var securitySettingsSection = configuration.GetSection("SecuritySettings");
             var securitySettings = securitySettingsSection.Get<SecuritySettings>();

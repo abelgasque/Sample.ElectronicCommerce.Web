@@ -3,11 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Sample.ElectronicCommerce.Core.Entities.Settings;
 
-namespace Sample.ElectronicCommerce.Web.Configurations
+namespace Sample.ElectronicCommerce.Core.Extensions
 {
-    public static class SwaggerConfiguration
+    public static class SwaggerExtension
     {
-        public static IServiceCollection SetSwaggerConfiguration(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration)
         {
             var appSettingsSection = configuration.GetSection("AppSettings");
             var appSettings = appSettingsSection.Get<AppSettings>();

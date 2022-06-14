@@ -13,7 +13,7 @@ namespace Sample.ElectronicCommerce.Security.Entities
 
         [BsonElement("id_user")]
         [JsonProperty("idUser")]
-        public string IdUser { get; set; }
+        public string IdUser { get; set; } = null;
         
         [BsonElement("dt_last_block")]
         [JsonProperty("dtLastBlock")]
@@ -35,13 +35,17 @@ namespace Sample.ElectronicCommerce.Security.Entities
         [JsonProperty("password")]
         public string Password { get; set; } = null;
 
+        [BsonElement("code_desblock")]
+        [JsonProperty("codeDesblock")]
+        public string CodeDesblock { get; set; } = null;
+
         [BsonElement("nu_refresh_token")]
         [JsonProperty("nuRefreshToken")]
         public int NuRefreshToken { get; set; } = 0;
 
         [BsonElement("nu_auth_attempts_token")]
         [JsonProperty("nuAuthAttemptsToken")]
-        public int NuAuthAttemptsToken { get; set; } = 1;
+        public int NuAuthAttemptsToken { get; set; } = 0;
 
         [BsonElement("nu_success_token")]
         [JsonProperty("nuSuccessToken")]
@@ -50,14 +54,10 @@ namespace Sample.ElectronicCommerce.Security.Entities
         [BsonElement("nu_fails_token")]
         [JsonProperty("nuFailsToken")]
         public int NuFailsToken { get; set; } = 0;
-
-        [BsonElement("is_test")]
-        [JsonProperty("isTest")]
-        public bool IsTest { get; set; } = false;
-
-        [BsonElement("is_loggout")]
-        [JsonProperty("isLoggout")]
-        public bool IsLoggout { get; set; } = false;
+        
+        [BsonElement("is_block")]
+        [JsonProperty("isBlock")]
+        public bool IsBlock { get; set; } = false;
 
         [BsonElement("user")]
         [JsonProperty("user")]
@@ -65,6 +65,6 @@ namespace Sample.ElectronicCommerce.Security.Entities
 
         [BsonElement("roles")]
         [JsonProperty("roles")]
-        public ICollection<RoleEntity> Roles { get; set; }
+        public ICollection<UserRoleEntity> Roles { get; set; } = null;
     }
 } 

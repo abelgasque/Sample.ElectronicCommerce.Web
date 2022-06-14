@@ -5,7 +5,6 @@ using Sample.ElectronicCommerce.Core.Entities.DTO;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Sample.ElectronicCommerce.Core.Entities.Settings;
 using MongoDB.Driver;
 using Sample.ElectronicCommerce.Security.Entities;
 using Microsoft.Extensions.Options;
@@ -22,7 +21,7 @@ namespace Sample.ElectronicCommerce.Security.Repositories
 
         private readonly AppMongoClient.MongoClientSettings _mongoClientSettings;
 
-        private readonly IMongoCollection<RoleEntity> _collection;
+        private readonly IMongoCollection<UserRoleEntity> _collection;
         #endregion
 
         #region Constructor
@@ -34,12 +33,12 @@ namespace Sample.ElectronicCommerce.Security.Repositories
             _mongoClientSettings = mongoClientSettings.Value;
             var mongoClient = new MongoClient(_mongoClientSettings.GetConnectionString);
             var mongoDatabase = mongoClient.GetDatabase(_mongoClientSettings.DataBaseProduction);
-            _collection = mongoDatabase.GetCollection<RoleEntity>(_mongoClientSettings.UserRoleColletion);
+            _collection = mongoDatabase.GetCollection<UserRoleEntity>(_mongoClientSettings.UserRoleColletion);
         }
         #endregion
 
         #region Methods Crud
-        public async Task<ResponseDTO> InsertAsync(RoleEntity pEntity)
+        public async Task<ResponseDTO> InsertAsync(UserRoleEntity pEntity)
         {
             _logger.LogInformation("UserRoleRepository.InsertAsync => Start");
             ResponseDTO responseDTO;
@@ -59,14 +58,14 @@ namespace Sample.ElectronicCommerce.Security.Repositories
             return responseDTO;
         }
 
-        public async Task<ResponseDTO> UpdateAsync(RoleEntity pEntity)
+        public async Task<ResponseDTO> UpdateAsync(UserRoleEntity pEntity)
         {
             _logger.LogInformation("UserRoleRepository.UpdateAsync => Start");
             ResponseDTO responseDTO;
             try
             {
-                Expression<Func<RoleEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
-                RoleEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+                Expression<Func<UserRoleEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
+                UserRoleEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
                 bool isSuccess = (entity != null) ? true : false;
                 string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
                 object dataObject = (isSuccess) ? pEntity : null;
@@ -92,8 +91,8 @@ namespace Sample.ElectronicCommerce.Security.Repositories
             ResponseDTO responseDTO;
             try
             {
-                Expression<Func<RoleEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pId));
-                RoleEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+                Expression<Func<UserRoleEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pId));
+                UserRoleEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
                 string deMessage = (entity != null) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
                 bool isSuccess = (entity != null) ? true : false;
                 responseDTO = new ResponseDTO(isSuccess, deMessage, entity);
@@ -113,8 +112,8 @@ namespace Sample.ElectronicCommerce.Security.Repositories
             ResponseDTO responseDTO;
             try
             {
-                Expression<Func<RoleEntity, bool>> filter = x => x.IsActive == true;
-                List<RoleEntity> listEntities = await _collection.Find(filter).ToListAsync();     
+                Expression<Func<UserRoleEntity, bool>> filter = x => x.IsActive == true;
+                List<UserRoleEntity> listEntities = await _collection.Find(filter).ToListAsync();     
                 _logger.LogInformation($"UserRoleRepository.GetAll => Entities.Count: { listEntities.Count }");          
                 responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, listEntities);
             }

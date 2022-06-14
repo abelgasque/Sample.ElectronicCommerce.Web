@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Sample.ElectronicCommerce.BrokerChat.Entities;
 using Sample.ElectronicCommerce.BrokerChat.Services;
 using Sample.ElectronicCommerce.Core.Constants;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
+using Sample.ElectronicCommerce.Core.Entities.MongoDb;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

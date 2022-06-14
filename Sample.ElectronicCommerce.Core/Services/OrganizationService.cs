@@ -3,26 +3,25 @@ using Sample.ElectronicCommerce.Core.Entities.MongoDb;
 using Sample.ElectronicCommerce.Core.Repositories;
 using Sample.ElectronicCommerce.Core.Constants;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
-using Sample.ElectronicCommerce.Core.Services;
 using System;
 using System.Threading.Tasks;
 
 namespace Sample.ElectronicCommerce.Core.Services
 {
-    public class ApplicationService
+    public class OrganizationService
     {
         #region Variables
-        private readonly ILogger<ApplicationService> _logger;
+        private readonly ILogger<OrganizationService> _logger;
 
-        private readonly ApplicationRepository _repository;
+        private readonly OrganizationRepository _repository;
 
         private readonly LogAppService _logAppService;
         #endregion
 
         #region Constructor
-        public ApplicationService(
-            ILogger<ApplicationService> logger, 
-            ApplicationRepository repository,
+        public OrganizationService(
+            ILogger<OrganizationService> logger, 
+            OrganizationRepository repository,
             LogAppService logAppService
         ) {
             _logger = logger;
@@ -32,9 +31,9 @@ namespace Sample.ElectronicCommerce.Core.Services
         #endregion
 
         #region Methods  
-        public async Task<ReturnDTO> InsertAsync(ApplicationEntity pEntity)
+        public async Task<ReturnDTO> InsertAsync(OrganizationEntity pEntity)
         {
-            _logger.LogInformation($"ApplicationService.InsertAsync => Start");
+            _logger.LogInformation($"OrganizationService.InsertAsync => Start");
             ResponseDTO responseDTO;
             try
             {
@@ -43,16 +42,16 @@ namespace Sample.ElectronicCommerce.Core.Services
             catch (Exception ex)
             {
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"ApplicationService.InsertAsync => Exception: {ex.Message}");
+                _logger.LogError($"OrganizationService.InsertAsync => Exception: {ex.Message}");
             }
-            await _logAppService.AppInsertAsync(0, "ApplicationService.InsertAsync", pEntity, responseDTO);
-            _logger.LogInformation($"ApplicationService.InsertAsync => End");
+            await _logAppService.AppInsertAsync(0, "OrganizationService.InsertAsync", pEntity, responseDTO);
+            _logger.LogInformation($"OrganizationService.InsertAsync => End");
             return new ReturnDTO(responseDTO);
         }
 
-        public async Task<ReturnDTO> UpdateAsync(ApplicationEntity pEntity)
+        public async Task<ReturnDTO> UpdateAsync(OrganizationEntity pEntity)
         {
-            _logger.LogInformation($"ApplicationService.UpdateAsync => Start");
+            _logger.LogInformation($"OrganizationService.UpdateAsync => Start");
             ResponseDTO responseDTO;
             try
             {
@@ -61,16 +60,16 @@ namespace Sample.ElectronicCommerce.Core.Services
             catch (Exception ex)
             {
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"ApplicationService.UpdateAsync => Exception: {ex.Message}");
+                _logger.LogError($"OrganizationService.UpdateAsync => Exception: {ex.Message}");
             }
-            await _logAppService.AppInsertAsync(0, "ApplicationService.UpdateAsync", pEntity, responseDTO);
-            _logger.LogInformation($"ApplicationService.UpdateAsync => End");
+            await _logAppService.AppInsertAsync(0, "OrganizationService.UpdateAsync", pEntity, responseDTO);
+            _logger.LogInformation($"OrganizationService.UpdateAsync => End");
             return new ReturnDTO(responseDTO);
         }
 
         public async Task<ReturnDTO> GetById(string pId)
         {
-            _logger.LogInformation($"ApplicationService.GetById => Start");
+            _logger.LogInformation($"OrganizationService.GetById => Start");
             ResponseDTO responseDTO;
             try
             {
@@ -79,15 +78,15 @@ namespace Sample.ElectronicCommerce.Core.Services
             catch (Exception ex)
             {
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"ApplicationService.GetById => Exception: {ex.Message}");
+                _logger.LogError($"OrganizationService.GetById => Exception: {ex.Message}");
             }
-            _logger.LogInformation($"ApplicationService.GetById => End");
+            _logger.LogInformation($"OrganizationService.GetById => End");
             return new ReturnDTO(responseDTO);
         }
 
         public async Task<ReturnDTO> GetAll()
         {
-            _logger.LogInformation("ApplicationService.GetAll => Start");
+            _logger.LogInformation("OrganizationService.GetAll => Start");
             ResponseDTO responseDTO;
             try
             {
@@ -96,9 +95,9 @@ namespace Sample.ElectronicCommerce.Core.Services
             catch (Exception ex)
             {
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"ApplicationService.GetAll => Exception: {ex.Message}");
+                _logger.LogError($"OrganizationService.GetAll => Exception: {ex.Message}");
             }
-            _logger.LogInformation("ApplicationService.GetAll > Finish");
+            _logger.LogInformation("OrganizationService.GetAll > Finish");
             return new ReturnDTO(responseDTO);
         }
         #endregion

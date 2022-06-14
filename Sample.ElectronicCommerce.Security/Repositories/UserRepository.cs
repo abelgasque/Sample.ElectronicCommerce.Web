@@ -6,7 +6,6 @@ using MongoDB.Driver;
 using Sample.ElectronicCommerce.Security.Entities;
 using Sample.ElectronicCommerce.Core.Constants;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
-using Sample.ElectronicCommerce.Core.Entities.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;

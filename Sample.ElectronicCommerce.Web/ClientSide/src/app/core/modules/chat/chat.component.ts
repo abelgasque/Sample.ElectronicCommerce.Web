@@ -33,7 +33,7 @@ export class ChatComponent implements OnInit {
     private entityService: ChatService,
   ) {
     this.setForm();
-    this.connection = new signalR.HubConnectionBuilder().withUrl(`${ environment.baseUrl }/chat/broker/all`).build();
+    this.connection = new signalR.HubConnectionBuilder().withUrl(`${ environment.baseUrl }/chat/broker`).build();
     this.startConnection();
     this.getAll();
   }

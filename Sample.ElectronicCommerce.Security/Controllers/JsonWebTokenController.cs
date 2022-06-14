@@ -12,17 +12,17 @@ namespace Sample.ElectronicCommerce.Security.Controllers
 {
     [ApiController]
     [AllowAnonymous]
-    [Route("[controller]")]
-    public class TokenController : ControllerBase
+    [Route("Token")]
+    public class JsonWebTokenController : ControllerBase
     {
         #region Variables
-        private readonly ILogger<TokenController> _logger;
+        private readonly ILogger<JsonWebTokenController> _logger;
 
-        private readonly UserSessionService _service;
+        private readonly JsonWebTokenService _service;
         #endregion
 
         #region Constructor
-        public TokenController(ILogger<TokenController> logger, UserSessionService service)
+        public JsonWebTokenController(ILogger<JsonWebTokenController> logger, JsonWebTokenService service)
         {
             _logger = logger;
             _service = service;

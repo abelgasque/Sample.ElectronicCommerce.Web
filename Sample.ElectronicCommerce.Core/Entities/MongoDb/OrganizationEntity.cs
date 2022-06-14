@@ -4,9 +4,9 @@ using Sample.ElectronicCommerce.Core.Entities.Base;
 
 namespace Sample.ElectronicCommerce.Core.Entities.MongoDb
 {
-    public class ApplicationEntity : MongoBaseEntity
+    public class OrganizationEntity : MongoBaseEntity
     {
-        public ApplicationEntity() { }
+        public OrganizationEntity() { }
 
         [BsonElement("base_url")]
         public string BaseUrl { get; set; }

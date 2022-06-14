@@ -34,8 +34,8 @@ namespace Sample.ElectronicCommerce.Core.Entities.Settings
         [JsonProperty("MailMessageColletion")]
         public string MailMessageColletion { get; set; }
 
-        [JsonProperty("ApplicationColletion")]
-        public string ApplicationColletion { get; set; }
+        [JsonProperty("OrganizationColletion")]
+        public string OrganizationColletion { get; set; }
         
         [JsonProperty("ChatBrokerAllColletion")]
         public string ChatBrokerAllColletion { get; set; }

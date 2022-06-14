@@ -2,8 +2,8 @@
 
 namespace Sample.ElectronicCommerce.Security.Entities
 {
-    public class RoleEntity : MongoBaseEntity
+    public class UserRoleEntity : MongoBaseEntity
     { 
-        public RoleEntity() { }
+        public UserRoleEntity() { }
     }
 }

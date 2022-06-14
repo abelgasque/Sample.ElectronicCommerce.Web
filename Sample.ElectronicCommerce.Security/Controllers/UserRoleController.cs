@@ -38,7 +38,7 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         /// </summary>
         [HttpPost]
         [Route("InsertAsync")]
-        public async Task<ActionResult<ReturnDTO>> InsertAsync([FromBody] RoleEntity pEntity)
+        public async Task<ActionResult<ReturnDTO>> InsertAsync([FromBody] UserRoleEntity pEntity)
         {
             _logger.LogInformation("UserController.InsertAsync => Start");
             ReturnDTO returnDTO;
@@ -68,7 +68,7 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         /// </summary>        
         [HttpPut]
         [Route("UpdateAsync")]
-        public async Task<ActionResult<ReturnDTO>> UpdateAsync([FromBody] RoleEntity pEntity)
+        public async Task<ActionResult<ReturnDTO>> UpdateAsync([FromBody] UserRoleEntity pEntity)
         {
             _logger.LogInformation("UserController.UpdateAsync => Start");
             ReturnDTO returnDTO;            
