@@ -1,14 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
 namespace Sample.ElectronicCommerce.Core.Entities.MongoDb
 {
-    public class ChatMessageEntity
+    public class MailGroupEntity
     {
-        public ChatMessageEntity() { }
-
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         [BsonElement("id")]
@@ -34,14 +33,22 @@ namespace Sample.ElectronicCommerce.Core.Entities.MongoDb
         [BsonElement("is_active")]
         [JsonProperty("isActive")]
         public bool IsActive { get; set; } = true;
+        [BsonElement("body")]
+        public string Body { get; set; }
 
-        [BsonElement("id_user_sender")]
-        public string IdUserSender { get; set; } = null;
+        [BsonElement("title")]
+        public string Title { get; set; }
 
-        [BsonElement("id_user_destinatary")]
-        public string IdUserDestinatary { get; set; } = null;
+        [BsonElement("vl_mail_unit")]
+        public decimal VlMailUnit { get; set; }
 
-        [BsonElement("message")]
-        public string Message { get; set; } = null;
+        [BsonElement("vl_mail_mass")]
+        public decimal VlMailMass { get; set; }
+
+        [BsonElement("is_priority")]
+        public bool IsPriority { get; set; }
+
+        [BsonElement("brokers")]
+        public ICollection<MailBrokerEntity> Brokers { get; set; }
     }
 }

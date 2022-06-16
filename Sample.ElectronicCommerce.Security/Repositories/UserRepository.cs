@@ -3,14 +3,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Sample.ElectronicCommerce.Security.Entities;
-using Sample.ElectronicCommerce.Core.Constants;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AppMongoClient = Sample.ElectronicCommerce.Core.Entities.Settings;
+using Sample.ElectronicCommerce.Core.Entities.MongoDb;
+using Sample.ElectronicCommerce.Core.Util;
 
 namespace Sample.ElectronicCommerce.Security.Repositories
 {
@@ -127,6 +127,27 @@ namespace Sample.ElectronicCommerce.Security.Repositories
                 _logger.LogError($"UserRepository.GetById => Exception: {ex.Message}");
             }
             _logger.LogInformation("UserRepository.GetById > Finish");
+            return responseDTO;
+        }
+
+        public async Task<ResponseDTO> GetByMail(string pMail)
+        {
+            _logger.LogInformation("UserRepository.GetByMail => Start");
+            ResponseDTO responseDTO;
+            try
+            {
+                Expression<Func<UserEntity, bool>> filter = x => x.Mail.Equals(pMail);
+                UserEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+                string deMessage = (entity != null) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
+                bool isSuccess = (entity != null) ? true : false;
+                responseDTO = new ResponseDTO(isSuccess, deMessage, entity);
+            }
+            catch (Exception ex)
+            {
+                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
+                _logger.LogError($"UserRepository.GetByMail => Exception: {ex.Message}");
+            }
+            _logger.LogInformation("UserRepository.GetByMail > Finish");
             return responseDTO;
         }
 

@@ -26,9 +26,9 @@ wget -qO- https://deb.nodesource.com/setup_16.x | bash - && \
 apt-get install -y build-essential nodejs 
 # End install Node.Js
 
-COPY ["Sample.ElectronicCommerce.BrokerChat/Sample.ElectronicCommerce.BrokerChat.csproj", "Sample.ElectronicCommerce.BrokerChat/"]
-COPY ["Sample.ElectronicCommerce.BrokerMail/Sample.ElectronicCommerce.BrokerMail.csproj", "Sample.ElectronicCommerce.BrokerMail/"]
+COPY ["Sample.ElectronicCommerce.Chat/Sample.ElectronicCommerce.Chat.csproj", "Sample.ElectronicCommerce.Chat/"]
 COPY ["Sample.ElectronicCommerce.Core/Sample.ElectronicCommerce.Core.csproj", "Sample.ElectronicCommerce.Core/"]
+COPY ["Sample.ElectronicCommerce.Mail/Sample.ElectronicCommerce.Mail.csproj", "Sample.ElectronicCommerce.Mail/"]
 COPY ["Sample.ElectronicCommerce.Security/Sample.ElectronicCommerce.Security.csproj", "Sample.ElectronicCommerce.Security/"]
 COPY ["Sample.ElectronicCommerce.Web/Sample.ElectronicCommerce.Web.csproj", "Sample.ElectronicCommerce.Web/"]
 

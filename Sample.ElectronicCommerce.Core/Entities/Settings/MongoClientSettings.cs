@@ -25,14 +25,14 @@ namespace Sample.ElectronicCommerce.Core.Entities.Settings
         [JsonProperty("DataBaseTestMass")]
         public string DataBaseTestMass { get; set; }
 
-        [JsonProperty("BrokerMailColletion")]
-        public string BrokerMailColletion { get; set; }
+        [JsonProperty("MailBrokerColletion")]
+        public string MailBrokerColletion { get; set; }
 
-        [JsonProperty("MailColletion")]
-        public string MailColletion { get; set; }
+        [JsonProperty("MailGroupColletion")]
+        public string MailGroupColletion { get; set; }
 
-        [JsonProperty("MailMessageColletion")]
-        public string MailMessageColletion { get; set; }
+        [JsonProperty("MailSingleColletion")]
+        public string MailSingleColletion { get; set; }
 
         [JsonProperty("OrganizationColletion")]
         public string OrganizationColletion { get; set; }

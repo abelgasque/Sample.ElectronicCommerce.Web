@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sample.ElectronicCommerce.Security.Entities;
 using Sample.ElectronicCommerce.Security.Repositories;
-using Sample.ElectronicCommerce.Core.Constants;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
 using Sample.ElectronicCommerce.Core.Services;
 using System;
 using System.Threading.Tasks;
+using Sample.ElectronicCommerce.Core.Entities.MongoDb;
+using Sample.ElectronicCommerce.Core.Util;
 
 namespace Sample.ElectronicCommerce.Security.Services
 {
@@ -39,6 +39,7 @@ namespace Sample.ElectronicCommerce.Security.Services
             ResponseDTO responseDTO;
             try
             {
+                pEntity.DtCreation = DateTime.Now;
                 responseDTO = await _repository.InsertAsync(pEntity);
             }
             catch (Exception ex)
@@ -57,6 +58,7 @@ namespace Sample.ElectronicCommerce.Security.Services
             ResponseDTO responseDTO;
             try
             {
+                pEntity.DtLastUpdate = DateTime.Now;
                 responseDTO = await _repository.UpdateAsync(pEntity);
             }
             catch (Exception ex)
@@ -101,6 +103,23 @@ namespace Sample.ElectronicCommerce.Security.Services
                 _logger.LogError($"UserService.GetById => Exception: {ex.Message}");
             }
             _logger.LogInformation($"UserService.GetById => End");
+            return new ReturnDTO(responseDTO);
+        }
+        
+        public async Task<ReturnDTO> GetByMail(string pMail)
+        {
+            _logger.LogInformation($"UserService.GetByMail => Start");
+            ResponseDTO responseDTO;
+            try
+            {
+                responseDTO = await _repository.GetByMail(pMail);
+            }
+            catch (Exception ex)
+            {
+                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
+                _logger.LogError($"UserService.GetByMail => Exception: {ex.Message}");
+            }
+            _logger.LogInformation($"UserService.GetByMail => End");
             return new ReturnDTO(responseDTO);
         }
 

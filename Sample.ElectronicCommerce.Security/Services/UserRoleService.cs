@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sample.ElectronicCommerce.Security.Entities;
 using Sample.ElectronicCommerce.Security.Repositories;
-using Sample.ElectronicCommerce.Core.Constants;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
 using Sample.ElectronicCommerce.Core.Services;
 using System;
 using System.Threading.Tasks;
+using Sample.ElectronicCommerce.Core.Entities.MongoDb;
+using Sample.ElectronicCommerce.Core.Util;
 
 namespace Sample.ElectronicCommerce.Security.Services
 {
@@ -39,6 +39,7 @@ namespace Sample.ElectronicCommerce.Security.Services
             ResponseDTO responseDTO;
             try
             {
+                pEntity.DtCreation = DateTime.Now;
                 responseDTO = await _repository.InsertAsync(pEntity);
             }
             catch (Exception ex)
@@ -57,6 +58,7 @@ namespace Sample.ElectronicCommerce.Security.Services
             ResponseDTO responseDTO;
             try
             {
+                pEntity.DtLastUpdate = DateTime.Now;
                 responseDTO = await _repository.UpdateAsync(pEntity);
             }
             catch (Exception ex)

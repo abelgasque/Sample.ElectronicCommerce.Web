@@ -5,10 +5,8 @@ using Newtonsoft.Json;
 
 namespace Sample.ElectronicCommerce.Core.Entities.MongoDb
 {
-    public class ChatMessageEntity
+    public class MailBrokerEntity
     {
-        public ChatMessageEntity() { }
-
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         [BsonElement("id")]
@@ -34,14 +32,19 @@ namespace Sample.ElectronicCommerce.Core.Entities.MongoDb
         [BsonElement("is_active")]
         [JsonProperty("isActive")]
         public bool IsActive { get; set; } = true;
+        [BsonElement("server")]
+        public string Server { get; set; }
 
-        [BsonElement("id_user_sender")]
-        public string IdUserSender { get; set; } = null;
+        [BsonElement("password")]
+        public string Password { get; set; }
 
-        [BsonElement("id_user_destinatary")]
-        public string IdUserDestinatary { get; set; } = null;
+        [BsonElement("user_name")]
+        public string UserName { get; set; }
 
-        [BsonElement("message")]
-        public string Message { get; set; } = null;
+        [BsonElement("port")]
+        public int? Port { get; set; }
+
+        [BsonElement("is_enabled_ssl")]
+        public bool IsEnabledSsl { get; set; }
     }
 }

@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Sample.ElectronicCommerce.Core.Constants;
 using Sample.ElectronicCommerce.Core.Entities.DataBase;
+using Sample.ElectronicCommerce.Core.Entities.DataBase.EF;
+using Sample.ElectronicCommerce.Core.Entities.DataBase.Mapping;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
-using Sample.ElectronicCommerce.Core.Entities.EF;
-using Sample.ElectronicCommerce.Core.Entities.Mapping;
 using Sample.ElectronicCommerce.Core.Entities.Settings;
-using Sample.ElectronicCommerce.Core.Helpers;
+using Sample.ElectronicCommerce.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -46,9 +45,9 @@ namespace Sample.ElectronicCommerce.Core.Repositories
         #region Methods SQL Server
         public string GetLogAppForChartDynamicInDataBase(bool pMustFilterYear)
         {
-            return $"EXEC {DataBaseConstant.SPR_WS_GET_LOG_APP_FOR_CHART_DYNAMIC} "
-                    + $"{DataBaseConstant.P_IS_TEST} = 0,"
-                    + $"{DataBaseConstant.P_MUST_FILTER_YEAR} = {Convert.ToInt32(pMustFilterYear)};";
+            return $"EXEC {AppConstant.SPR_WS_GET_LOG_APP_FOR_CHART_DYNAMIC} "
+                    + $"{AppConstant.P_IS_TEST} = 0,"
+                    + $"{AppConstant.P_MUST_FILTER_YEAR} = {Convert.ToInt32(pMustFilterYear)};";
         }
         #endregion
 
@@ -195,7 +194,7 @@ namespace Sample.ElectronicCommerce.Core.Repositories
             {
                 using (SqlConnection connection = new SqlConnection(_sharedSettings.GetConnectionString))
                 {
-                    _logger.LogInformation("LogAppRepository.GetLogAppForChartDynamic => Running procedure: " + DataBaseConstant.SPR_WS_GET_LOG_APP_FOR_CHART_DYNAMIC);
+                    _logger.LogInformation("LogAppRepository.GetLogAppForChartDynamic => Running procedure: " + AppConstant.SPR_WS_GET_LOG_APP_FOR_CHART_DYNAMIC);
                     await connection.OpenAsync();
                     GridReader reader = await connection.QueryMultipleAsync(this.GetLogAppForChartDynamicInDataBase(pMustFilterYear));
                     var listEntities = reader.Read().AsList();

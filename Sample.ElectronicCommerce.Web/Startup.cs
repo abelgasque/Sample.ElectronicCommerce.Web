@@ -4,17 +4,17 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Sample.ElectronicCommerce.BrokerChat.Consumer;
-using Sample.ElectronicCommerce.BrokerChat.Repositories;
-using Sample.ElectronicCommerce.BrokerChat.Services;
-using Sample.ElectronicCommerce.BrokerMail.Repositories;
-using Sample.ElectronicCommerce.BrokerMail.Services;
-using Sample.ElectronicCommerce.Core.Entities.EF;
+using Sample.ElectronicCommerce.Chat.Consumer;
+using Sample.ElectronicCommerce.Chat.Repositories;
+using Sample.ElectronicCommerce.Chat.Services;
+using Sample.ElectronicCommerce.Core.Entities.DataBase.EF;
 using Sample.ElectronicCommerce.Core.Entities.Settings;
 using Sample.ElectronicCommerce.Core.Extensions;
-using Sample.ElectronicCommerce.Core.Helpers;
 using Sample.ElectronicCommerce.Core.Repositories;
 using Sample.ElectronicCommerce.Core.Services;
+using Sample.ElectronicCommerce.Core.Util;
+using Sample.ElectronicCommerce.Mail.Repositories;
+using Sample.ElectronicCommerce.Mail.Services;
 using Sample.ElectronicCommerce.Security.Extensions;
 using Sample.ElectronicCommerce.Security.Repositories;
 using Sample.ElectronicCommerce.Security.Services;
@@ -34,7 +34,7 @@ namespace Sample.ElectronicCommerce.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddLogging(configure => configure.AddSerilog());            
+            services.AddLogging(configure => configure.AddSerilog());
             services.AddSignalR(o => { o.EnableDetailedErrors = true; });
             services.Configure<IISOptions>(o => { o.ForwardClientCertificate = false; });
             services.AddCors(o => { o.AddPolicy("AllowOrigin", b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); });
@@ -51,19 +51,11 @@ namespace Sample.ElectronicCommerce.Web
             services.Configure<SecuritySettings>(_configuration.GetSection("SecuritySettings"));
             services.Configure<SharedSettings>(_configuration.GetSection("SharedSettings"));
 
-            //BrokerMail
-            services.AddTransient<MailRepository>();
-            services.AddTransient<MailBrokerRepository>();
-            services.AddTransient<MailMessageRepository>();
-            services.AddTransient<MailService>();
-            services.AddTransient<MailBrokerService>();
-            services.AddTransient<MailMessageService>();
-
             //Core
             services.AddDbContext<SharedDbContext>();
             services.AddTransient<MailHelper>();
             services.AddTransient<OrganizationRepository>();
-            services.AddTransient<OrganizationService>();            
+            services.AddTransient<OrganizationService>();
             services.AddTransient<LogAppRepository>();
             services.AddTransient<LogAppService>();
 
@@ -74,9 +66,17 @@ namespace Sample.ElectronicCommerce.Web
             services.AddTransient<UserService>();
             services.AddTransient<UserRoleService>();
 
-            //WebSocket Chat
+            //Chat
             services.AddTransient<ChatBrokerRepository>();
             services.AddTransient<ChatBrokerService>();
+
+            //Mail
+            services.AddTransient<MailBrokerRepository>();
+            services.AddTransient<MailGroupRepository>();
+            services.AddTransient<MailSingleRepository>();
+            services.AddTransient<MailBrokerService>();
+            services.AddTransient<MailGroupService>();
+            services.AddTransient<MailSingleService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -88,7 +88,7 @@ namespace Sample.ElectronicCommerce.Web
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
             app.UseCors("AllowOrigin");
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
@@ -99,8 +99,8 @@ namespace Sample.ElectronicCommerce.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
-                endpoints.MapHub<ChatBrokerConsumer>("/chat/broker");                
-            });         
+                endpoints.MapHub<ChatConsumer>("/chat");
+            });
 
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint($"v{appSettings.Version}/swagger.json", $"ElectronicCommerce v{appSettings.Version}"));

@@ -5,9 +5,9 @@ using Newtonsoft.Json;
 
 namespace Sample.ElectronicCommerce.Core.Entities.MongoDb
 {
-    public class ChatMessageEntity
-    {
-        public ChatMessageEntity() { }
+    public class UserRoleEntity
+    { 
+        public UserRoleEntity() { }
 
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -34,14 +34,5 @@ namespace Sample.ElectronicCommerce.Core.Entities.MongoDb
         [BsonElement("is_active")]
         [JsonProperty("isActive")]
         public bool IsActive { get; set; } = true;
-
-        [BsonElement("id_user_sender")]
-        public string IdUserSender { get; set; } = null;
-
-        [BsonElement("id_user_destinatary")]
-        public string IdUserDestinatary { get; set; } = null;
-
-        [BsonElement("message")]
-        public string Message { get; set; } = null;
     }
 }
