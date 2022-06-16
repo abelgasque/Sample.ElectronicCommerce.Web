@@ -24,7 +24,7 @@ namespace Sample.ElectronicCommerce.Core.Entities.EF
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_sharedSettings.DataBase.GetConnectionString);
+            optionsBuilder.UseSqlServer(_sharedSettings.GetConnectionString);
             base.OnConfiguring(optionsBuilder);
         }
 

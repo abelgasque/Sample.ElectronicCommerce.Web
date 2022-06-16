@@ -85,6 +85,31 @@ namespace Sample.ElectronicCommerce.Security.Repositories
             return responseDTO;
         }
 
+        public async Task<ResponseDTO> DeleteAsync(string pId)
+        {
+            _logger.LogInformation("UserRoleRepository.DeleteAsync => Start");
+            ResponseDTO responseDTO;
+            try
+            {
+                Expression<Func<UserRoleEntity, bool>> filter = x => x.Id.Equals(pId);
+                UserRoleEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+                bool isSuccess = (entity != null) ? true : false;
+                string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
+                if (isSuccess)
+                {
+                    await _collection.FindOneAndDeleteAsync(pId);
+                }
+                responseDTO = new ResponseDTO(isSuccess, deMessage, null);
+            }
+            catch (Exception ex)
+            {
+                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
+                _logger.LogError($"UserRoleRepository.DeleteAsync => Exception: {ex.Message}");
+            }
+            _logger.LogInformation("UserRoleRepository.DeleteAsync > Finish");
+            return responseDTO;
+        }
+
         public async Task<ResponseDTO> GetById(string pId)
         {
             _logger.LogInformation("UserRoleRepository.GetById => Start");

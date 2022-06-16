@@ -49,7 +49,7 @@ namespace Sample.ElectronicCommerce.Core.Services
                     NuVersion = _appSettings.Version,
                     NmMethod = pNmMethod,
                     DeContent = (pContent != null) ? JsonConvert.SerializeObject(pContent) : null,
-                    IsTest = _appSettings.IsTest,
+                    IsTest = false,
                     IsActive = true,
                 };
 

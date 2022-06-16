@@ -47,7 +47,7 @@ namespace Sample.ElectronicCommerce.Core.Repositories
         public string GetLogAppForChartDynamicInDataBase(bool pMustFilterYear)
         {
             return $"EXEC {DataBaseConstant.SPR_WS_GET_LOG_APP_FOR_CHART_DYNAMIC} "
-                    + $"{DataBaseConstant.P_IS_TEST} = {Convert.ToInt32(_appSettings.IsTest)},"
+                    + $"{DataBaseConstant.P_IS_TEST} = 0,"
                     + $"{DataBaseConstant.P_MUST_FILTER_YEAR} = {Convert.ToInt32(pMustFilterYear)};";
         }
         #endregion
@@ -193,7 +193,7 @@ namespace Sample.ElectronicCommerce.Core.Repositories
             ResponseDTO responseDTO;
             try
             {
-                using (SqlConnection connection = new SqlConnection(_sharedSettings.DataBase.GetConnectionString))
+                using (SqlConnection connection = new SqlConnection(_sharedSettings.GetConnectionString))
                 {
                     _logger.LogInformation("LogAppRepository.GetLogAppForChartDynamic => Running procedure: " + DataBaseConstant.SPR_WS_GET_LOG_APP_FOR_CHART_DYNAMIC);
                     await connection.OpenAsync();

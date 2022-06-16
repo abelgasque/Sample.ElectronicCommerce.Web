@@ -46,9 +46,6 @@ namespace Sample.ElectronicCommerce.Core.Entities.Settings
         [JsonProperty("UserRoleColletion")]
         public string UserRoleColletion { get; set; }
 
-        [JsonProperty("UserSessionColletion")]
-        public string UserSessionColletion { get; set; }
-
         public string GetConnectionString
         {
             get

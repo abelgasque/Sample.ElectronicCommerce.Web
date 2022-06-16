@@ -46,6 +46,7 @@ namespace Sample.ElectronicCommerce.Web
 
             //Configure settings
             services.Configure<AppSettings>(_configuration.GetSection("AppSettings"));
+            services.Configure<EnvironmentSettings>(_configuration.GetSection("EnvironmentSettings"));
             services.Configure<MongoClientSettings>(_configuration.GetSection("MongoClientSettings"));
             services.Configure<SecuritySettings>(_configuration.GetSection("SecuritySettings"));
             services.Configure<SharedSettings>(_configuration.GetSection("SharedSettings"));
@@ -69,9 +70,7 @@ namespace Sample.ElectronicCommerce.Web
             //Security
             services.AddTransient<JsonWebTokenService>();
             services.AddTransient<UserRepository>();
-            services.AddTransient<UserRoleRepository>();            
-            services.AddTransient<UserSessionRepository>();
-            services.AddTransient<UserSessionService>();
+            services.AddTransient<UserRoleRepository>();
             services.AddTransient<UserService>();
             services.AddTransient<UserRoleService>();
 

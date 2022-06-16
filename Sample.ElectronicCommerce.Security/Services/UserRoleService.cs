@@ -22,12 +22,13 @@ namespace Sample.ElectronicCommerce.Security.Services
         #region Constructors
         public UserRoleService(
             ILogger<UserRoleService> logger,
-            UserRoleRepository repository, 
+            UserRoleRepository repository,
             LogAppService logAppService
-        ) {
+        )
+        {
             _logger = logger;
             _repository = repository;
-            _logAppService = logAppService; 
+            _logAppService = logAppService;
         }
         #endregion
 
@@ -68,6 +69,24 @@ namespace Sample.ElectronicCommerce.Security.Services
             return new ReturnDTO(responseDTO);
         }
 
+        public async Task<ReturnDTO> DeleteAsync(string pId)
+        {
+            _logger.LogInformation($"UserRoleService.DeleteAsync => Start");
+            ResponseDTO responseDTO;
+            try
+            {
+                responseDTO = await _repository.DeleteAsync(pId);
+            }
+            catch (Exception ex)
+            {
+                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
+                _logger.LogError($"UserRoleService.DeleteAsync => Exception: {ex.Message}");
+            }
+            await _logAppService.AppInsertAsync(0, "UserRoleService.DeleteAsync", pId, responseDTO);
+            _logger.LogInformation($"UserRoleService.DeleteAsync => End");
+            return new ReturnDTO(responseDTO);
+        }
+
         public async Task<ReturnDTO> GetById(string pId)
         {
             _logger.LogInformation($"UserRoleService.GetById => Start");
@@ -90,13 +109,13 @@ namespace Sample.ElectronicCommerce.Security.Services
             _logger.LogInformation("UserRoleService.GetAll => Start");
             ResponseDTO responseDTO;
             try
-            {                
+            {
                 responseDTO = await _repository.GetAll();
             }
             catch (Exception ex)
             {
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"UserRoleService.GetAll => Exception: { ex.Message }");
+                _logger.LogError($"UserRoleService.GetAll => Exception: {ex.Message}");
             }
             _logger.LogInformation("UserRoleService.GetAll > Finish");
             return new ReturnDTO(responseDTO);

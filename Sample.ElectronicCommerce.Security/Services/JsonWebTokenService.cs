@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Sample.ElectronicCommerce.Security.Entities;
-using Sample.ElectronicCommerce.Security.Repositories;
 using Sample.ElectronicCommerce.Core.Constants;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
 using Sample.ElectronicCommerce.Core.Entities.Settings;
@@ -23,9 +22,7 @@ namespace Sample.ElectronicCommerce.Security.Services
         
         private readonly SecuritySettings _securitySettings;
 
-        private readonly AppSettings _appSettings;
-
-        private readonly UserSessionService _userSessionService;        
+        private readonly AppSettings _appSettings;      
 
         private readonly UserService _userService;
 
@@ -37,14 +34,12 @@ namespace Sample.ElectronicCommerce.Security.Services
             ILogger<JsonWebTokenService> logger, 
             IOptions<SecuritySettings> securitySettings, 
             IOptions<AppSettings> appSettings, 
-            UserSessionService userSessionService, 
             UserService userService, 
             LogAppService logAppService
         ) {
             _logger = logger;
             _securitySettings = securitySettings.Value;
             _appSettings = appSettings.Value;
-            _userSessionService = userSessionService;
             _userService = userService;
             _logAppService = logAppService;
         }
@@ -53,7 +48,7 @@ namespace Sample.ElectronicCommerce.Security.Services
         #region Methods    
         private string GenerateToken(ICollection<UserRoleEntity> pRoles)
         {
-            _logger.LogInformation("UserSessionService.GenerateToken => Start");
+            _logger.LogInformation("JsonWebTokenService.GenerateToken => Start");
             TokenDTO tokenWs;
             try
             {
@@ -81,33 +76,33 @@ namespace Sample.ElectronicCommerce.Security.Services
                     AccessToken = tokenHandler.WriteToken(token),
                     ExpiresIn = _securitySettings.ExpireIn
                 };
-                _logger.LogInformation($"UserSessionService.GenerateToken => AccessToken: Generated, AccessToken Expire: {DateTime.UtcNow.AddMinutes(_securitySettings.ExpireIn).ToString("dd/MM/yyyy - HH:mm:ss")}");
+                _logger.LogInformation($"JsonWebTokenService.GenerateToken => AccessToken: Generated, AccessToken Expire: {DateTime.UtcNow.AddMinutes(_securitySettings.ExpireIn).ToString("dd/MM/yyyy - HH:mm:ss")}");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"UserSessionService.GenerateToken => Exception: {ex.Message}");
+                _logger.LogError($"JsonWebTokenService.GenerateToken => Exception: {ex.Message}");
                 tokenWs = null;
             }
-            _logger.LogInformation("UserSessionService.GenerateToken => End");
+            _logger.LogInformation("JsonWebTokenService.GenerateToken => End");
             return tokenWs.AccessToken;
         }
 
         public async Task<ReturnDTO> Login(UserDTO pEntity)
         {
-            _logger.LogInformation($"UserSessionService.Login => Start");
+            _logger.LogInformation($"JsonWebTokenService.Login => Start");
             ResponseDTO responseDTO;
             try
             {
-                ReturnDTO returnDTO = await _userService.GetByMail(pEntity.Mail);
-                UserEntity user = (UserEntity)returnDTO.ResultObject;
-                if (user == null)
-                {
-                    responseDTO = new ResponseDTO(false, AppConstant.DeMessageDataNotFoundWS, null);
-                }
-                else 
-                {          
-                    responseDTO = null;          
-                    // responseDTO = await _userSessionService.GetByIdUser(user.Id);
+                // ReturnDTO returnDTO = await _userService.GetByMail(pEntity.Mail);
+                // UserEntity user = (UserEntity)returnDTO.ResultObject;
+                // if (user == null)
+                // {
+                //     responseDTO = new ResponseDTO(false, AppConstant.DeMessageDataNotFoundWS, null);
+                // }
+                // else 
+                // {          
+                //     responseDTO = null;          
+                    // responseDTO = await _JsonWebTokenService.GetByIdUser(user.Id);
                     // UserSessionEntity entity;                    
                     // if ((!user.IsActive))
                     // {
@@ -121,7 +116,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                     //     entity.Version = _appSettings.Version;
                     //     entity.Password = "1";
                     //     entity.AccessToken = this.GenerateToken(new List<UserRoleEntity>());
-                    //     responseDTO = await _userSessionService.InsertAsync(entity);
+                    //     responseDTO = await _JsonWebTokenService.InsertAsync(entity);
                     // }
                     // else
                     // {
@@ -141,28 +136,29 @@ namespace Sample.ElectronicCommerce.Security.Services
                             
                     //     }
                     //     entity.NuAuthAttemptsToken += 1;
-                    //     returnDTO = await _userSessionService.UpdateAsync(entity);
+                    //     returnDTO = await _JsonWebTokenService.UpdateAsync(entity);
                     //     responseDTO = new ResponseDTO(isSuccess, deMessage, returnDTO.ResultObject);
                     //}
-                }                
+                // }                
             }
             catch (Exception ex)
             {
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"UserSessionService.Login => Exception: { ex.Message }");
+                _logger.LogError($"JsonWebTokenService.Login => Exception: { ex.Message }");
             }
-            await _logAppService.AppInsertAsync(0, "UserSession.Login", pEntity, responseDTO);
-            _logger.LogInformation($"UserSessionService.Login => End");
-            return new ReturnDTO(responseDTO);
+            //await _logAppService.AppInsertAsync(0, "UserSession.Login", pEntity, responseDTO);
+            _logger.LogInformation($"JsonWebTokenService.Login => End");
+            //return new ReturnDTO(responseDTO);
+            return null;
         }
 
         public async Task<ReturnDTO> Refresh(TokenDTO pEntity)
         {
-            _logger.LogInformation($"UserSessionService.Refresh => Start");
+            _logger.LogInformation($"JsonWebTokenService.Refresh => Start");
             ResponseDTO responseDTO;
             try
             {
-                // ReturnDTO returnDTO = await _userSessionService.GetById(pEntity.IdUserSession);
+                // ReturnDTO returnDTO = await _JsonWebTokenService.GetById(pEntity.IdUserSession);
                 // if (returnDTO.IsSuccess)
                 // {
                 //     UserSessionEntity entity = (UserSessionEntity)returnDTO.ResultObject;
@@ -177,10 +173,10 @@ namespace Sample.ElectronicCommerce.Security.Services
             catch (Exception ex)
             {
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"UserSessionService.Refresh => Exception: { ex.Message }");
+                _logger.LogError($"JsonWebTokenService.Refresh => Exception: { ex.Message }");
             }
             await _logAppService.AppInsertAsync(0, "UserSession.Refresh", null, responseDTO);
-            _logger.LogInformation($"UserSessionService.Refresh => End");
+            _logger.LogInformation($"JsonWebTokenService.Refresh => End");
             return new ReturnDTO(responseDTO);
         }
         #endregion

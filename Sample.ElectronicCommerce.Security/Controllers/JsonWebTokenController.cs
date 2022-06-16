@@ -12,7 +12,7 @@ namespace Sample.ElectronicCommerce.Security.Controllers
 {
     [ApiController]
     [AllowAnonymous]
-    [Route("Token")]
+    [Route("api/token")]
     public class JsonWebTokenController : ControllerBase
     {
         #region Variables
@@ -30,14 +30,14 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         #endregion
 
         #region End Points Token
-        // POST: Token/Login
+        // POST: api/token/login
         /// <summary>
         /// End point que gera sessão de usuário
         /// </summary>
         /// <param name="pEntity"></param>
         /// <returns></returns>                
         [HttpPost]
-        [Route("Login")]
+        [Route("login")]
         public async Task<ActionResult<ReturnDTO>> Login([FromBody] UserDTO pEntity)
         {
             _logger.LogInformation("UserSessionController.Login => Start");
@@ -46,11 +46,11 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             {
                 returnDTO = await _service.Login(pEntity);
                 _logger.LogInformation($"UserSessionController.Login => IsSuccess: {returnDTO.IsSuccess} => End");
-                if (returnDTO.IsSuccess) 
+                if (returnDTO.IsSuccess)
                 {
-                    return new OkObjectResult(returnDTO);    
+                    return new OkObjectResult(returnDTO);
                 }
-                return new BadRequestObjectResult(returnDTO);                
+                return new BadRequestObjectResult(returnDTO);
             }
             catch (Exception ex)
             {
@@ -59,15 +59,15 @@ namespace Sample.ElectronicCommerce.Security.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
             }
         }
-        
-        // POST: Token/Refresh
+
+        // POST: api/token/refresh
         /// <summary>
         /// End point que atualiza sessão de usuário
         /// </summary>
         /// <param name="pEntity"></param>
         /// <returns></returns>             
         [HttpPost]
-        [Route("Refresh")]
+        [Route("refresh")]
         public async Task<ActionResult<ReturnDTO>> Refresh([FromBody] TokenDTO pEntity)
         {
             _logger.LogInformation("UserSessionController.Refresh => Start");
@@ -76,11 +76,11 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             {
                 returnDTO = await _service.Refresh(pEntity);
                 _logger.LogInformation($"UserSessionController.Refresh => IsSuccess: {returnDTO.IsSuccess} => End");
-                if (returnDTO.IsSuccess) 
+                if (returnDTO.IsSuccess)
                 {
-                    return new OkObjectResult(returnDTO);    
+                    return new OkObjectResult(returnDTO);
                 }
-                return new BadRequestObjectResult(returnDTO); 
+                return new BadRequestObjectResult(returnDTO);
             }
             catch (Exception ex)
             {
