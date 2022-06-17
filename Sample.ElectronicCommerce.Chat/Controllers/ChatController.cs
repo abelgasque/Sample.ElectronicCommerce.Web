@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Sample.ElectronicCommerce.Chat.Services;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
@@ -12,7 +11,6 @@ using System.Threading.Tasks;
 namespace Sample.ElectronicCommerce.Chat.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("api/chat")]
     public class ChatController : ControllerBase
     {

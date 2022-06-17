@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Sample.ElectronicCommerce.Core.Entities.Settings
 {
@@ -30,5 +31,9 @@ namespace Sample.ElectronicCommerce.Core.Entities.Settings
 
         [JsonProperty("IsDebug")]
         public bool IsDebug { get; set; }
+
+        [JsonProperty("EndpointsWhiteList")]
+        public List<string> EndpointsWhiteList { get; set; }
+
     }
 }

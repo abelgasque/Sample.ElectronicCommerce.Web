@@ -47,7 +47,7 @@ namespace Sample.ElectronicCommerce.Security.Services
         #endregion
 
         #region Methods    
-        private string GenerateToken(List<string> pRoles)
+        private TokenDTO GenerateToken(UserEntity pEntity)
         {
             _logger.LogInformation("JsonWebTokenService.GenerateToken => Start");
             TokenDTO tokenWs;
@@ -61,21 +61,33 @@ namespace Sample.ElectronicCommerce.Security.Services
                     NotBefore = DateTime.Now,
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
-                if (pRoles != null && pRoles.Count > 0)
+
+                List<Claim> payload = new List<Claim>()
                 {
-                    List<Claim> roles = new List<Claim>();
-                    foreach (string role in pRoles)
+                    new Claim("id", pEntity.Id),
+                    new Claim("name", pEntity.Name),
+                    new Claim("lastName", pEntity.LastName),
+                    new Claim("imageUrl", pEntity.ImageUrl),
+                    new Claim("mail", pEntity.Mail),
+                    new Claim("nuCellPhone", pEntity.NuCellPhone),
+                };
+
+                if (pEntity.Roles != null && pEntity.Roles.Count > 0)
+                {
+                    foreach (string role in pEntity.Roles)
                     {
                         Claim claim = new Claim(ClaimTypes.Role, role);
-                        roles.Add(claim);
+                        payload.Add(claim);
                     }
-                    tokenDescriptor.Subject = new ClaimsIdentity(roles);
                 }
+                
+                tokenDescriptor.Subject = new ClaimsIdentity(payload);
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 tokenWs = new TokenDTO()
                 {
-                    AccessToken = tokenHandler.WriteToken(token),
-                    ExpiresIn = _securitySettings.ExpireIn
+                    access_token = tokenHandler.WriteToken(token),
+                    expires_in = _securitySettings.ExpireIn,
+                    token_type = _securitySettings.Type
                 };
                 _logger.LogInformation($"JsonWebTokenService.GenerateToken => AccessToken: Generated, AccessToken Expire: {DateTime.UtcNow.AddMinutes(_securitySettings.ExpireIn).ToString("dd/MM/yyyy - HH:mm:ss")}");
             }
@@ -85,7 +97,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                 tokenWs = null;
             }
             _logger.LogInformation("JsonWebTokenService.GenerateToken => End");
-            return tokenWs.AccessToken;
+            return tokenWs;
         }
 
         public async Task<ReturnDTO> Login(UserDTO pEntity)
@@ -124,13 +136,13 @@ namespace Sample.ElectronicCommerce.Security.Services
                     else if (((user.NuAuthAttemptsFail + 1) == countBlock) && (isFail))
                     {
                         user.IsBlock = true;
-                        user.NuAuthAttemptsFail = 0;                    
+                        user.NuAuthAttemptsFail = 0;
                         responseDTO = new ResponseDTO(false, "Usuário bloqueado, e-mail enviado para caixa de entrada!", null);
                     }
                     else
                     {
                         user.NuAuthAttemptsFail = 0;
-                        responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, this.GenerateToken(user.Roles));
+                        responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, this.GenerateToken(user));
                     }
                     await _userService.UpdateAsync(user);
                 }
@@ -155,7 +167,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                 if (returnDTO.IsSuccess)
                 {
                     UserEntity entity = (UserEntity)returnDTO.ResultObject;
-                    returnDTO.ResultObject = this.GenerateToken(entity.Roles);
+                    returnDTO.ResultObject = this.GenerateToken(entity);
                 }
                 responseDTO = new ResponseDTO(returnDTO.IsSuccess, returnDTO.DeMessage, returnDTO.ResultObject);
             }

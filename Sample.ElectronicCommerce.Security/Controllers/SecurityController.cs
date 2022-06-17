@@ -7,11 +7,9 @@ using System.Net;
 using System.Threading.Tasks;
 using Sample.ElectronicCommerce.Core.Entities.MongoDb;
 using Sample.ElectronicCommerce.Core.Util;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Sample.ElectronicCommerce.Security.Controllers
-{
-    [Authorize]
+{    
     [ApiController]
     [Route("api/security")]
     public class SecurityController : ControllerBase
@@ -42,15 +40,15 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         #endregion
 
         #region End Points
-        // POST: api/security/token/login
+        // POST: api/security/token/auth
         /// <summary>
         /// Ponto final que autentica usuário no sistema
         /// </summary>
         /// <param name="pEntity"></param>
         /// <returns></returns>
-        [AllowAnonymous]
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
-        [Route("token/login")]
+        [Route("token/auth")]
         public async Task<ActionResult<ReturnDTO>> Login([FromBody] UserDTO pEntity)
         {
             _logger.LogInformation("UserSessionController.Login => Start");
@@ -61,7 +59,7 @@ namespace Sample.ElectronicCommerce.Security.Controllers
                 _logger.LogInformation($"UserSessionController.Login => IsSuccess: {returnDTO.IsSuccess} => End");
                 if (returnDTO.IsSuccess)
                 {
-                    return new OkObjectResult(returnDTO);
+                    return new OkObjectResult(returnDTO.ResultObject);
                 }
                 return new BadRequestObjectResult(returnDTO);
             }
@@ -73,16 +71,16 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             }
         }
 
-        // POST: api/security/token/refresh
+        // GET: api/security/token/refresh/{pId}
         /// <summary>
         /// Ponto final que atualiza sessão de usuário
         /// </summary>
         /// <param name="pId"></param>
-        /// <returns></returns>
-        [AllowAnonymous]           
-        [HttpPost]
-        [Route("token/refresh")]
-        public async Task<ActionResult<ReturnDTO>> Refresh([FromBody] string pId)
+        /// <returns></returns>       
+        [ApiExplorerSettings(IgnoreApi = true)]  
+        [HttpGet]
+        [Route("token/refresh/{pId}")]
+        public async Task<ActionResult<ReturnDTO>> Refresh(string pId)
         {
             _logger.LogInformation("UserSessionController.Refresh => Start");
             ReturnDTO returnDTO;
@@ -92,7 +90,7 @@ namespace Sample.ElectronicCommerce.Security.Controllers
                 _logger.LogInformation($"UserSessionController.Refresh => IsSuccess: {returnDTO.IsSuccess} => End");
                 if (returnDTO.IsSuccess)
                 {
-                    return new OkObjectResult(returnDTO);
+                    return new OkObjectResult(returnDTO.ResultObject);
                 }
                 return new BadRequestObjectResult(returnDTO);
             }

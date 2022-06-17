@@ -16,9 +16,9 @@ using Sample.ElectronicCommerce.Core.Util;
 using Sample.ElectronicCommerce.Mail.Repositories;
 using Sample.ElectronicCommerce.Mail.Services;
 using Sample.ElectronicCommerce.Security.Extensions;
+using Sample.ElectronicCommerce.Security.Middlewares;
 using Sample.ElectronicCommerce.Security.Repositories;
 using Sample.ElectronicCommerce.Security.Services;
-using Sample.ElectronicCommerce.Security.Util;
 using Serilog;
 
 namespace Sample.ElectronicCommerce.Web

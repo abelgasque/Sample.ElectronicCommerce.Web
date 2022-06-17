@@ -6,8 +6,6 @@ WORKDIR /app
 RUN mkdir -pv /var/lib/docker/tmp/
 RUN chmod 777 -R  /var/lib/docker/tmp/
 EXPOSE 9898
-EXPOSE 27017
-EXPOSE 1433
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends libgdiplus libc6-dev
 RUN apt-get clean
@@ -45,7 +43,7 @@ RUN dotnet publish "Sample.ElectronicCommerce.Web.csproj" -c Release -o /app/pub
 FROM base AS final
 WORKDIR /app
 
-ENV ASPNETCORE_URLS=http://+:9898;http://+:443
+ENV ASPNETCORE_URLS=http://+:9898
 ENV temp="%temp%"
 
 COPY --from=publish /app/publish .
