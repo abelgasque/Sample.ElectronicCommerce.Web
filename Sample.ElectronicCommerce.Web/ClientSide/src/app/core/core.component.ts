@@ -14,4 +14,8 @@ export class CoreComponent implements OnInit {
   ) {  }
 
   ngOnInit(): void {}
+
+  public loadApplication() {
+    this.sharedService.getListMenu();
+  }
 }

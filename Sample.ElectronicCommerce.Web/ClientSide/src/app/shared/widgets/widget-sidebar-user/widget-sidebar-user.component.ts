@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CoreService } from 'src/app/core/core.service';
-import { SecurityService } from 'src/app/core/modules/security/security.service';
-import { UserSessionService } from 'src/app/core/modules/user-session/user-session.service';
 import { SharedService } from '../../shared.service';
 import { ReturnDTO } from '../../util/EntitiesDTO/ReturnDTO';
 
@@ -16,9 +14,7 @@ export class WidgetSidebarUserComponent implements OnInit {
 
   constructor(
     public coreService: CoreService,
-    public securityService: SecurityService,
     public sharedService: SharedService,
-    public userSessionService: UserSessionService,
   ) { }
 
   ngOnInit(): void {
@@ -27,16 +23,16 @@ export class WidgetSidebarUserComponent implements OnInit {
   
   public getAll() {
     this.sharedService.openSpinner();
-    this.userSessionService.GetAll(null).subscribe({
-      next: (response: ReturnDTO) => {
-        if(response.isSuccess){
-          this.listUserSessions = response.resultObject;
-        }
-        this.sharedService.closeSpinner();
-      },
-      error: (error) => {        
-        this.coreService.errorHandler(error);        
-      }
-    });
+    // this.userSessionService.GetAll(null).subscribe({
+    //   next: (response: ReturnDTO) => {
+    //     if(response.isSuccess){
+    //       this.listUserSessions = response.resultObject;
+    //     }
+    //     this.sharedService.closeSpinner();
+    //   },
+    //   error: (error) => {        
+    //     this.coreService.errorHandler(error);        
+    //   }
+    // });
   }
 }

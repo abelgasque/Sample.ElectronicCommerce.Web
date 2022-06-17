@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Sample.ElectronicCommerce.Security.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/security")]
     public class SecurityController : ControllerBase
@@ -22,19 +23,21 @@ namespace Sample.ElectronicCommerce.Security.Controllers
 
         private readonly UserRoleService _userRoleService;
 
-        private readonly JsonWebTokenService _service;
+        private readonly JsonWebTokenService _jsonWebTokenService;
         #endregion
 
         #region Constructor
         public SecurityController(
             ILogger<SecurityController> logger,
             UserService service,
-            UserRoleService userRoleService
+            UserRoleService userRoleService,
+            JsonWebTokenService jsonWebTokenService
         )
         {
             _logger = logger;
             _userService = service;
             _userRoleService = userRoleService;
+            _jsonWebTokenService = jsonWebTokenService;
         }
         #endregion
 
@@ -54,7 +57,7 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             ReturnDTO returnDTO;
             try
             {
-                returnDTO = await _service.Login(pEntity);
+                returnDTO = await _jsonWebTokenService.Login(pEntity);
                 _logger.LogInformation($"UserSessionController.Login => IsSuccess: {returnDTO.IsSuccess} => End");
                 if (returnDTO.IsSuccess)
                 {
@@ -85,7 +88,7 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             ReturnDTO returnDTO;
             try
             {
-                returnDTO = await _service.Refresh(pId);
+                returnDTO = await _jsonWebTokenService.Refresh(pId);
                 _logger.LogInformation($"UserSessionController.Refresh => IsSuccess: {returnDTO.IsSuccess} => End");
                 if (returnDTO.IsSuccess)
                 {

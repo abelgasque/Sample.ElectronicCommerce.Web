@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UserComponent } from './user.component';
+import { UserRoleComponent } from './user-role.component';
 
 
 
 @NgModule({
   declarations: [
-    UserComponent
+    UserRoleComponent
   ],
   imports: [
     CommonModule
   ]
 })
-export class UserModule { }
+export class UserRoleModule { }

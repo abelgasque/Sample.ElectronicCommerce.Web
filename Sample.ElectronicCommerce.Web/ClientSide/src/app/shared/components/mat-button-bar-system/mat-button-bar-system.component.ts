@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
 import { SharedService } from '../../shared.service';
-import { SecurityService } from 'src/app/core/modules/security/security.service';
 
 @Component({
   selector: 'app-mat-button-bar-system',
@@ -11,7 +10,6 @@ import { SecurityService } from 'src/app/core/modules/security/security.service'
 export class MatButtonBarSystemComponent implements OnInit {
 
   constructor(    
-    public securityService: SecurityService,
     public sharedService: SharedService,
   ) { }
 

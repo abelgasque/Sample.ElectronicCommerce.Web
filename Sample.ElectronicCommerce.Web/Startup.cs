@@ -18,6 +18,7 @@ using Sample.ElectronicCommerce.Mail.Services;
 using Sample.ElectronicCommerce.Security.Extensions;
 using Sample.ElectronicCommerce.Security.Repositories;
 using Sample.ElectronicCommerce.Security.Services;
+using Sample.ElectronicCommerce.Security.Util;
 using Serilog;
 
 namespace Sample.ElectronicCommerce.Web
@@ -89,6 +90,8 @@ namespace Sample.ElectronicCommerce.Web
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseMiddleware<BasicAuthMiddleware>();
+
             app.UseCors("AllowOrigin");
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
@@ -98,6 +101,7 @@ namespace Sample.ElectronicCommerce.Web
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapHub<ChatConsumer>("/chat");
             });

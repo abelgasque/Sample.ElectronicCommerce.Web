@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-import { SecurityService } from 'src/app/core/modules/security/security.service';
 import { SharedService } from 'src/app/shared/shared.service';
 
 @Component({
@@ -11,7 +10,6 @@ import { SharedService } from 'src/app/shared/shared.service';
 export class MatButtonBarUserComponent implements OnInit {
 
   constructor(    
-    public securityService: SecurityService,
     public sharedService: SharedService,
   ) { }
 

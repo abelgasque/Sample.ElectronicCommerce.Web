@@ -1,70 +1,65 @@
-import { LOCALE_ID, NgModule } from '@angular/core';
 import { CommonModule, HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { LOCALE_ID, NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 import { MatSidenavModule } from '@angular/material/sidenav';
 
-import { CoreRoutingModule } from './core-routing.module';
+import { JwtModule } from '@auth0/angular-jwt';
 
-import { ChatModule } from './modules/chat/chat.module';
-import { DashboardModule } from 'src/app/core/modules/dashboard/dashboard.module';
-import { LogAppModule } from 'src/app/core/modules/log-app/log-app.module';
-import { MailModule } from 'src/app/core/modules/mail/mail.module';
-import { MailBrokerModule } from 'src/app/core/modules/mail-broker/mail-broker.module';
-import { MailMessageModule } from 'src/app/core/modules/mail-message/mail-message.module';
-import { UserModule } from 'src/app/core/modules/user/user.module';
-import { UserSessionModule } from 'src/app/core/modules/user-session/user-session.module';
-import { SharedModule } from 'src/app/shared/shared.module';
-import { DefaultLayoutModule } from './modules/default-layout/default-layout.module';
-import { SecurityModule } from './modules/security/security.module';
+import { environment } from 'src/environments/environment';
 
+import { CoreRoutingModule } from 'src/app/core/core-routing.module';
 import { CoreService } from 'src/app/core/core.service';
-import { SharedService } from 'src/app/shared/shared.service';
-import { LogAppService } from './modules/log-app/log-app.service';
-import { MailService } from './modules/mail/mail.service';
-import { MailBrokerService } from './modules/mail-broker/mail-broker.service';
-import { MailMessageService } from './modules/mail-message/mail-message.service';
-import { SecurityService } from './modules/security/security.service';
-import { UserService } from './modules/user/user.service';
-import { UserSessionService } from './modules/user-session/user-session.service';
-
 import { CoreComponent } from 'src/app/core/core.component';
-import { ChatService } from './modules/chat/chat.service';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { SharedService } from 'src/app/shared/shared.service';
+import { DocumentationModule } from 'src/app/core/modules/documentation/documentation.module';
+import { SecurityModule } from 'src/app/core/modules/security/security.module';
+import { UserModule } from 'src/app/core/modules/user/user.module';
+import { UserLeadModule } from 'src/app/core/modules/user-lead/user-lead.module';
+import { UserRoleModule } from 'src/app/core/modules/user-role/user-role.module';
+
+export function tokenGetter() {
+  return localStorage.getItem("access_token");
+}
 
 @NgModule({
   declarations: [
     CoreComponent
   ],
-  imports: [
+  imports: [       
+    CommonModule,     
+    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),    
+    BrowserAnimationsModule,    
+    RouterModule,    
+    HttpClientModule,
+    
+    MatSidenavModule,
+    
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: environment.tokenWhitelistedDomains,
+        disallowedRoutes: environment.tokenBlacklistedRoutes
+      }
+    }),
+
     CoreRoutingModule,    
-    CommonModule,
-    RouterModule,
-     
-    MatSidenavModule,    
-         
-    ChatModule,
-    DashboardModule,
-    DefaultLayoutModule,
-    LogAppModule,
-    MailModule,
-    MailBrokerModule,
-    MailMessageModule,
-    UserModule,
-    UserSessionModule,
+    DocumentationModule,
     SecurityModule,
     SharedModule,
+    UserModule,
+    UserLeadModule,
+    UserRoleModule,
   ],
-  providers:[ 
+  providers: [    
+    { provide: LOCALE_ID, useValue: 'pt-br' },
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
     CoreService,
-    ChatService,
-    LogAppService,
-    MailService,
-    MailBrokerService,
-    MailMessageService,
-    SharedService, 
-    SecurityService,
-    UserService,
-    UserSessionService,    
-  ]
+    SharedService,
+  ],
 })
 export class CoreModule { }

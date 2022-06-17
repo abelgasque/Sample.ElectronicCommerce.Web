@@ -21,7 +21,6 @@ import { MenuModule } from 'primeng/menu';
 import { MessageModule } from 'primeng/message';
 
 import { CoreService } from '../core/core.service';
-import { SecurityService } from 'src/app/core/modules/security/security.service';
 import { SharedService } from './shared.service';
 
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -32,9 +31,6 @@ import { MessagesComponent } from './components/messages/messages.component';
 
 import { WidgetChartDynamicComponent } from './widgets/widget-chart-dynamic/widget-chart-dynamic.component';
 import { WidgetChartPieComponent } from './widgets/widget-chart-pie/widget-chart-pie.component';
-import { MessageControlComponent } from './components/message-control/message-control.component';
-import { MessageDialogComponent } from './components/message-dialog/message-dialog.component';
-import { InputFieldComponent } from './components/input-field/input-field.component';
 import { MatButtonBarUserComponent } from './components/mat-button-bar-user/mat-button-bar-user.component';
 import { MatButtonBarSystemComponent } from './components/mat-button-bar-system/mat-button-bar-system.component';
 import { MatButtonBarSearchComponent } from './components/mat-button-bar-search/mat-button-bar-search.component';
@@ -49,12 +45,9 @@ import { WidgetSidebarUserComponent } from './widgets/widget-sidebar-user/widget
     SpinnerComponent,
     SpinnerLoadingComponent,
     MessagesComponent,
-    MessageControlComponent,
-    MessageDialogComponent,
 
     WidgetChartDynamicComponent,
     WidgetChartPieComponent,
-    InputFieldComponent,
     MatButtonBarUserComponent,
     MatButtonBarSystemComponent,
     MatButtonBarSearchComponent,
@@ -90,9 +83,6 @@ import { WidgetSidebarUserComponent } from './widgets/widget-sidebar-user/widget
     SpinnerComponent, 
     SpinnerLoadingComponent,   
     MessagesComponent,
-    MessageControlComponent,
-    MessageDialogComponent,
-    InputFieldComponent,
     
     WidgetChartDynamicComponent,
     WidgetChartPieComponent,
@@ -102,7 +92,6 @@ import { WidgetSidebarUserComponent } from './widgets/widget-sidebar-user/widget
   ],
   providers:[
     CoreService,
-    SecurityService,
     SharedService,
     MessageService,
   ]

@@ -1,4 +1,0 @@
-<p-dialog [header]="((this.data.id > 0) ? 'Atualização' : 'Inserção') + ' de mensagem de e-mail'" [closable]="true" [(visible)]="this.isOpen" [modal]="true"
-    [draggable]="false" [style]="{width: '90vw'}" [breakpoints]="{'1000px': '100vw'}" (onHide)="this.visableDialog(false)">
-    <app-mail-message-form-persist [data]="this.data" (eventPersist)="this.eventPersistForm($event)"></app-mail-message-form-persist>
-</p-dialog>
