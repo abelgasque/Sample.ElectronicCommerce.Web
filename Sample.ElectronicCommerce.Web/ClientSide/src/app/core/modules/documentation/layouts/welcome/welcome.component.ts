@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
+import { environment } from 'src/environments/environment';
+
+import { CoreService } from 'src/app/core/core.service';
+
 @Component({
   selector: 'app-welcome',
   templateUrl: './welcome.component.html',
@@ -7,7 +11,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WelcomeComponent implements OnInit {
 
-  constructor() { }
+  public linkSwagger: string;
+
+  constructor(private coreService: CoreService) { 
+    this.linkSwagger =`${ environment.baseUrl }/swagger/index.html`; 
+  }
 
   ngOnInit(): void {
   }

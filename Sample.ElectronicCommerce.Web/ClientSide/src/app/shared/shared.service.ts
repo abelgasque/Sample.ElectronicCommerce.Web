@@ -5,40 +5,48 @@ import { MessageService } from 'primeng/api';
 @Injectable({
   providedIn: 'root'
 })
-export class SharedService 
-{    
+export class SharedService {
   public listMenu: any[] = [];
-  public openedSpinner: boolean = false;  
+  public openedSpinner: boolean = false;
   public openedSidebarMenu: boolean = false;
   public openedSidebarChat: boolean = false;
   public openedSidebarUser: boolean = false;
 
-  constructor(private messageService: MessageService) {}
+  constructor(private messageService: MessageService) { }
 
-  public getListMenu(){
+  public getListMenu() {
     this.listMenu = [
       {          
-        name: "Painel de Controle",         
-        icon: "dashboard", 
+        name: "Documentação",         
+        icon: "file", 
         isOpen: false,
         items: [
-          { name: "Histórico Aplicação", icon:"", routerLink: "dashboard/log-app" }
+          { name: "Principal", icon:"", routerLink: "" },
+          { name: "Swagger", icon:"", routerLink: "swagger" },
         ]
       },
-      {          
-        name: "Módulos",         
-        icon: "view_list", 
-        isOpen: false,
-        items: [
-          //{ name: "Agente E-mail", icon:"contact_mail", routerLink: "mail-broker" },
-          //{ name: "E-mail", icon:"mail_outline", routerLink: "mail" },
-          //{ name: "Mensagem E-mail", icon:"forward_to_inbox", routerLink: "mail-message" },          
-          { name: "Chat", icon:"chat", routerLink: "chat" },
-          { name: "Histórico Aplicação", icon:"travel_explore", routerLink: "log-app" },
-          { name: "Sessão Usuário", icon:"admin_panel_settings", routerLink: "user-session" },
-          { name: "Usuário", icon:"account_circle", routerLink: "user" },
-        ]
-      },
+      // {          
+      //   name: "Painel de Controle",         
+      //   icon: "dashboard", 
+      //   isOpen: false,
+      //   items: [
+      //     { name: "Histórico Aplicação", icon:"", routerLink: "dashboard/log-app" }
+      //   ]
+      // },
+      // {          
+      //   name: "Módulos",         
+      //   icon: "view_list", 
+      //   isOpen: false,
+      //   items: [
+      //     //{ name: "Agente E-mail", icon:"contact_mail", routerLink: "mail-broker" },
+      //     //{ name: "E-mail", icon:"mail_outline", routerLink: "mail" },
+      //     //{ name: "Mensagem E-mail", icon:"forward_to_inbox", routerLink: "mail-message" },          
+      //     { name: "Chat", icon:"chat", routerLink: "chat" },
+      //     { name: "Histórico Aplicação", icon:"travel_explore", routerLink: "log-app" },
+      //     { name: "Sessão Usuário", icon:"admin_panel_settings", routerLink: "user-session" },
+      //     { name: "Usuário", icon:"account_circle", routerLink: "user" },
+      //   ]
+      // },
     ];
   }
 
@@ -72,27 +80,27 @@ export class SharedService
     this.openedSidebarUser = !this.openedSidebarUser;
   }
 
-  public openSpinner(){
+  public openSpinner() {
     this.openedSpinner = true;
   }
 
-  public closeSpinner(){
+  public closeSpinner() {
     this.openedSpinner = false;
   }
 
   public showMessageSuccess(pDeDetail: string) {
-    this.messageService.add({severity:'success', summary: 'Sucesso', detail: pDeDetail});
+    this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: pDeDetail });
   }
 
   public showMessageInfo(pDeDetail: string) {
-    this.messageService.add({severity:'info', summary: 'Informações', detail: pDeDetail});
+    this.messageService.add({ severity: 'info', summary: 'Informações', detail: pDeDetail });
   }
 
   public showMessageWarn(pDeDetail: string) {
-    this.messageService.add({severity:'warn', summary: 'Aviso', detail: pDeDetail});
+    this.messageService.add({ severity: 'warn', summary: 'Aviso', detail: pDeDetail });
   }
 
   public showMessageError(pDeDetail: string) {
-    this.messageService.add({severity:'error', summary: 'Erro', detail: pDeDetail});
+    this.messageService.add({ severity: 'error', summary: 'Erro', detail: pDeDetail });
   }
 }

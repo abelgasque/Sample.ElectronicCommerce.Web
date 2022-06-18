@@ -171,7 +171,7 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         /// </summary>        
         [HttpDelete]
         [Route("user/{pId}")]
-        public async Task<ActionResult<ReturnDTO>> UserDeleteAsync([FromBody] string pId)
+        public async Task<ActionResult<ReturnDTO>> UserDeleteAsync(string pId)
         {
             _logger.LogInformation("SecurityController.UserDeleteAsync => Start");
             ReturnDTO returnDTO;
@@ -305,7 +305,7 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         /// </summary>        
         [HttpDelete]
         [Route("user/role/{pId}")]
-        public async Task<ActionResult<ReturnDTO>> UserRoleDeleteAsync([FromBody] string pId)
+        public async Task<ActionResult<ReturnDTO>> UserRoleDeleteAsync(string pId)
         {
             _logger.LogInformation("UserRoleController.UserRoleDeleteAsync => Start");
             ReturnDTO returnDTO;
