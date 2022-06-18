@@ -1,1 +1,36 @@
-<p>auth works!</p>
+<form class="row" autocomplete="off" [formGroup]="this.form" (ngSubmit)="this.auth()" fxLayout="row"
+    fxLayoutAlign="center center">
+    <div class="col-12 header-login">
+        <img src="./assets/img/Resources/icon-navbar.png" alt="Logo da empresa">
+        <h3>Login</h3>
+    </div>
+
+    <div class="col-12 space-input p-fluid">
+        <mat-form-field class="input">
+            <mat-label>Usuário</mat-label>
+            <input matInput name="mail" formControlName="mail" [(ngModel)]="this.entity.mail" placeholder="Insira seu e-mail aqui" />
+        </mat-form-field>
+    </div>
+
+    <div class="col-12 space-input p-fluid">
+        <mat-form-field class="input">
+            <mat-label>Senha</mat-label>
+            <input matInput name="password" formControlName="password" [(ngModel)]="this.entity.password" placeholder="Insira sua senha aqui" />
+        </mat-form-field>
+        <a href="#" routerLinkActive="list-item-active" [routerLink]="['/']">Esqueceu sua senha ?</a>
+    </div>
+
+    <div class="col-12 col-md-6" style="text-align: center;">
+        <button mat-stroked-button type="button" [routerLink]="['/']">
+            <mat-icon>person_add</mat-icon>
+            Criar conta
+        </button>
+    </div>
+
+    <div class="col-12" style="text-align: center;">
+        <button mat-stroked-button type="submit">
+            <mat-icon>login</mat-icon>
+            Confirmar
+        </button>
+    </div>
+</form>

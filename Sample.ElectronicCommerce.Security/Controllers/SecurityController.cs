@@ -5,7 +5,7 @@ using Sample.ElectronicCommerce.Core.Entities.DTO;
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using Sample.ElectronicCommerce.Core.Entities.MongoDb;
+using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Util;
 
 namespace Sample.ElectronicCommerce.Security.Controllers

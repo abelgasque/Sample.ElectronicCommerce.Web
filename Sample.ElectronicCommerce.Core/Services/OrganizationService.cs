@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sample.ElectronicCommerce.Core.Entities.MongoDb;
+using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Repositories;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
 using System;

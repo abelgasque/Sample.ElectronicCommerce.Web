@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import * as moment from 'moment';
 
-import { SharedService } from '../shared/shared.service';
+import { SharedService } from '../util/services/shared.service';
 import { AbstractControl } from '@angular/forms';
 
 @Injectable({

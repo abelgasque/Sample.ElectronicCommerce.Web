@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { SharedService } from 'src/app/shared/shared.service';
+import { SharedService } from 'src/app/util/services/shared.service';
 
 @Component({
   selector: 'app-spinner',
@@ -11,7 +11,6 @@ export class SpinnerComponent implements OnInit {
 
   constructor(public sharedService: SharedService) { }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void { }
+  
 }

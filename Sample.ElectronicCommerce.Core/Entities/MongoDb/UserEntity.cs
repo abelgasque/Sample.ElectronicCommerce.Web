@@ -4,7 +4,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
-namespace Sample.ElectronicCommerce.Core.Entities.MongoDb
+namespace Sample.ElectronicCommerce.Core.Entities.MongoDB
 {
     public class UserEntity
     {

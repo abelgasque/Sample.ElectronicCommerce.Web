@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 using System.Linq.Expressions;
 using MongoDB.Bson;
 using AppMongoClient = Sample.ElectronicCommerce.Core.Entities.Settings;
-using Sample.ElectronicCommerce.Core.Entities.MongoDb;
+using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Util;
 
 namespace Sample.ElectronicCommerce.Security.Repositories

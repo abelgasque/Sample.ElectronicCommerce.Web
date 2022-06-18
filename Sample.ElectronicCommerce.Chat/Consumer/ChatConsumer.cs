@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Sample.ElectronicCommerce.Chat.Services;
-using Sample.ElectronicCommerce.Core.Entities.MongoDb;
+using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using System;
 using System.Threading.Tasks;
 

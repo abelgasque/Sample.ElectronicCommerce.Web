@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { UserDTO } from 'src/app/shared/util/EntitiesDTO/UserDTO';
-import { ReturnDTO } from 'src/app/shared/util/EntitiesDTO/ReturnDTO';
+import { UserDTO } from 'src/app/util/entities/dto/UserDTO';
+import { TokenDTO } from 'src/app/util/entities/dto/TokenDTO';
 
 import { CoreService } from 'src/app/core/core.service';
-import { SecurityService } from 'src/app/core/modules/security/security.service';
 
-import { SharedService } from 'src/app/shared/shared.service';
+import { SharedService } from 'src/app/util/services/shared.service';
 
 @Component({
   selector: 'app-auth',
@@ -17,19 +16,28 @@ import { SharedService } from 'src/app/shared/shared.service';
 })
 export class AuthComponent implements OnInit {
 
+  public form: FormGroup;
   public entity = new UserDTO();
 
   constructor(
     private router: Router,
+    private formBuilder: FormBuilder,
     private coreService: CoreService,
-    private securityService: SecurityService,
     private sharedService: SharedService,
   ) { }
 
   ngOnInit(): void {
+    this.setForm();
   }
 
-  public authenticate(f: NgForm) {
+  private setForm() {
+    this.form = this.formBuilder.group({
+      mail: [null, [Validators.required, Validators.email]],
+      password: [null, [Validators.required]],
+    });
+  }
+
+  public auth() {
     if ((this.entity.mail.length <= 0) || (this.entity.password.length <= 0)) {
       this.sharedService.showMessageWarn("Preencha o formulário corretamente!");
     } else {

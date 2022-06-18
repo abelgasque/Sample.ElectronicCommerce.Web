@@ -1,5 +1,5 @@
 ﻿using Sample.ElectronicCommerce.Core.Entities.DTO;
-using Sample.ElectronicCommerce.Core.Entities.MongoDb;
+using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

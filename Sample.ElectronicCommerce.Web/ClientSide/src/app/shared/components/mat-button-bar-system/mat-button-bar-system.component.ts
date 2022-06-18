@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { SharedService } from '../../shared.service';
+import { SharedService } from '../../../util/services/shared.service';
 
 @Component({
   selector: 'app-mat-button-bar-system',

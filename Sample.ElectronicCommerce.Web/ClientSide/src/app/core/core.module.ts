@@ -15,7 +15,7 @@ import { CoreRoutingModule } from 'src/app/core/core-routing.module';
 import { CoreService } from 'src/app/core/core.service';
 import { CoreComponent } from 'src/app/core/core.component';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { SharedService } from 'src/app/shared/shared.service';
+import { SharedService } from 'src/app/util/services/shared.service';
 import { DocumentationModule } from 'src/app/core/modules/documentation/documentation.module';
 import { SecurityModule } from 'src/app/core/modules/security/security.module';
 import { UserModule } from 'src/app/core/modules/user/user.module';

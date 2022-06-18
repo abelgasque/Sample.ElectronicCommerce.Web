@@ -21,7 +21,7 @@ import { MenuModule } from 'primeng/menu';
 import { MessageModule } from 'primeng/message';
 
 import { CoreService } from '../core/core.service';
-import { SharedService } from './shared.service';
+import { SharedService } from '../util/services/shared.service';
 
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';

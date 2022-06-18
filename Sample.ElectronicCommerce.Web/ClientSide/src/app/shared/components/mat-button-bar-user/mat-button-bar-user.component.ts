@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { SharedService } from 'src/app/shared/shared.service';
+import { SharedService } from 'src/app/util/services/shared.service';
+import { JwtService } from 'src/app/util/services/jwt.service';
 
 @Component({
   selector: 'app-mat-button-bar-user',
@@ -10,7 +11,7 @@ import { SharedService } from 'src/app/shared/shared.service';
 export class MatButtonBarUserComponent implements OnInit {
 
   constructor(    
-    public sharedService: SharedService,
+    public jwtService: JwtService,
   ) { }
 
   ngOnInit(): void {

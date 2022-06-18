@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Sample.ElectronicCommerce.Chat.Services;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
-using Sample.ElectronicCommerce.Core.Entities.MongoDb;
+using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Util;
 using System;
 using System.Collections.Generic;

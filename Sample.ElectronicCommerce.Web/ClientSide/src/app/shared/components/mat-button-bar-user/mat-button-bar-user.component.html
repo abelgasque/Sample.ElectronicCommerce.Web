@@ -17,9 +17,9 @@
 
 <button mat-icon-button type="button" (click)="this.securityService.loggout()" *ngIf="this.securityService.hasUserAuth">    
     <mat-icon>logout</mat-icon>
-</button>
+</button>-->
 
-<button mat-button type="button" [routerLink]="['/security','auth']" *ngIf="(!this.securityService.hasUserAuth)">
+<button mat-button type="button" [routerLink]="['/security','auth']" *ngIf="(!this.jwtService.token)">
     <mat-icon>login</mat-icon>
     Login
-</button> -->
+</button>

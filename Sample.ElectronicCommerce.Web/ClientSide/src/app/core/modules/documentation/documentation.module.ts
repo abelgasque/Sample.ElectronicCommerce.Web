@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import { SharedModule } from 'src/app/shared/shared.module';
 import { CoreService } from '../../core.service';
-import { SharedService } from 'src/app/shared/shared.service';
+import { SharedService } from 'src/app/util/services/shared.service';
 import { DocumentationComponent } from './documentation.component';
 import { WelcomeComponent } from './layouts/welcome/welcome.component';
 import { SwaggerComponent } from './layouts/swagger/swagger.component';
