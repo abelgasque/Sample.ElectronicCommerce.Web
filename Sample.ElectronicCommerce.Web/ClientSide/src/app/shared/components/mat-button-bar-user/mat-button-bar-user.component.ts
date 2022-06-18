@@ -12,6 +12,7 @@ export class MatButtonBarUserComponent implements OnInit {
 
   constructor(    
     public jwtService: JwtService,
+    public sharedService: SharedService,
   ) { }
 
   ngOnInit(): void {

@@ -11,42 +11,20 @@ export class SharedService {
   public openedSidebarMenu: boolean = false;
   public openedSidebarChat: boolean = false;
   public openedSidebarUser: boolean = false;
+  public openedSidebarUserLead: boolean = false;
 
   constructor(private messageService: MessageService) { }
 
   public getListMenu() {
     this.listMenu = [
-      {          
-        name: "Documentação",         
-        icon: "file", 
+      {
+        name: "Documentação",
+        icon: "file",
         isOpen: false,
         items: [
-          { name: "Principal", icon:"", routerLink: "" },
-          { name: "Swagger", icon:"", routerLink: "swagger" },
+          { name: "Principal", icon: "home", routerLink: "" },
         ]
       },
-      // {          
-      //   name: "Painel de Controle",         
-      //   icon: "dashboard", 
-      //   isOpen: false,
-      //   items: [
-      //     { name: "Histórico Aplicação", icon:"", routerLink: "dashboard/log-app" }
-      //   ]
-      // },
-      // {          
-      //   name: "Módulos",         
-      //   icon: "view_list", 
-      //   isOpen: false,
-      //   items: [
-      //     //{ name: "Agente E-mail", icon:"contact_mail", routerLink: "mail-broker" },
-      //     //{ name: "E-mail", icon:"mail_outline", routerLink: "mail" },
-      //     //{ name: "Mensagem E-mail", icon:"forward_to_inbox", routerLink: "mail-message" },          
-      //     { name: "Chat", icon:"chat", routerLink: "chat" },
-      //     { name: "Histórico Aplicação", icon:"travel_explore", routerLink: "log-app" },
-      //     { name: "Sessão Usuário", icon:"admin_panel_settings", routerLink: "user-session" },
-      //     { name: "Usuário", icon:"account_circle", routerLink: "user" },
-      //   ]
-      // },
     ];
   }
 
@@ -57,27 +35,31 @@ export class SharedService {
   }
 
   public toggleSidebarMenu() {
-    if (this.openedSidebarChat == true || this.openedSidebarUser == true) {
-      this.openedSidebarChat = false;
-      this.openedSidebarUser = false;
-    }
+    this.openedSidebarChat = false;
+    this.openedSidebarUser = false;
+    this.openedSidebarUserLead = false;
     this.openedSidebarMenu = !this.openedSidebarMenu;
   }
 
   public toggleSidebarChat() {
-    if (this.openedSidebarMenu == true || this.openedSidebarUser == true) {
-      this.openedSidebarMenu = false;
-      this.openedSidebarUser = false;
-    }
+    this.openedSidebarMenu = false;
+    this.openedSidebarUser = false;
+    this.openedSidebarUserLead = false;
     this.openedSidebarChat = !this.openedSidebarChat;
   }
 
   public toggleSidebarUser() {
-    if (this.openedSidebarMenu == true || this.openedSidebarChat == true) {
-      this.openedSidebarMenu = false;
-      this.openedSidebarChat = false;
-    }
+    this.openedSidebarMenu = false;
+    this.openedSidebarChat = false;
+    this.openedSidebarUserLead = false;
     this.openedSidebarUser = !this.openedSidebarUser;
+  }
+
+  public toggleSidebarUserLead() {
+    this.openedSidebarMenu = false;
+    this.openedSidebarChat = false;
+    this.openedSidebarUser = false;
+    this.openedSidebarUserLead = !this.openedSidebarUserLead;
   }
 
   public openSpinner() {

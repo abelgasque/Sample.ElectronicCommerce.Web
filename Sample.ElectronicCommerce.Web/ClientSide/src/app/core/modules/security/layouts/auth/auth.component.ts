@@ -1,11 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 
-import { UserDTO } from 'src/app/util/entities/dto/UserDTO';
-import { TokenDTO } from 'src/app/util/entities/dto/TokenDTO';
-
-import { CoreService } from 'src/app/core/core.service';
+import { UserDTO } from 'src/app/util/entities/dto/user.dto';
 
 import { SharedService } from 'src/app/util/services/shared.service';
 
@@ -20,10 +16,8 @@ export class AuthComponent implements OnInit {
   public entity = new UserDTO();
 
   constructor(
-    private router: Router,
     private formBuilder: FormBuilder,
-    private coreService: CoreService,
-    private sharedService: SharedService,
+    public sharedService: SharedService,
   ) { }
 
   ngOnInit(): void {

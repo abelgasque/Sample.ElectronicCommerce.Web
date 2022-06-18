@@ -37,6 +37,7 @@ import { MatButtonBarSearchComponent } from './components/mat-button-bar-search/
 import { WidgetSidebarChatComponent } from './widgets/widget-sidebar-chat/widget-sidebar-chat.component';
 import { WidgetSidebarMenuComponent } from './widgets/widget-sidebar-menu/widget-sidebar-menu.component';
 import { WidgetSidebarUserComponent } from './widgets/widget-sidebar-user/widget-sidebar-user.component';
+import { WidgetSidebarUserLeadComponent } from './widgets/widget-sidebar-user-lead/widget-sidebar-user-lead.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { WidgetSidebarUserComponent } from './widgets/widget-sidebar-user/widget
     WidgetSidebarChatComponent,
     WidgetSidebarMenuComponent,
     WidgetSidebarUserComponent,
+    WidgetSidebarUserLeadComponent,
   ],
   imports: [
     CommonModule,    
@@ -89,6 +91,7 @@ import { WidgetSidebarUserComponent } from './widgets/widget-sidebar-user/widget
     WidgetSidebarChatComponent,
     WidgetSidebarMenuComponent,
     WidgetSidebarUserComponent,
+    WidgetSidebarUserLeadComponent,
   ],
   providers:[
     CoreService,

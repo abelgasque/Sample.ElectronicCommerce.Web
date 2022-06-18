@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 
-import { TokenDTO } from '../entities/dto/TokenDTO';
-import { UserDTO } from '../entities/dto/UserDTO';
+import { TokenDTO } from '../entities/dto/token.dto';
+import { UserDTO } from '../entities/dto/user.dto';
 
 @Injectable({
   providedIn: 'root'

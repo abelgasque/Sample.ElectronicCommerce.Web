@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CoreService } from 'src/app/core/core.service';
 import { SharedService } from '../../../util/services/shared.service';
-import { ReturnDTO } from 'src/app/util/entities/dto/ReturnDTO';
+import { ReturnDTO } from 'src/app/util/entities/dto/return.dto';
 
 @Component({
   selector: 'app-widget-sidebar-user',
