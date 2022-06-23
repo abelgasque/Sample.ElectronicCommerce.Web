@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { UserLocalStorageService } from './user-local-storage.service';
+import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,11 +12,11 @@ export class JwtService {
 
   constructor(
     private jwtHelperService: JwtHelperService,
-    private userLocalStorageService: UserLocalStorageService,
+    private localStorageService: LocalStorageService,
   ) {
-    let token = this.userLocalStorageService.getAccessToken();
+    let token = this.localStorageService.getAccessTokenBearer();
     this.token = (token) ? token : null;
-    let user = this.userLocalStorageService.getUser();
+    let user = this.localStorageService.getUser();
     this.user = (user) ? user : null;
   }
 
@@ -33,7 +33,7 @@ export class JwtService {
   }
 
   public isValidToken(): boolean {
-    let token: string = this.userLocalStorageService.getAccessToken();
+    let token: string = this.localStorageService.getAccessTokenBearer();
     return (token != null && token.length > 0) ? (!this.isTokenExpired(token)) : false;
   }
 

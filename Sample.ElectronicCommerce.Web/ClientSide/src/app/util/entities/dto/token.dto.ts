@@ -1,5 +1,5 @@
-export class TokenDTO {
-    idUserSession: string;
-    accessToken: string;
-    expireIn: number;
+export interface TokenDTO {
+    access_token: string;
+    token_type: string;
+    expire_in: number;
 }

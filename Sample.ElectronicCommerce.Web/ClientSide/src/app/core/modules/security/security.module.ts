@@ -12,6 +12,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
+import { UserAuthService } from 'src/app/util/services/user-auth.service';
+import { CoreService } from 'src/app/core/core.service';
+import { LocalStorageService } from 'src/app/util/services/local-storage.service';
+import { SharedService } from 'src/app/util/services/shared.service';
+
 import { SecurityComponent } from './security.component';
 import { AuthComponent } from './layouts/auth/auth.component';
 import { ForgotPasswordComponent } from './layouts/forgot-password/forgot-password.component';
@@ -29,16 +34,21 @@ import { ResetPasswordComponent } from './layouts/reset-password/reset-password.
     RouterModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule.withConfig({warnOnNgModelWithFormControl: 'never'}),
+    ReactiveFormsModule.withConfig({ warnOnNgModelWithFormControl: 'never' }),
 
     FlexLayoutModule,
-        
+
     MatButtonModule,
     MatCardModule,
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
   ],
-  providers: []
+  providers: [
+    CoreService,
+    UserAuthService,
+    LocalStorageService,
+    SharedService,
+  ]
 })
 export class SecurityModule { }

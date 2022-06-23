@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { UserDTO } from 'src/app/util/entities/dto/user.dto';
+import { TokenDTO } from 'src/app/util/entities/dto/token.dto';
 
+import { CoreService } from 'src/app/core/core.service';
 import { SharedService } from 'src/app/util/services/shared.service';
+import { UserAuthService } from 'src/app/util/services/user-auth.service';
+import { LocalStorageService } from 'src/app/util/services/local-storage.service';
 
 @Component({
   selector: 'app-auth',
@@ -17,6 +22,10 @@ export class AuthComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
+    private router: Router,
+    private coreService: CoreService,
+    private userAuthService: UserAuthService,
+    private localStorageService: LocalStorageService,
     public sharedService: SharedService,
   ) { }
 
@@ -32,25 +41,23 @@ export class AuthComponent implements OnInit {
   }
 
   public auth() {
-    if ((this.entity.mail.length <= 0) || (this.entity.password.length <= 0)) {
-      this.sharedService.showMessageWarn("Preencha o formulário corretamente!");
+    if ((!this.entity.mail) || (!this.entity.password)) {
+      this.sharedService.showMessageWarn("É necessário preencher todos os campos do formulário!");
     } else {
       // this.sharedService.openSpinner();
-      // this.securityService.Authenticate(this.entity).subscribe({
-      //   next: (returnDTO: ReturnDTO) => {
-      //     if (returnDTO.isSuccess) {
-      //       this.securityService.authenticateUser(returnDTO.resultObject);
-      //       this.router.navigate(['']);
-      //     } else {
-      //       this.securityService.authenticateUser(null);
-      //       this.sharedService.showMessageWarn(returnDTO.deMessage);
-      //     }
-      //     this.sharedService.closeSpinner();
-      //   },
-      //   error: (error: any) => {
-      //     this.coreService.errorHandler(error);
-      //   }
-      // });
+      this.userAuthService.authenticate(this.entity).subscribe({
+        next: (resp: TokenDTO) => {
+          this.localStorageService.setAccessTokenBearer(resp.access_token);
+          this.localStorageService.setUser(resp.access_token);
+          this.router.navigate(['']);
+          //this.sharedService.closeSpinner();
+        },
+        error: (error: any) => {
+          this.localStorageService.setAccessTokenBearer(null);
+          this.localStorageService.setUser(null);
+          this.coreService.errorHandler(error);
+        }
+      });
     }
   }
 }

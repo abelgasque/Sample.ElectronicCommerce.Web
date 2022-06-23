@@ -103,7 +103,7 @@ namespace Sample.ElectronicCommerce.Web
             {
                 endpoints.MapControllers();
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
-                endpoints.MapHub<ChatConsumer>("/chat");
+                //endpoints.MapHub<ChatConsumer>("/chat");
             });
 
             app.UseSwagger();

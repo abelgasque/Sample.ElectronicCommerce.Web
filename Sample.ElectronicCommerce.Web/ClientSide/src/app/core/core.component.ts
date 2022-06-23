@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { SharedService } from 'src/app/util/services/shared.service';
+import { LocalStorageService } from '../util/services/local-storage.service';
 
 @Component({
   selector: 'app-core',
@@ -10,6 +11,7 @@ import { SharedService } from 'src/app/util/services/shared.service';
 export class CoreComponent implements OnInit {
 
   constructor(
+    private localStorageService: LocalStorageService,
     public sharedService: SharedService,
   ) { }
 
@@ -18,6 +20,7 @@ export class CoreComponent implements OnInit {
   }
 
   public loadApplication() {
+    this.localStorageService.setAccessTokenBasic("Sample", "code_sample");
     this.sharedService.getListMenu();
-  }
+  }  
 }

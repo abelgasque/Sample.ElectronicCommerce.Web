@@ -3,9 +3,9 @@ export const environment = {
   production: false,
   baseUrl: "https://localhost:5001",
   tokenWhitelistedDomains: [
-    new RegExp('localhost:5001'), 
+    "localhost:5001",
   ],
-  tokenBlacklistedRoutes: [ 
-    new RegExp('\/ws\/Token\/Login'),
+  tokenBlacklistedRoutes: [
+    "https://localhost:5001/security/auth",
   ]
 };

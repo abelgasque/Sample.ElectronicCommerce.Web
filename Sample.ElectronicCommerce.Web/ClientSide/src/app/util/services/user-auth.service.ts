@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
@@ -19,8 +19,8 @@ export class UserAuthService {
     this.baseUrl = `${environment.baseUrl}/api/security/token`;
   }
 
-  public authenticate(pEntity: UserDTO): Observable<any> {
-    return this.http.post<TokenDTO>(`${this.baseUrl}/login`, pEntity);
+  public authenticate(pEntity: UserDTO): Observable<any> {    
+    return this.http.post<TokenDTO>(`${this.baseUrl}/auth`, pEntity);
   }
 
   public refresh(pId: string): Observable<any> {

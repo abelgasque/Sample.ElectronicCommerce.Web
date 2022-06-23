@@ -20,9 +20,9 @@ import { SecurityModule } from 'src/app/core/modules/security/security.module';
 import { UserModule } from 'src/app/core/modules/user/user.module';
 import { UserRoleModule } from 'src/app/core/modules/user-role/user-role.module';
 
-export function tokenGetter() {
-  return localStorage.getItem("access_token");
-}
+const listBasicAuth = [
+  "api/security/token/auth"
+];
 
 @NgModule({
   declarations: [
@@ -39,7 +39,23 @@ export function tokenGetter() {
 
     JwtModule.forRoot({
       config: {
-        tokenGetter: tokenGetter,
+        authScheme: (request) => {          
+          for (let i = 0; i < listBasicAuth.length; i++) {
+            if (request.url.includes(listBasicAuth[i])) {
+              return "Basic ";
+            }
+          }
+          return "Bearer ";
+        },
+        tokenGetter: (request) => {
+          for (let i = 0; i < listBasicAuth.length; i++) {
+            if (request.url.includes(listBasicAuth[i])) {
+              return localStorage.getItem("access_token_basic");
+            }
+          }
+
+          return localStorage.getItem("access_token_bearer");
+        },
         allowedDomains: environment.tokenWhitelistedDomains,
         disallowedRoutes: environment.tokenBlacklistedRoutes
       }
