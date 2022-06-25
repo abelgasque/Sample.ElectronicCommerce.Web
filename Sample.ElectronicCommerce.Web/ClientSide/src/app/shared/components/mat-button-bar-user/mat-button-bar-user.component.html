@@ -1,14 +1,14 @@
 <div *ngIf="this.localStorageService.tokenBearer">
-    <button type="button" (click)="this.loggout()" mat-icon-button>
+    <a type="button" (click)="this.loggout()" mat-icon-button>
         <mat-icon>logout</mat-icon>
-    </button>
+    </a>
 </div>
 
 <div *ngIf="!this.localStorageService.tokenBearer">
-    <button type="button" (click)="this.sharedService.toggleSidebarUserLead()" mat-icon-button>
+    <a href="#" routerLinkActive="list-item-active" [routerLink]="['/security/account/lead']" mat-icon-button>
         <mat-icon>person_add</mat-icon>
-    </button>
-    <button type="button" [routerLink]="['/security','auth']" mat-icon-button>
+    </a>
+    <a href="#" [routerLink]="['/security','auth']" mat-icon-button>
         <mat-icon>login</mat-icon>
-    </button>
+    </a>
 </div>

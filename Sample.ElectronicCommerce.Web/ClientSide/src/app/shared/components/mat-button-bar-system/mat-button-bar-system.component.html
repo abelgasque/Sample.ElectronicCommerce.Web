@@ -1,8 +1,8 @@
-<button mat-icon-button type="button" (click)="this.sharedService.toggleSidebarMenu()">
+<a type="button" (click)="this.sharedService.toggleSidebarMenu()" mat-icon-button>
     <mat-icon>menu</mat-icon>
-</button>
+</a>
 
-<button mat-button type="button" class="button-icon-logo" [routerLink]="['/']">                
+<a type="button" class="button-icon-logo" [routerLink]="['/']" mat-button>                
     <img src="./assets/img/Resources/icon-navbar.png" alt="Foto logo menu">  
     Sample
-</button>  
+</a>  

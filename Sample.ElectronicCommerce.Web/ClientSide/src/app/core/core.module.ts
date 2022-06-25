@@ -26,7 +26,7 @@ const listBasicAuth = [
 
 @NgModule({
   declarations: [
-    CoreComponent
+    CoreComponent,
   ],
   imports: [
     CommonModule,

@@ -11,7 +11,6 @@ export class SharedService {
   public openedSidebarMenu: boolean = false;
   public openedSidebarChat: boolean = false;
   public openedSidebarUser: boolean = false;
-  public openedSidebarUserLead: boolean = false;
 
   constructor(private messageService: MessageService) { }
 
@@ -46,29 +45,19 @@ export class SharedService {
   public toggleSidebarMenu() {
     this.openedSidebarChat = false;
     this.openedSidebarUser = false;
-    this.openedSidebarUserLead = false;
     this.openedSidebarMenu = !this.openedSidebarMenu;
   }
 
   public toggleSidebarChat() {
     this.openedSidebarMenu = false;
     this.openedSidebarUser = false;
-    this.openedSidebarUserLead = false;
     this.openedSidebarChat = !this.openedSidebarChat;
   }
 
   public toggleSidebarUser() {
     this.openedSidebarMenu = false;
     this.openedSidebarChat = false;
-    this.openedSidebarUserLead = false;
     this.openedSidebarUser = !this.openedSidebarUser;
-  }
-
-  public toggleSidebarUserLead() {
-    this.openedSidebarMenu = false;
-    this.openedSidebarChat = false;
-    this.openedSidebarUser = false;
-    this.openedSidebarUserLead = !this.openedSidebarUserLead;
   }
 
   public openSpinner() {

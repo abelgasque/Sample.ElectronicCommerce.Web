@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { CoreComponent } from './core/core.component';
 import { DocumentationComponent } from './core/modules/documentation/documentation.component';
 import { WelcomeComponent } from './core/modules/documentation/layouts/welcome/welcome.component';
+import { AccountLeadComponent } from './core/modules/security/layouts/account-lead/account-lead.component';
 import { AuthComponent } from './core/modules/security/layouts/auth/auth.component';
 import { ForgotPasswordComponent } from './core/modules/security/layouts/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './core/modules/security/layouts/reset-password/reset-password.component';
@@ -27,9 +28,10 @@ const routes: Routes = [
         path: 'security',
         component: SecurityComponent,
         children: [
+          { path: 'account/lead', component: AccountLeadComponent },
           { path: 'auth', component: AuthComponent },
-          { path: 'forgot-password', component: ForgotPasswordComponent },
-          { path: 'reset-password', component: ResetPasswordComponent },
+          { path: 'forgot/password', component: ForgotPasswordComponent },
+          { path: 'reset/password', component: ResetPasswordComponent },
         ]
       },
       {

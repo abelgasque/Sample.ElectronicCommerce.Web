@@ -41,8 +41,8 @@ export class AuthComponent implements OnInit {
   }
 
   public auth() {
-    if ((!this.entity.mail) || (!this.entity.password)) {
-      this.sharedService.showMessageWarn("É necessário preencher todos os campos do formulário!");
+    if (!this.form.valid) {
+      this.sharedService.showMessageWarn("Formulário inválido!");
     } else {
       this.sharedService.openSpinner();
       this.userAuthService.authenticate(this.entity).subscribe({

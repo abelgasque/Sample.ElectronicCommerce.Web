@@ -18,16 +18,20 @@ import { LocalStorageService } from 'src/app/util/services/local-storage.service
 import { SharedService } from 'src/app/util/services/shared.service';
 
 import { SecurityComponent } from './security.component';
+import { AccountLeadComponent } from './layouts/account-lead/account-lead.component';
 import { AuthComponent } from './layouts/auth/auth.component';
 import { ForgotPasswordComponent } from './layouts/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './layouts/reset-password/reset-password.component';
+import { UserDesblockComponent } from './layouts/user-desblock/user-desblock.component';
 
 @NgModule({
   declarations: [
     SecurityComponent,
+    AccountLeadComponent,
     AuthComponent,
     ForgotPasswordComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    UserDesblockComponent,        
   ],
   imports: [
     CommonModule,
