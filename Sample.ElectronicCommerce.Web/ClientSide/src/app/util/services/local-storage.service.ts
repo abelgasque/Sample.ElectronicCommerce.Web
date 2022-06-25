@@ -5,19 +5,24 @@ import { Injectable } from '@angular/core';
 })
 export class LocalStorageService {
 
+  public tokenBasic: string = null;
+  public tokenBearer: string = null;
+  public user: any = null;
 
   constructor() { }
 
-  public setAccessTokenBasic(pUserName: string, pPassword: string) {    
-    localStorage.setItem("access_token_basic", btoa(`${pUserName}:${pPassword}`));
+  public setAccessTokenBasic(pUserName: string, pPassword: string) {
+    this.tokenBasic = btoa(`${pUserName}:${pPassword}`);
+    localStorage.setItem("access_token_basic", this.tokenBasic);
   }
 
   public getAccessTokenBasic() {
     return localStorage.getItem("access_token_basic");
   }
 
-  public setAccessTokenBearer(pToken: string) {    
-    localStorage.setItem("access_token_bearer", pToken);
+  public setAccessTokenBearer(pToken: string) {
+    this.tokenBearer = pToken;
+    localStorage.setItem("access_token_bearer", this.tokenBearer);
   }
 
   public getAccessTokenBearer() {
@@ -25,7 +30,8 @@ export class LocalStorageService {
   }
 
   public setUser(pUser: any) {
-    localStorage.setItem("user", pUser);
+    this.user = pUser;
+    localStorage.setItem("user", this.user);
   }
 
   public getUser() {

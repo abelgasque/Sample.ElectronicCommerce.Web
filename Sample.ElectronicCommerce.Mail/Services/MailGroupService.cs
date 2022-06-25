@@ -45,7 +45,7 @@ namespace Sample.ElectronicCommerce.Mail.Services
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
                 _logger.LogError($"MailGroupService.InsertAsync => Exception: {ex.Message}");
             }
-            await _logAppService.AppInsertAsync(0, "MailGroupService.InsertAsync", pEntity, responseDTO);
+            await _logAppService.AppInsertAsync(null, "MailGroupService.InsertAsync", pEntity, responseDTO);
             _logger.LogInformation($"MailGroupService.InsertAsync => End");
             return new ReturnDTO(responseDTO);
         }
@@ -63,7 +63,7 @@ namespace Sample.ElectronicCommerce.Mail.Services
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
                 _logger.LogError($"MailGroupService.UpdateAsync => Exception: {ex.Message}");
             }
-            await _logAppService.AppInsertAsync(0, "MailGroupService.UpdateAsync", pEntity, responseDTO);
+            await _logAppService.AppInsertAsync(null, "MailGroupService.UpdateAsync", pEntity, responseDTO);
             _logger.LogInformation($"MailGroupService.UpdateAsync => End");
             return new ReturnDTO(responseDTO);
         }

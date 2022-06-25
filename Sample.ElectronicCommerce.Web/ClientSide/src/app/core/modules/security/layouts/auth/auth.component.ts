@@ -44,13 +44,13 @@ export class AuthComponent implements OnInit {
     if ((!this.entity.mail) || (!this.entity.password)) {
       this.sharedService.showMessageWarn("É necessário preencher todos os campos do formulário!");
     } else {
-      // this.sharedService.openSpinner();
+      this.sharedService.openSpinner();
       this.userAuthService.authenticate(this.entity).subscribe({
         next: (resp: TokenDTO) => {
           this.localStorageService.setAccessTokenBearer(resp.access_token);
           this.localStorageService.setUser(resp.access_token);
           this.router.navigate(['']);
-          //this.sharedService.closeSpinner();
+          this.sharedService.closeSpinner();
         },
         error: (error: any) => {
           this.localStorageService.setAccessTokenBearer(null);

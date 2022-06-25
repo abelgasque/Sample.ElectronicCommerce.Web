@@ -47,7 +47,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
                 _logger.LogError($"UserService.InsertAsync => Exception: {ex.Message}");
             }
-            await _logAppService.AppInsertAsync(0, "UserService.InsertAsync", pEntity, responseDTO);
+            await _logAppService.AppInsertAsync(null, "UserService.InsertAsync", pEntity, responseDTO);
             _logger.LogInformation($"UserService.InsertAsync => End");
             return new ReturnDTO(responseDTO);
         }
@@ -66,7 +66,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
                 _logger.LogError($"UserService.UpdateAsync => Exception: {ex.Message}");
             }
-            await _logAppService.AppInsertAsync(0, "UserService.UpdateAsync", pEntity, responseDTO);
+            await _logAppService.AppInsertAsync(null, "UserService.UpdateAsync", pEntity, responseDTO);
             _logger.LogInformation($"UserService.UpdateAsync => End");
             return new ReturnDTO(responseDTO);
         }
@@ -84,7 +84,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
                 _logger.LogError($"UserService.DeleteAsync => Exception: {ex.Message}");
             }
-            await _logAppService.AppInsertAsync(0, "UserService.DeleteAsync", pId, responseDTO);
+            await _logAppService.AppInsertAsync(null, "UserService.DeleteAsync", pId, responseDTO);
             _logger.LogInformation($"UserService.DeleteAsync => End");
             return new ReturnDTO(responseDTO);
         }

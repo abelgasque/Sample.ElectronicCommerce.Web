@@ -92,7 +92,7 @@ namespace Sample.ElectronicCommerce.Core.Controllers
         /// </summary>
         [Route("log-app/{pId}")]
         [HttpGet]
-        public async Task<ActionResult<ReturnDTO>> LogAppGetById(long pId)
+        public async Task<ActionResult<ReturnDTO>> LogAppGetById(string pId)
         {
             _logger.LogInformation("CoreController.LogAppGetById => Start");
             ReturnDTO returnDTO;
@@ -116,67 +116,19 @@ namespace Sample.ElectronicCommerce.Core.Controllers
         /// </summary>
         [Route("log-app")]
         [HttpGet]
-        public async Task<ActionResult<ReturnDTO>> LogAppGetAll([FromQuery] bool? pIsActive)
+        public async Task<ActionResult<ReturnDTO>> LogAppGetAll()
         {
             _logger.LogInformation("CoreController.LogAppGetAll => Start");
             ReturnDTO returnDTO;
             try
             {
-                returnDTO = await _logAppService.GetAll(pIsActive);
+                returnDTO = await _logAppService.GetAll();
                 _logger.LogInformation($"CoreController.LogAppGetAll => IsSuccess: {returnDTO.IsSuccess} => End");
                 return new OkObjectResult(returnDTO);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"CoreController.LogAppGetAll => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
-            }
-        }
-
-        /// GET: log-app/GetLogAppForChartDynamic
-        /// <summary>
-        /// Ponto final que exibe grafico de linha mensal do historico do sistema
-        /// </summary>
-        [Route("log-app/GetLogAppForChartDynamic")]
-        [HttpGet]
-        public async Task<ActionResult<ReturnDTO>> LogAppGetLogAppForChartMonth([FromQuery] bool pMustFilterYear)
-        {
-            _logger.LogInformation("CoreController.LogAppGetLogAppForChartMonth => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _logAppService.GetLogAppForChartDynamic(pMustFilterYear);
-                _logger.LogInformation($"CoreController.LogAppGetLogAppForChartMonth => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"CoreController.LogAppGetLogAppForChartMonth => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
-            }
-        }
-
-        /// GET: log-app/GetLogAppDay
-        /// <summary>
-        /// Ponto final consulta de logs diarios do sistema
-        /// </summary>
-        [Route("log-app/GetLogAppDay")]
-        [HttpGet]
-        public async Task<ActionResult<ReturnDTO>> LogAppGetLogAppDay()
-        {
-            _logger.LogInformation("CoreController.LogAppGetLogAppDay => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _logAppService.GetLogAppDay();
-                _logger.LogInformation($"CoreController.LogAppGetLogAppDay => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"CoreController.LogAppGetLogAppDay => Exception: {ex.Message}");
                 returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
                 return new BadRequestObjectResult(returnDTO);
             }

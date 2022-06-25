@@ -6,10 +6,10 @@ namespace Sample.ElectronicCommerce.Core.Entities.Settings
     {
         [JsonProperty("ConnectionString")]
         public string ConnectionString { get; set; }
-        
+
         [JsonProperty("Server")]
         public string Server { get; set; }
-        
+
         [JsonProperty("UserName")]
         public string UserName { get; set; }
 
@@ -36,7 +36,7 @@ namespace Sample.ElectronicCommerce.Core.Entities.Settings
 
         [JsonProperty("OrganizationColletion")]
         public string OrganizationColletion { get; set; }
-        
+
         [JsonProperty("ChatBrokerAllColletion")]
         public string ChatBrokerAllColletion { get; set; }
 
@@ -45,6 +45,9 @@ namespace Sample.ElectronicCommerce.Core.Entities.Settings
 
         [JsonProperty("UserRoleColletion")]
         public string UserRoleColletion { get; set; }
+
+        [JsonProperty("LogAppColletion")]
+        public string LogAppColletion { get; set; }
 
         public string GetConnectionString
         {

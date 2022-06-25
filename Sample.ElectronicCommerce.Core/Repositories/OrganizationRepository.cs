@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AppMongoClient = Sample.ElectronicCommerce.Core.Entities.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using AppMongoClient = Sample.ElectronicCommerce.Core.Entities.Settings;
 using Sample.ElectronicCommerce.Core.Util;
 
 namespace Sample.ElectronicCommerce.Core.Repositories
@@ -20,7 +19,7 @@ namespace Sample.ElectronicCommerce.Core.Repositories
         private readonly ILogger<OrganizationRepository> _logger;
 
         private readonly AppMongoClient.MongoClientSettings _mongoClientSettings;
-        
+
         private readonly IMongoCollection<OrganizationEntity> _collection;
         #endregion
 
@@ -28,7 +27,8 @@ namespace Sample.ElectronicCommerce.Core.Repositories
         public OrganizationRepository(
             ILogger<OrganizationRepository> logger,
             IOptions<AppMongoClient.MongoClientSettings> mongoClientSettings
-        ) {
+        )
+        {
             _logger = logger;
             _mongoClientSettings = mongoClientSettings.Value;
             var mongoClient = new MongoClient(_mongoClientSettings.GetConnectionString);

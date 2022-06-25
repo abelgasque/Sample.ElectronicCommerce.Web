@@ -34,7 +34,7 @@ namespace Sample.ElectronicCommerce.Core.Services
         #endregion
 
         #region Methods
-        public async Task<ReturnDTO> AppInsertAsync(long pIdUserSession, string pNmMethod, object pContent, ResponseDTO pResponseDTO)
+        public async Task<ReturnDTO> AppInsertAsync(string pIdUser, string pMethod, object pContent, ResponseDTO pResponseDTO)
         {
             _logger.LogInformation($"LogAppService.AppInsertAsync => Start");
             ResponseDTO responseDTO;
@@ -42,23 +42,23 @@ namespace Sample.ElectronicCommerce.Core.Services
             {
                 LogAppEntity entity = new LogAppEntity()
                 {
-                    IdUserSession = pIdUserSession,
-                    IdApplication = 0,
-                    DtCreation = DateTime.Now,
+                    IdUser = pIdUser,
+                    IdOrganization = null,
+                    DtCreation = null,
                     DtLastUpdate = null,
-                    NuVersion = _appSettings.Version,
-                    NmMethod = pNmMethod,
-                    DeContent = (pContent != null) ? JsonConvert.SerializeObject(pContent) : null,
-                    IsTest = false,
+                    Version = _appSettings.Version,
+                    Method = pMethod,
+                    Content = (pContent != null) ? JsonConvert.SerializeObject(pContent) : null,
+                    IsDebug = _appSettings.IsDebug,
                     IsActive = true,
                 };
 
                 if (pResponseDTO != null)
                 {
-                    entity.DeResult = (pResponseDTO.DataObject != null) ? JsonConvert.SerializeObject(pResponseDTO.DataObject) : null;
-                    entity.DeMessage = (!string.IsNullOrEmpty(pResponseDTO.DeMessage)) ? pResponseDTO.DeMessage : null;
-                    entity.DeExceptionMessage = (!string.IsNullOrEmpty(pResponseDTO.DeExceptionMessage)) ? pResponseDTO.DeExceptionMessage : null;
-                    entity.DeStackTrace = (!string.IsNullOrEmpty(pResponseDTO.DeStackTrace) ? pResponseDTO.DeStackTrace : null);
+                    entity.Result = (pResponseDTO.DataObject != null) ? JsonConvert.SerializeObject(pResponseDTO.DataObject) : null;
+                    entity.Message = (!string.IsNullOrEmpty(pResponseDTO.DeMessage)) ? pResponseDTO.DeMessage : null;
+                    entity.ExceptionMessage = (!string.IsNullOrEmpty(pResponseDTO.DeExceptionMessage)) ? pResponseDTO.DeExceptionMessage : null;
+                    entity.StackTrace = (!string.IsNullOrEmpty(pResponseDTO.DeStackTrace) ? pResponseDTO.DeStackTrace : null);
                     entity.IsSuccess = pResponseDTO.IsSuccess;
                 }
 
@@ -108,7 +108,7 @@ namespace Sample.ElectronicCommerce.Core.Services
             return new ReturnDTO(responseDTO);
         }
 
-        public async Task<ReturnDTO> GetById(long pId)
+        public async Task<ReturnDTO> GetById(string pId)
         {
             _logger.LogInformation($"LogAppService.GetById => Start");
             ResponseDTO responseDTO;
@@ -125,13 +125,13 @@ namespace Sample.ElectronicCommerce.Core.Services
             return new ReturnDTO(responseDTO);
         }
 
-        public async Task<ReturnDTO> GetAll(bool? pIsActive)
+        public async Task<ReturnDTO> GetAll()
         {
             _logger.LogInformation($"LogAppService.GetAll => Start");
             ResponseDTO responseDTO;
             try
             {
-                responseDTO = await _repository.GetAll(pIsActive);
+                responseDTO = await _repository.GetAll();
             }
             catch (Exception ex)
             {
@@ -139,42 +139,6 @@ namespace Sample.ElectronicCommerce.Core.Services
                 _logger.LogError($"LogAppService.GetAll => Exception: {ex.Message}");
             }
             _logger.LogInformation($"LogAppService.GetAll => End");
-            return new ReturnDTO(responseDTO);
-        }
-
-        public async Task<ReturnDTO> GetLogAppForChartDynamic(bool pMustFilterYear)
-        {
-            _logger.LogInformation($"LogAppService.GetLogAppForChartDynamic => Start => pMustFilterYear: {pMustFilterYear}");
-            ResponseDTO responseDTO;
-            try
-            {
-                responseDTO = await _repository.GetLogAppForChartDynamic(pMustFilterYear);
-                _logger.LogInformation($"LogAppService.GetLogAppForChartDynamic => sqlConnectionResponse.IsSuccess: {responseDTO.IsSuccess}");
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"LogAppService.GetLogAppForChartDynamic => Exception: {ex.Message}");
-            }
-            _logger.LogInformation($"LogAppService.GetLogAppForChartDynamic => End => pMustFilterYear: {pMustFilterYear}");
-            return new ReturnDTO(responseDTO);
-        }
-
-        public async Task<ReturnDTO> GetLogAppDay()
-        {
-            _logger.LogInformation($"LogAppService.GetLogAppDay => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                responseDTO = await _repository.GetLogAppDay();
-                _logger.LogInformation($"LogAppService.GetLogAppDay => sqlConnectionResponse.IsSuccess: {responseDTO.IsSuccess}");
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"LogAppService.GetLogAppDay => Exception: {ex.Message}");
-            }
-            _logger.LogInformation($"LogAppService.GetLogAppDay => End");
             return new ReturnDTO(responseDTO);
         }
         #endregion

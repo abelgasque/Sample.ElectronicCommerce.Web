@@ -19,10 +19,19 @@ export class SharedService {
     this.listMenu = [
       {
         name: "Documentação",
-        icon: "file",
+        icon: null,
         isOpen: false,
         items: [
-          { name: "Principal", icon: "home", routerLink: "" },
+          { name: "Bem vindo", icon: null, routerLink: "" },
+        ]
+      },
+      {
+        name: "Módulos",
+        icon: null,
+        isOpen: false,
+        items: [
+          { name: "Usuário", icon: null, routerLink: "user" },
+          { name: "Permissão Usuário", icon: null, routerLink: "user/role" },
         ]
       },
     ];

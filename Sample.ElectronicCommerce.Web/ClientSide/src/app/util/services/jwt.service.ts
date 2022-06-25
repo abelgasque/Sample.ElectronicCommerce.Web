@@ -7,18 +7,11 @@ import { LocalStorageService } from './local-storage.service';
 })
 export class JwtService {
 
-  public token: string;
-  public user: any;
-
+  
   constructor(
     private jwtHelperService: JwtHelperService,
     private localStorageService: LocalStorageService,
-  ) {
-    let token = this.localStorageService.getAccessTokenBearer();
-    this.token = (token) ? token : null;
-    let user = this.localStorageService.getUser();
-    this.user = (user) ? user : null;
-  }
+  ) { }
 
   public decodeToken(pToken: string) {
     return this.jwtHelperService.decodeToken(pToken);

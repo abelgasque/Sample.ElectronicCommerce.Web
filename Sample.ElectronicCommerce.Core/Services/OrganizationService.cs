@@ -44,7 +44,7 @@ namespace Sample.ElectronicCommerce.Core.Services
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
                 _logger.LogError($"OrganizationService.InsertAsync => Exception: {ex.Message}");
             }
-            await _logAppService.AppInsertAsync(0, "OrganizationService.InsertAsync", pEntity, responseDTO);
+            await _logAppService.AppInsertAsync(null, "OrganizationService.InsertAsync", pEntity, responseDTO);
             _logger.LogInformation($"OrganizationService.InsertAsync => End");
             return new ReturnDTO(responseDTO);
         }
@@ -62,7 +62,7 @@ namespace Sample.ElectronicCommerce.Core.Services
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
                 _logger.LogError($"OrganizationService.UpdateAsync => Exception: {ex.Message}");
             }
-            await _logAppService.AppInsertAsync(0, "OrganizationService.UpdateAsync", pEntity, responseDTO);
+            await _logAppService.AppInsertAsync(null, "OrganizationService.UpdateAsync", pEntity, responseDTO);
             _logger.LogInformation($"OrganizationService.UpdateAsync => End");
             return new ReturnDTO(responseDTO);
         }

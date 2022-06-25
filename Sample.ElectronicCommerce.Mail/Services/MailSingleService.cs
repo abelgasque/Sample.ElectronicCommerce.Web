@@ -55,7 +55,7 @@ namespace Sample.ElectronicCommerce.Mail.Services
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
                 _logger.LogError($"MailSingleService.InsertAsync => Exception: {ex.Message}");
             }
-            await _logAppService.AppInsertAsync(0, "MailSingleService.InsertAsync", pEntity, responseDTO);
+            await _logAppService.AppInsertAsync(null, "MailSingleService.InsertAsync", pEntity, responseDTO);
             _logger.LogInformation($"MailSingleService.InsertAsync => End");
             return new ReturnDTO(responseDTO);
         }
@@ -73,7 +73,7 @@ namespace Sample.ElectronicCommerce.Mail.Services
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
                 _logger.LogError($"MailSingleService.UpdateAsync => Exception: {ex.Message}");
             }
-            await _logAppService.AppInsertAsync(0, "MailSingleService.UpdateAsync", pEntity, responseDTO);
+            await _logAppService.AppInsertAsync(null, "MailSingleService.UpdateAsync", pEntity, responseDTO);
             _logger.LogInformation($"MailSingleService.UpdateAsync => End");
             return new ReturnDTO(responseDTO);
         }

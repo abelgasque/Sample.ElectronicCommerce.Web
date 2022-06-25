@@ -20,7 +20,7 @@ namespace Sample.ElectronicCommerce.Security.Services
         #region Variables
         private readonly ILogger<JsonWebTokenService> _logger;
 
-        private readonly SecuritySettings _securitySettings;
+        private readonly EnvironmentSettings _environmentSettings;
 
         private readonly AppSettings _appSettings;
 
@@ -32,14 +32,14 @@ namespace Sample.ElectronicCommerce.Security.Services
         #region Constructor
         public JsonWebTokenService(
             ILogger<JsonWebTokenService> logger,
-            IOptions<SecuritySettings> securitySettings,
+            IOptions<EnvironmentSettings> environmentSettings,
             IOptions<AppSettings> appSettings,
             UserService userService,
             LogAppService logAppService
         )
         {
             _logger = logger;
-            _securitySettings = securitySettings.Value;
+            _environmentSettings = environmentSettings.Value;
             _appSettings = appSettings.Value;
             _userService = userService;
             _logAppService = logAppService;
@@ -54,10 +54,10 @@ namespace Sample.ElectronicCommerce.Security.Services
             try
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_securitySettings.Secret);
+                var key = Encoding.ASCII.GetBytes(_environmentSettings.Secret);
                 SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
                 {
-                    Expires = DateTime.UtcNow.AddMinutes(_securitySettings.ExpireIn),
+                    Expires = DateTime.UtcNow.AddMinutes(_environmentSettings.ExpireIn),
                     NotBefore = DateTime.Now,
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
@@ -80,16 +80,19 @@ namespace Sample.ElectronicCommerce.Security.Services
                         payload.Add(claim);
                     }
                 }
-                
+
                 tokenDescriptor.Subject = new ClaimsIdentity(payload);
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 tokenWs = new TokenDTO()
                 {
                     access_token = tokenHandler.WriteToken(token),
-                    expires_in = _securitySettings.ExpireIn,
-                    token_type = _securitySettings.Type
+                    expires_in = _environmentSettings.ExpireIn,
+                    token_type = _environmentSettings.Type
                 };
-                _logger.LogInformation($"JsonWebTokenService.GenerateToken => AccessToken: Generated, AccessToken Expire: {DateTime.UtcNow.AddMinutes(_securitySettings.ExpireIn).ToString("dd/MM/yyyy - HH:mm:ss")}");
+                _logger.LogInformation(
+                    "JsonWebTokenService.GenerateToken => AccessToken: Generated, "
+                    + $"AccessToken Expire: {DateTime.UtcNow.AddMinutes(_environmentSettings.ExpireIn).ToString("dd/MM/yyyy - HH:mm:ss")}"
+                );
             }
             catch (Exception ex)
             {
@@ -152,7 +155,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
                 _logger.LogError($"JsonWebTokenService.Login => Exception: {ex.Message}");
             }
-            await _logAppService.AppInsertAsync(0, "UserSession.Login", pEntity, responseDTO);
+            await _logAppService.AppInsertAsync(null, "UserSession.Login", pEntity, responseDTO);
             _logger.LogInformation($"JsonWebTokenService.Login => End");
             return new ReturnDTO(responseDTO);
         }
@@ -176,7 +179,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                 responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
                 _logger.LogError($"JsonWebTokenService.Refresh => Exception: {ex.Message}");
             }
-            await _logAppService.AppInsertAsync(0, "UserSession.Refresh", null, responseDTO);
+            await _logAppService.AppInsertAsync(null, "UserSession.Refresh", null, responseDTO);
             _logger.LogInformation($"JsonWebTokenService.Refresh => End");
             return new ReturnDTO(responseDTO);
         }

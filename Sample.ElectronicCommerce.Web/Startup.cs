@@ -4,10 +4,8 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Sample.ElectronicCommerce.Chat.Consumer;
 using Sample.ElectronicCommerce.Chat.Repositories;
 using Sample.ElectronicCommerce.Chat.Services;
-using Sample.ElectronicCommerce.Core.Entities.DataBase.EF;
 using Sample.ElectronicCommerce.Core.Entities.Settings;
 using Sample.ElectronicCommerce.Core.Extensions;
 using Sample.ElectronicCommerce.Core.Repositories;
@@ -49,11 +47,8 @@ namespace Sample.ElectronicCommerce.Web
             services.Configure<AppSettings>(_configuration.GetSection("AppSettings"));
             services.Configure<EnvironmentSettings>(_configuration.GetSection("EnvironmentSettings"));
             services.Configure<MongoClientSettings>(_configuration.GetSection("MongoClientSettings"));
-            services.Configure<SecuritySettings>(_configuration.GetSection("SecuritySettings"));
-            services.Configure<SharedSettings>(_configuration.GetSection("SharedSettings"));
 
             //Core
-            services.AddDbContext<SharedDbContext>();
             services.AddTransient<MailHelper>();
             services.AddTransient<OrganizationRepository>();
             services.AddTransient<OrganizationService>();

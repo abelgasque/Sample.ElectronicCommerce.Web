@@ -21,6 +21,9 @@ export class CoreComponent implements OnInit {
 
   public loadApplication() {
     this.localStorageService.setAccessTokenBasic("Sample", "code_sample");
+    this.localStorageService.tokenBasic = this.localStorageService.getAccessTokenBasic();
+    this.localStorageService.tokenBearer = this.localStorageService.getAccessTokenBearer();
+    this.localStorageService.user = this.localStorageService.getUser();
     this.sharedService.getListMenu();
   }  
 }

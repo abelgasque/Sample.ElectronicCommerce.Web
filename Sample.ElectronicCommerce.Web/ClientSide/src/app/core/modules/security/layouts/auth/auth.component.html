@@ -3,20 +3,16 @@
         <h3>Autenticação</h3>
     </div>
 
-    <form class="col-12" autocomplete="on" [formGroup]="this.form" (ngSubmit)="this.auth()">
+    <form class="col-12" autocomplete="off" [formGroup]="this.form" (ngSubmit)="this.auth()">
         <mat-form-field>
             <mat-label>Usuário</mat-label>
             <input name="mail" formControlName="mail" [(ngModel)]="this.entity.mail"
                 placeholder="Insira seu e-mail aqui" matInput />
         </mat-form-field>
 
-        <a href="#" routerLinkActive="list-item-active" [routerLink]="['/security/forgot-password']">
-            Esqueceu sua senha?
-        </a>
-
         <mat-form-field>
             <mat-label>Senha</mat-label>
-            <input name="password" formControlName="password" [(ngModel)]="this.entity.password"
+            <input type="password" name="password" formControlName="password" [(ngModel)]="this.entity.password"
                 placeholder="Insira sua senha aqui" matInput />
         </mat-form-field>
 
@@ -24,6 +20,10 @@
             Confirmar
         </button>
     </form>
+
+    <a href="#" class="col-12" routerLinkActive="list-item-active" [routerLink]="['/security/forgot-password']">
+        Esqueceu sua senha?
+    </a>
 
     <a type="button" class="col-12 col-lg-6" style="text-align: center;"
         (click)="this.sharedService.toggleSidebarUserLead()">

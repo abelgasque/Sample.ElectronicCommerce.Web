@@ -1,18 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AppMongoClient = Sample.ElectronicCommerce.Core.Entities.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Sample.ElectronicCommerce.Core.Entities.DataBase;
-using Sample.ElectronicCommerce.Core.Entities.DataBase.EF;
 using Sample.ElectronicCommerce.Core.Entities.DataBase.Mapping;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
 using Sample.ElectronicCommerce.Core.Entities.Settings;
 using Sample.ElectronicCommerce.Core.Util;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
 using System.Threading.Tasks;
-using static Dapper.SqlMapper;
+using MongoDB.Driver;
+using System.Linq.Expressions;
+using MongoDB.Bson;
 
 namespace Sample.ElectronicCommerce.Core.Repositories
 {
@@ -23,31 +21,24 @@ namespace Sample.ElectronicCommerce.Core.Repositories
 
         private readonly AppSettings _appSettings;
 
-        private readonly SharedSettings _sharedSettings;
+        private readonly AppMongoClient.MongoClientSettings _mongoClientSettings;
 
-        private readonly SharedDbContext _context;
+        private readonly IMongoCollection<LogAppEntity> _collection;
         #endregion
 
         #region Constructor
         public LogAppRepository(
-            ILogger<LogAppRepository> logger, 
+            ILogger<LogAppRepository> logger,
             IOptions<AppSettings> appSettings,
-            IOptions<SharedSettings> sharedSettings,
-            SharedDbContext context
-        ) {
+            IOptions<AppMongoClient.MongoClientSettings> mongoClientSettings
+        )
+        {
             _logger = logger;
             _appSettings = appSettings.Value;
-            _sharedSettings = sharedSettings.Value;
-            _context = context;            
-        }
-        #endregion
-
-        #region Methods SQL Server
-        public string GetLogAppForChartDynamicInDataBase(bool pMustFilterYear)
-        {
-            return $"EXEC {AppConstant.SPR_WS_GET_LOG_APP_FOR_CHART_DYNAMIC} "
-                    + $"{AppConstant.P_IS_TEST} = 0,"
-                    + $"{AppConstant.P_MUST_FILTER_YEAR} = {Convert.ToInt32(pMustFilterYear)};";
+            _mongoClientSettings = mongoClientSettings.Value;
+            var mongoClient = new MongoClient(_mongoClientSettings.GetConnectionString);
+            var mongoDatabase = mongoClient.GetDatabase(_mongoClientSettings.DataBaseProduction);
+            _collection = mongoDatabase.GetCollection<LogAppEntity>(_mongoClientSettings.LogAppColletion);
         }
         #endregion
 
@@ -58,17 +49,10 @@ namespace Sample.ElectronicCommerce.Core.Repositories
             ResponseDTO responseDTO;
             try
             {
-                _context.LogApp.Add(pEntity);
-                int nuResult = await _context.SaveChangesAsync();
-                bool isSuccess = (nuResult > 0) ? true : false;
-                string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-                object dataObject = (isSuccess) ? pEntity : null;
-                responseDTO = new ResponseDTO(isSuccess, deMessage, dataObject);
-            }
-            catch (SqlException ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageForDataBase, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"LogAppRepository.InsertAsync => SqlException: {ex.Message}");
+                pEntity.DtCreation = DateTime.Now;
+                await _collection.InsertOneAsync(pEntity);
+                _logger.LogInformation("LogAppRepository.InsertAsync => OK");
+                responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, pEntity);
             }
             catch (Exception ex)
             {
@@ -85,17 +69,17 @@ namespace Sample.ElectronicCommerce.Core.Repositories
             ResponseDTO responseDTO;
             try
             {
-                _context.LogApp.Update(pEntity);
-                int nuResult = await _context.SaveChangesAsync();
-                bool isSuccess = (nuResult > 0) ? true : false;
+                Expression<Func<LogAppEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
+                LogAppEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+                bool isSuccess = (entity != null) ? true : false;
                 string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
                 object dataObject = (isSuccess) ? pEntity : null;
+                if (isSuccess)
+                {
+                    pEntity.DtLastUpdate = DateTime.Now;
+                    await _collection.ReplaceOneAsync(filter, pEntity);
+                }
                 responseDTO = new ResponseDTO(isSuccess, deMessage, dataObject);
-            }
-            catch (SqlException ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageForDataBase, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"LogAppRepository.UpdateAsync => SqlException: {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -106,21 +90,17 @@ namespace Sample.ElectronicCommerce.Core.Repositories
             return responseDTO;
         }
 
-        public async Task<ResponseDTO> GetById(long pId)
+        public async Task<ResponseDTO> GetById(string pId)
         {
             _logger.LogInformation("LogAppRepository.GetById => Start");
             ResponseDTO responseDTO;
             try
             {
-                IQueryable<LogAppEntity> query = _context.LogApp.AsNoTracking().Where(e => e.Id == pId);
-                LogAppEntity entity = await query.FirstOrDefaultAsync();
+                Expression<Func<LogAppEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pId));
+                LogAppEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
                 string deMessage = (entity != null) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-                responseDTO = new ResponseDTO(true, deMessage, entity);
-            }
-            catch (SqlException ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageForDataBase, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"LogAppRepository.GetById => SqlException: {ex.Message}");
+                bool isSuccess = (entity != null) ? true : false;
+                responseDTO = new ResponseDTO(isSuccess, deMessage, entity);
             }
             catch (Exception ex)
             {
@@ -131,22 +111,15 @@ namespace Sample.ElectronicCommerce.Core.Repositories
             return responseDTO;
         }
 
-        public async Task<ResponseDTO> GetAll(bool? pIsActive)
+        public async Task<ResponseDTO> GetAll()
         {
             _logger.LogInformation("LogAppRepository.GetAll => Start");
             ResponseDTO responseDTO;
             try
             {
-                IQueryable<LogAppEntity> query = _context.LogApp.AsNoTracking().Take(10000);
-                query = (pIsActive != null) ? query.Where(e => e.IsActive == pIsActive.Value) : query;
-                List<LogAppEntity> listEntities = await query.OrderByDescending(e => e.Id).ToListAsync();
-                string deMessage = (listEntities != null && listEntities.Count() > 0) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-                responseDTO = new ResponseDTO(true, deMessage, listEntities);
-            }
-            catch (SqlException ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageForDataBase, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"LogAppRepository.GetAll => SqlException: {ex.Message}");
+                Expression<Func<LogAppEntity, bool>> filter = x => x.IsActive == true;
+                List<LogAppEntity> listEntities = await _collection.Find(filter).ToListAsync();
+                responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, listEntities);
             }
             catch (Exception ex)
             {
@@ -154,74 +127,6 @@ namespace Sample.ElectronicCommerce.Core.Repositories
                 _logger.LogError($"LogAppRepository.GetAll => Exception: {ex.Message}");
             }
             _logger.LogInformation("LogAppRepository.GetAll > Finish");
-            return responseDTO;
-        }
-
-        public async Task<ResponseDTO> GetLogAppDay()
-        {
-            _logger.LogInformation("LogAppRepository.GetLogAppDay => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                DateTime dtStartRange = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day); ;
-                DateTime dtEndRange = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59);
-                IQueryable<LogAppEntity> query = _context.LogApp.AsNoTracking().Take(10000);
-                query = query.Where(e => e.DtCreation >= dtStartRange && e.DtCreation <= dtEndRange && e.IsActive == true);
-                List<LogAppEntity> listEntities = await query.OrderByDescending(e => e.Id).ToListAsync();
-                string deMessage = (listEntities != null && listEntities.Count() > 0) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-                responseDTO = new ResponseDTO(true, deMessage, listEntities);
-            }
-            catch (SqlException ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageForDataBase, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"LogAppRepository.GetLogAppDay => SqlException: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"LogAppRepository.GetLogAppDay => Exception: {ex.Message}");
-            }
-
-            _logger.LogInformation("LogAppRepository.GetLogAppDay => Finish");
-            return responseDTO;
-        }
-
-        public async Task<ResponseDTO> GetLogAppForChartDynamic(bool pMustFilterYear)
-        {
-            _logger.LogInformation("LogAppRepository.GetLogAppForChartDynamic => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(_sharedSettings.GetConnectionString))
-                {
-                    _logger.LogInformation("LogAppRepository.GetLogAppForChartDynamic => Running procedure: " + AppConstant.SPR_WS_GET_LOG_APP_FOR_CHART_DYNAMIC);
-                    await connection.OpenAsync();
-                    GridReader reader = await connection.QueryMultipleAsync(this.GetLogAppForChartDynamicInDataBase(pMustFilterYear));
-                    var listEntities = reader.Read().AsList();
-                    bool isSuccess = (listEntities != null && listEntities.Count() > 0) ? true : false;
-                    string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-                    object dataObject = null;
-                    if (isSuccess)
-                    {
-                        dataObject = (pMustFilterYear)
-                                        ? listEntities.Select(row => new GetLogAppForChartYearDb(row)).ToList()
-                                          : listEntities.Select(row => new GetLogAppForChartMonthDb(row)).ToList();
-                    }
-                    responseDTO = new ResponseDTO(isSuccess, deMessage, dataObject);
-                }
-            }
-            catch (SqlException ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageForDataBase, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"LogAppRepository.GetLogAppForChartDynamic => SqlException: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"LogAppRepository.GetLogAppForChartDynamic => Exception: {ex.Message}");
-            }
-
-            _logger.LogInformation("LogAppRepository.GetLogAppForChartDynamic => Finish");
             return responseDTO;
         }
         #endregion

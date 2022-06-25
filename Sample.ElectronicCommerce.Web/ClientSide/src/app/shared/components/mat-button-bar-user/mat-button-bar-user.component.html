@@ -1,10 +1,10 @@
-<div *ngIf="this.jwtService.token">
-    <button type="button" mat-icon-button>
+<div *ngIf="this.localStorageService.tokenBearer">
+    <button type="button" (click)="this.loggout()" mat-icon-button>
         <mat-icon>logout</mat-icon>
     </button>
 </div>
 
-<div *ngIf="!this.jwtService.token">
+<div *ngIf="!this.localStorageService.tokenBearer">
     <button type="button" (click)="this.sharedService.toggleSidebarUserLead()" mat-icon-button>
         <mat-icon>person_add</mat-icon>
     </button>

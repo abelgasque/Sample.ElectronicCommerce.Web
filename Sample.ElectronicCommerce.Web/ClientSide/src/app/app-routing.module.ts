@@ -8,6 +8,8 @@ import { AuthComponent } from './core/modules/security/layouts/auth/auth.compone
 import { ForgotPasswordComponent } from './core/modules/security/layouts/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './core/modules/security/layouts/reset-password/reset-password.component';
 import { SecurityComponent } from './core/modules/security/security.component';
+import { UserRoleComponent } from './core/modules/user-role/user-role.component';
+import { UserComponent } from './core/modules/user/user.component';
 
 const routes: Routes = [
   {
@@ -29,7 +31,15 @@ const routes: Routes = [
           { path: 'forgot-password', component: ForgotPasswordComponent },
           { path: 'reset-password', component: ResetPasswordComponent },
         ]
-      }
+      },
+      {
+        path: 'user',
+        component: UserComponent,
+      },
+      {
+        path: 'user/role',
+        component: UserRoleComponent,
+      },
     ]
   },
   { path: '', redirectTo: '', pathMatch: 'full' },
