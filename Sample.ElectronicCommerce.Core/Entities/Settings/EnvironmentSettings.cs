@@ -28,7 +28,7 @@ namespace Sample.ElectronicCommerce.Core.Entities.Settings
         [JsonProperty("Type")]
         public string Type { get; set; }
 
-        [JsonProperty("NuAuthenticationAttempts")]
-        public int NuAuthenticationAttempts { get; set; }
+        [JsonProperty("NuAuthAttempts")]
+        public int NuAuthAttempts { get; set; }
     }
 }

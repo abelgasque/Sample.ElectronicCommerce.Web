@@ -33,8 +33,8 @@ namespace Sample.ElectronicCommerce.Core.Middlewares
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             HttpStatusCode code = HttpStatusCode.InternalServerError;
-            if (exception is Exception) code = HttpStatusCode.InternalServerError;
-            else if (exception is BadRequestException) code = HttpStatusCode.BadRequest;
+            if (exception is BadRequestException) code = HttpStatusCode.BadRequest;
+            else if (exception is UnauthorizedException) code = HttpStatusCode.Unauthorized;
             object error = new { statusCode = (int)code, message = exception.Message };
             var result = JsonConvert.SerializeObject(error);
             context.Response.ContentType = "application/json";

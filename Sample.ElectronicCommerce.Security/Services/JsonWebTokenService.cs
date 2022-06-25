@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
+using Sample.ElectronicCommerce.Core.Entities.Exceptions;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Entities.Settings;
 using Sample.ElectronicCommerce.Core.Services;
@@ -103,42 +104,35 @@ namespace Sample.ElectronicCommerce.Security.Services
             UserEntity user = (UserEntity)returnDTO.ResultObject;
             if (user == null)
             {
-                responseDTO = new ResponseDTO(false, AppConstant.DeMessageDataNotFoundWS, null);
+                throw new BadRequestException(AppConstant.DeMessageDataNotFoundWS);
             }
-            else
+
+            user.NuAuthAttemptsFail += 1;
+            await _userService.UpdateAsync(user);
+            if ((user.NuAuthAttemptsFail >= _environmentSettings.NuAuthAttempts)
+                && (!user.Password.Equals(pEntity.Password)))
             {
-                int countBlock = 5;
-                bool isFail = false;
-                if (user.IsBlock)
-                {
-                    isFail = true;
-                    responseDTO = new ResponseDTO(false, "Usuário bloqueado!", null);
-                }
-                else if ((!user.IsActive))
-                {
-                    isFail = true;
-                    user.NuAuthAttemptsFail += 1;
-                    responseDTO = new ResponseDTO(false, "Usuário inátivo!", null);
-                }
-                else if (!user.Password.Equals(pEntity.Password))
-                {
-                    isFail = true;
-                    user.NuAuthAttemptsFail += 1;
-                    responseDTO = new ResponseDTO(false, $"Senha incorreta, restam mais {(countBlock - user.NuAuthAttemptsFail)} tentativas!", null);
-                }
-                else if (((user.NuAuthAttemptsFail + 1) == countBlock) && (isFail))
-                {
-                    user.IsBlock = true;
-                    user.NuAuthAttemptsFail = 0;
-                    responseDTO = new ResponseDTO(false, "Usuário bloqueado, e-mail enviado para caixa de entrada!", null);
-                }
-                else
-                {
-                    user.NuAuthAttemptsFail = 0;
-                    responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, this.GenerateToken(user));
-                }
-                await _userService.UpdateAsync(user);
+                user.IsBlock = true;
+                user.NuAuthAttemptsFail = 0;
+                responseDTO = new ResponseDTO(false, "Usuário bloqueado, e-mail enviado para caixa de entrada!", null);
             }
+
+            if (user.IsBlock)
+            {
+                throw new BadRequestException("Usuário bloqueado!");
+            }
+
+            if (!user.IsActive)
+            {
+                throw new BadRequestException("Usuário inátivo!");
+            }
+
+            if (!user.Password.Equals(pEntity.Password))
+            {
+                throw new BadRequestException($"Senha incorreta, restam mais {(_environmentSettings.NuAuthAttempts - user.NuAuthAttemptsFail)} tentativas!");
+            }
+
+            responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, this.GenerateToken(user));
             await _logAppService.AppInsertAsync(null, "UserSession.Login", pEntity, responseDTO);
             _logger.LogInformation($"JsonWebTokenService.Login => End");
             return new ReturnDTO(responseDTO);

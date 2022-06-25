@@ -1,7 +1,7 @@
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Sample.ElectronicCommerce.Core.Entities.Exceptions;
 using Sample.ElectronicCommerce.Core.Entities.Settings;
 
 namespace Sample.ElectronicCommerce.Security.Middlewares
@@ -30,8 +30,7 @@ namespace Sample.ElectronicCommerce.Security.Middlewares
                     string authHeader = context.Request.Headers["Authorization"];
                     if (string.IsNullOrEmpty(authHeader) || (!authHeader.Contains("Bearer")))
                     {
-                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                        return;
+                        throw new UnauthorizedException("Acesso não autorizado");
                     }
 
                 }

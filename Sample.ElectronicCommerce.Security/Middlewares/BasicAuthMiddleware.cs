@@ -1,9 +1,9 @@
 using System;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Sample.ElectronicCommerce.Core.Entities.Exceptions;
 using Sample.ElectronicCommerce.Core.Entities.Settings;
 
 namespace Sample.ElectronicCommerce.Security.Middlewares
@@ -32,8 +32,7 @@ namespace Sample.ElectronicCommerce.Security.Middlewares
                     string authHeader = context.Request.Headers["Authorization"];
                     if (string.IsNullOrEmpty(authHeader) || (!authHeader.Contains("Basic")))
                     {
-                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                        return;
+                        throw new UnauthorizedException("Acesso não autorizado");
                     }
 
                     string auth = authHeader.Split(new char[] { ' ' })[1];
@@ -45,8 +44,7 @@ namespace Sample.ElectronicCommerce.Security.Middlewares
 
                     if (!hasAppAuth)
                     {
-                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                        return;
+                        throw new UnauthorizedException("Acesso não autorizado");
                     }
                 }
             }
