@@ -51,18 +51,16 @@ namespace Sample.ElectronicCommerce.Security.Services
         {
             _logger.LogInformation("JsonWebTokenService.GenerateToken => Start");
             TokenDTO tokenWs;
-            try
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_environmentSettings.Secret);
+            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
             {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_environmentSettings.Secret);
-                SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Expires = DateTime.UtcNow.AddMinutes(_environmentSettings.ExpireIn),
-                    NotBefore = DateTime.Now,
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-                };
+                Expires = DateTime.UtcNow.AddMinutes(_environmentSettings.ExpireIn),
+                NotBefore = DateTime.Now,
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
 
-                List<Claim> payload = new List<Claim>()
+            List<Claim> payload = new List<Claim>()
                 {
                     new Claim("id", pEntity.Id),
                     new Claim("name", pEntity.Name),
@@ -72,33 +70,27 @@ namespace Sample.ElectronicCommerce.Security.Services
                     new Claim("nuCellPhone", pEntity.NuCellPhone),
                 };
 
-                if (pEntity.Roles != null && pEntity.Roles.Count > 0)
-                {
-                    foreach (string role in pEntity.Roles)
-                    {
-                        Claim claim = new Claim(ClaimTypes.Role, role);
-                        payload.Add(claim);
-                    }
-                }
-
-                tokenDescriptor.Subject = new ClaimsIdentity(payload);
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                tokenWs = new TokenDTO()
-                {
-                    access_token = tokenHandler.WriteToken(token),
-                    expires_in = _environmentSettings.ExpireIn,
-                    token_type = _environmentSettings.Type
-                };
-                _logger.LogInformation(
-                    "JsonWebTokenService.GenerateToken => AccessToken: Generated, "
-                    + $"AccessToken Expire: {DateTime.UtcNow.AddMinutes(_environmentSettings.ExpireIn).ToString("dd/MM/yyyy - HH:mm:ss")}"
-                );
-            }
-            catch (Exception ex)
+            if (pEntity.Roles != null && pEntity.Roles.Count > 0)
             {
-                _logger.LogError($"JsonWebTokenService.GenerateToken => Exception: {ex.Message}");
-                tokenWs = null;
+                foreach (string role in pEntity.Roles)
+                {
+                    Claim claim = new Claim(ClaimTypes.Role, role);
+                    payload.Add(claim);
+                }
             }
+
+            tokenDescriptor.Subject = new ClaimsIdentity(payload);
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            tokenWs = new TokenDTO()
+            {
+                access_token = tokenHandler.WriteToken(token),
+                expires_in = _environmentSettings.ExpireIn,
+                token_type = _environmentSettings.Type
+            };
+            _logger.LogInformation(
+                "JsonWebTokenService.GenerateToken => AccessToken: Generated, "
+                + $"AccessToken Expire: {DateTime.UtcNow.AddMinutes(_environmentSettings.ExpireIn).ToString("dd/MM/yyyy - HH:mm:ss")}"
+            );
             _logger.LogInformation("JsonWebTokenService.GenerateToken => End");
             return tokenWs;
         }
@@ -107,53 +99,45 @@ namespace Sample.ElectronicCommerce.Security.Services
         {
             _logger.LogInformation($"JsonWebTokenService.Login => Start");
             ResponseDTO responseDTO;
-            try
+            ReturnDTO returnDTO = await _userService.GetByMail(pEntity.Mail);
+            UserEntity user = (UserEntity)returnDTO.ResultObject;
+            if (user == null)
             {
-                ReturnDTO returnDTO = await _userService.GetByMail(pEntity.Mail);
-                UserEntity user = (UserEntity)returnDTO.ResultObject;
-                if (user == null)
+                responseDTO = new ResponseDTO(false, AppConstant.DeMessageDataNotFoundWS, null);
+            }
+            else
+            {
+                int countBlock = 5;
+                bool isFail = false;
+                if (user.IsBlock)
                 {
-                    responseDTO = new ResponseDTO(false, AppConstant.DeMessageDataNotFoundWS, null);
+                    isFail = true;
+                    responseDTO = new ResponseDTO(false, "Usuário bloqueado!", null);
+                }
+                else if ((!user.IsActive))
+                {
+                    isFail = true;
+                    user.NuAuthAttemptsFail += 1;
+                    responseDTO = new ResponseDTO(false, "Usuário inátivo!", null);
+                }
+                else if (!user.Password.Equals(pEntity.Password))
+                {
+                    isFail = true;
+                    user.NuAuthAttemptsFail += 1;
+                    responseDTO = new ResponseDTO(false, $"Senha incorreta, restam mais {(countBlock - user.NuAuthAttemptsFail)} tentativas!", null);
+                }
+                else if (((user.NuAuthAttemptsFail + 1) == countBlock) && (isFail))
+                {
+                    user.IsBlock = true;
+                    user.NuAuthAttemptsFail = 0;
+                    responseDTO = new ResponseDTO(false, "Usuário bloqueado, e-mail enviado para caixa de entrada!", null);
                 }
                 else
                 {
-                    int countBlock = 5;
-                    bool isFail = false;
-                    if (user.IsBlock)
-                    {
-                        isFail = true;
-                        responseDTO = new ResponseDTO(false, "Usuário bloqueado!", null);
-                    }
-                    else if ((!user.IsActive))
-                    {
-                        isFail = true;
-                        user.NuAuthAttemptsFail += 1;
-                        responseDTO = new ResponseDTO(false, "Usuário inátivo!", null);
-                    }
-                    else if (!user.Password.Equals(pEntity.Password))
-                    {
-                        isFail = true;
-                        user.NuAuthAttemptsFail += 1;
-                        responseDTO = new ResponseDTO(false, $"Senha incorreta, restam mais {(countBlock - user.NuAuthAttemptsFail)} tentativas!", null);
-                    }
-                    else if (((user.NuAuthAttemptsFail + 1) == countBlock) && (isFail))
-                    {
-                        user.IsBlock = true;
-                        user.NuAuthAttemptsFail = 0;
-                        responseDTO = new ResponseDTO(false, "Usuário bloqueado, e-mail enviado para caixa de entrada!", null);
-                    }
-                    else
-                    {
-                        user.NuAuthAttemptsFail = 0;
-                        responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, this.GenerateToken(user));
-                    }
-                    await _userService.UpdateAsync(user);
+                    user.NuAuthAttemptsFail = 0;
+                    responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, this.GenerateToken(user));
                 }
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"JsonWebTokenService.Login => Exception: {ex.Message}");
+                await _userService.UpdateAsync(user);
             }
             await _logAppService.AppInsertAsync(null, "UserSession.Login", pEntity, responseDTO);
             _logger.LogInformation($"JsonWebTokenService.Login => End");
@@ -163,22 +147,13 @@ namespace Sample.ElectronicCommerce.Security.Services
         public async Task<ReturnDTO> Refresh(string pId)
         {
             _logger.LogInformation($"JsonWebTokenService.Refresh => Start");
-            ResponseDTO responseDTO;
-            try
+            ReturnDTO returnDTO = await _userService.GetById(pId);
+            if (returnDTO.IsSuccess)
             {
-                ReturnDTO returnDTO = await _userService.GetById(pId);
-                if (returnDTO.IsSuccess)
-                {
-                    UserEntity entity = (UserEntity)returnDTO.ResultObject;
-                    returnDTO.ResultObject = this.GenerateToken(entity);
-                }
-                responseDTO = new ResponseDTO(returnDTO.IsSuccess, returnDTO.DeMessage, returnDTO.ResultObject);
+                UserEntity entity = (UserEntity)returnDTO.ResultObject;
+                returnDTO.ResultObject = this.GenerateToken(entity);
             }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageService, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"JsonWebTokenService.Refresh => Exception: {ex.Message}");
-            }
+            ResponseDTO responseDTO = new ResponseDTO(returnDTO.IsSuccess, returnDTO.DeMessage, returnDTO.ResultObject);
             await _logAppService.AppInsertAsync(null, "UserSession.Refresh", null, responseDTO);
             _logger.LogInformation($"JsonWebTokenService.Refresh => End");
             return new ReturnDTO(responseDTO);

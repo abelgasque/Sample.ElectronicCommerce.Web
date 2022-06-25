@@ -8,6 +8,7 @@ using Sample.ElectronicCommerce.Chat.Repositories;
 using Sample.ElectronicCommerce.Chat.Services;
 using Sample.ElectronicCommerce.Core.Entities.Settings;
 using Sample.ElectronicCommerce.Core.Extensions;
+using Sample.ElectronicCommerce.Core.Middlewares;
 using Sample.ElectronicCommerce.Core.Repositories;
 using Sample.ElectronicCommerce.Core.Services;
 using Sample.ElectronicCommerce.Core.Util;
@@ -85,8 +86,9 @@ namespace Sample.ElectronicCommerce.Web
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseMiddleware<ErrorHandlerMiddleware>();
             app.UseMiddleware<BasicAuthMiddleware>();
-
+            
             app.UseCors("AllowOrigin");
             app.UseStaticFiles();
             app.UseSpaStaticFiles();

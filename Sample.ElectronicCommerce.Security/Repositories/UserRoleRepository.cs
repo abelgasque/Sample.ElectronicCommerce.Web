@@ -27,7 +27,8 @@ namespace Sample.ElectronicCommerce.Security.Repositories
         public UserRoleRepository(
             ILogger<UserRoleRepository> logger,
             IOptions<AppMongoClient.MongoClientSettings> mongoClientSettings
-        ) {
+        )
+        {
             _logger = logger;
             _mongoClientSettings = mongoClientSettings.Value;
             var mongoClient = new MongoClient(_mongoClientSettings.GetConnectionString);
@@ -40,19 +41,10 @@ namespace Sample.ElectronicCommerce.Security.Repositories
         public async Task<ResponseDTO> InsertAsync(UserRoleEntity pEntity)
         {
             _logger.LogInformation("UserRoleRepository.InsertAsync => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                pEntity.DtCreation = DateTime.Now;
-                await _collection.InsertOneAsync(pEntity);
-                _logger.LogInformation("UserRoleRepository.InsertAsync => OK");
-                responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, pEntity);
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"UserRoleRepository.InsertAsync => Exception: {ex.Message}");
-            }
+            pEntity.DtCreation = DateTime.Now;
+            await _collection.InsertOneAsync(pEntity);
+            _logger.LogInformation("UserRoleRepository.InsertAsync => OK");
+            ResponseDTO responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, pEntity);
             _logger.LogInformation("UserRoleRepository.InsertAsync > Finish");
             return responseDTO;
         }
@@ -60,26 +52,17 @@ namespace Sample.ElectronicCommerce.Security.Repositories
         public async Task<ResponseDTO> UpdateAsync(UserRoleEntity pEntity)
         {
             _logger.LogInformation("UserRoleRepository.UpdateAsync => Start");
-            ResponseDTO responseDTO;
-            try
+            Expression<Func<UserRoleEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
+            UserRoleEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+            bool isSuccess = (entity != null) ? true : false;
+            string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
+            object dataObject = (isSuccess) ? pEntity : null;
+            if (isSuccess)
             {
-                Expression<Func<UserRoleEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
-                UserRoleEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
-                bool isSuccess = (entity != null) ? true : false;
-                string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-                object dataObject = (isSuccess) ? pEntity : null;
-                if (isSuccess)
-                {
-                    pEntity.DtLastUpdate = DateTime.Now;
-                    await _collection.ReplaceOneAsync(filter, pEntity);
-                }
-                responseDTO = new ResponseDTO(isSuccess, deMessage, dataObject);
+                pEntity.DtLastUpdate = DateTime.Now;
+                await _collection.ReplaceOneAsync(filter, pEntity);
             }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"UserRoleRepository.UpdateAsync => Exception: {ex.Message}");
-            }
+            ResponseDTO responseDTO = new ResponseDTO(isSuccess, deMessage, dataObject);
             _logger.LogInformation("UserRoleRepository.UpdateAsync > Finish");
             return responseDTO;
         }
@@ -87,24 +70,15 @@ namespace Sample.ElectronicCommerce.Security.Repositories
         public async Task<ResponseDTO> DeleteAsync(string pId)
         {
             _logger.LogInformation("UserRoleRepository.DeleteAsync => Start");
-            ResponseDTO responseDTO;
-            try
+            Expression<Func<UserRoleEntity, bool>> filter = x => x.Id.Equals(pId);
+            UserRoleEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+            bool isSuccess = (entity != null) ? true : false;
+            string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
+            if (isSuccess)
             {
-                Expression<Func<UserRoleEntity, bool>> filter = x => x.Id.Equals(pId);
-                UserRoleEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
-                bool isSuccess = (entity != null) ? true : false;
-                string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-                if (isSuccess)
-                {
-                    await _collection.FindOneAndDeleteAsync(pId);
-                }
-                responseDTO = new ResponseDTO(isSuccess, deMessage, null);
+                await _collection.FindOneAndDeleteAsync(pId);
             }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"UserRoleRepository.DeleteAsync => Exception: {ex.Message}");
-            }
+            ResponseDTO responseDTO = new ResponseDTO(isSuccess, deMessage, null);
             _logger.LogInformation("UserRoleRepository.DeleteAsync > Finish");
             return responseDTO;
         }
@@ -112,20 +86,11 @@ namespace Sample.ElectronicCommerce.Security.Repositories
         public async Task<ResponseDTO> GetById(string pId)
         {
             _logger.LogInformation("UserRoleRepository.GetById => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                Expression<Func<UserRoleEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pId));
-                UserRoleEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
-                string deMessage = (entity != null) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-                bool isSuccess = (entity != null) ? true : false;
-                responseDTO = new ResponseDTO(isSuccess, deMessage, entity);
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"UserRoleRepository.GetById => Exception: {ex.Message}");
-            }
+            Expression<Func<UserRoleEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pId));
+            UserRoleEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+            string deMessage = (entity != null) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
+            bool isSuccess = (entity != null) ? true : false;
+            ResponseDTO responseDTO = new ResponseDTO(isSuccess, deMessage, entity);
             _logger.LogInformation("UserRoleRepository.GetById > Finish");
             return responseDTO;
         }
@@ -133,19 +98,10 @@ namespace Sample.ElectronicCommerce.Security.Repositories
         public async Task<ResponseDTO> GetAll()
         {
             _logger.LogInformation("UserRoleRepository.GetAll => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                Expression<Func<UserRoleEntity, bool>> filter = x => x.IsActive == true;
-                List<UserRoleEntity> listEntities = await _collection.Find(filter).ToListAsync();     
-                _logger.LogInformation($"UserRoleRepository.GetAll => Entities.Count: { listEntities.Count }");          
-                responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, listEntities);
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"UserRoleRepository.GetAll => Exception: { ex.Message }");
-            }
+            Expression<Func<UserRoleEntity, bool>> filter = x => x.IsActive == true;
+            List<UserRoleEntity> listEntities = await _collection.Find(filter).ToListAsync();
+            _logger.LogInformation($"UserRoleRepository.GetAll => Entities.Count: {listEntities.Count}");
+            ResponseDTO responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, listEntities);
             _logger.LogInformation("UserRoleRepository.GetAll > Finish");
             return responseDTO;
         }

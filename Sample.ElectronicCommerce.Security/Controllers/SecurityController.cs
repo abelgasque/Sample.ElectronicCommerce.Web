@@ -2,14 +2,12 @@
 using Microsoft.Extensions.Logging;
 using Sample.ElectronicCommerce.Security.Services;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
-using System;
-using System.Net;
 using System.Threading.Tasks;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Util;
 
 namespace Sample.ElectronicCommerce.Security.Controllers
-{    
+{
     [ApiController]
     [Route("api/security")]
     public class SecurityController : ControllerBase
@@ -52,23 +50,13 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         public async Task<ActionResult<ReturnDTO>> Login([FromBody] UserDTO pEntity)
         {
             _logger.LogInformation("UserSessionController.Login => Start");
-            ReturnDTO returnDTO;
-            try
+            ReturnDTO returnDTO = await _jsonWebTokenService.Login(pEntity);
+            _logger.LogInformation($"UserSessionController.Login => IsSuccess: {returnDTO.IsSuccess} => End");
+            if (returnDTO.IsSuccess)
             {
-                returnDTO = await _jsonWebTokenService.Login(pEntity);
-                _logger.LogInformation($"UserSessionController.Login => IsSuccess: {returnDTO.IsSuccess} => End");
-                if (returnDTO.IsSuccess)
-                {
-                    return new OkObjectResult(returnDTO.ResultObject);
-                }
-                return new BadRequestObjectResult(returnDTO);
+                return new OkObjectResult(returnDTO.ResultObject);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"UserSessionController.Login => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            return new BadRequestObjectResult(returnDTO);
         }
 
         // GET: api/security/token/refresh/{pId}
@@ -77,29 +65,19 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         /// </summary>
         /// <param name="pId"></param>
         /// <returns></returns>       
-        [ApiExplorerSettings(IgnoreApi = true)]  
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet]
         [Route("token/refresh/{pId}")]
         public async Task<ActionResult<ReturnDTO>> Refresh(string pId)
         {
             _logger.LogInformation("UserSessionController.Refresh => Start");
-            ReturnDTO returnDTO;
-            try
+            ReturnDTO returnDTO = await _jsonWebTokenService.Refresh(pId);
+            _logger.LogInformation($"UserSessionController.Refresh => IsSuccess: {returnDTO.IsSuccess} => End");
+            if (returnDTO.IsSuccess)
             {
-                returnDTO = await _jsonWebTokenService.Refresh(pId);
-                _logger.LogInformation($"UserSessionController.Refresh => IsSuccess: {returnDTO.IsSuccess} => End");
-                if (returnDTO.IsSuccess)
-                {
-                    return new OkObjectResult(returnDTO.ResultObject);
-                }
-                return new BadRequestObjectResult(returnDTO);
+                return new OkObjectResult(returnDTO.ResultObject);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"UserSessionController.Refresh => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            return new BadRequestObjectResult(returnDTO);
         }
         #endregion
 
@@ -115,24 +93,36 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         {
             _logger.LogInformation("SecurityController.UserInsertAsync => Start");
             ReturnDTO returnDTO;
-            try
+            if (!this.ModelState.IsValid)
             {
-                if (!this.ModelState.IsValid)
-                {
-                    _logger.LogInformation("SecurityController.UserInsertAsync => ModelState.IsValid: false");
-                    returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
-                    return new BadRequestObjectResult(returnDTO);
-                }
-                returnDTO = await _userService.InsertAsync(pEntity);
-                _logger.LogInformation($"SecurityController.UserInsertAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
+                _logger.LogInformation("SecurityController.UserInsertAsync => ModelState.IsValid: false");
+                returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
+                return new BadRequestObjectResult(returnDTO);
             }
-            catch (Exception ex)
+            returnDTO = await _userService.InsertAsync(pEntity);
+            _logger.LogInformation($"SecurityController.UserInsertAsync => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
+        }
+
+        /// POST: api/security/user/lead
+        /// <summary>
+        /// Ponto final que insere captura usuario
+        /// </summary>        
+        [HttpPost]
+        [Route("user/lead")]
+        public async Task<ActionResult<ReturnDTO>> UserLeadInsertAsync([FromBody] UserLeadDTO pEntity)
+        {
+            _logger.LogInformation("SecurityController.UserLeadInsertAsync => Start");
+            ReturnDTO returnDTO;
+            if (!this.ModelState.IsValid)
             {
-                _logger.LogError($"SecurityController.UserInsertAsync => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
+                _logger.LogInformation("SecurityController.UserLeadInsertAsync => ModelState.IsValid: false");
+                returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
+                return new BadRequestObjectResult(returnDTO);
             }
+            returnDTO = await _userService.UserLeadInsertAsync(pEntity);
+            _logger.LogInformation($"SecurityController.UserLeadInsertAsync => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// PUT: api/security/user
@@ -145,24 +135,15 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         {
             _logger.LogInformation("SecurityController.UserUpdateAsync => Start");
             ReturnDTO returnDTO;
-            try
+            if (!this.ModelState.IsValid)
             {
-                if (!this.ModelState.IsValid)
-                {
-                    _logger.LogInformation("SecurityController.UserUpdateAsync => ModelState.IsValid: false");
-                    returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
-                    return new BadRequestObjectResult(returnDTO);
-                }
-                returnDTO = await _userService.UpdateAsync(pEntity);
-                _logger.LogInformation($"SecurityController.UserUpdateAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
+                _logger.LogInformation("SecurityController.UserUpdateAsync => ModelState.IsValid: false");
+                returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
+                return new BadRequestObjectResult(returnDTO);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"SecurityController.UserUpdateAsync => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            returnDTO = await _userService.UpdateAsync(pEntity);
+            _logger.LogInformation($"SecurityController.UserUpdateAsync => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// DELETE: api/security/user/{pId}
@@ -173,20 +154,9 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         [Route("user/{pId}")]
         public async Task<ActionResult<ReturnDTO>> UserDeleteAsync(string pId)
         {
-            _logger.LogInformation("SecurityController.UserDeleteAsync => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _userService.DeleteAsync(pId);
-                _logger.LogInformation($"SecurityController.UserDeleteAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"SecurityController.UserDeleteAsync => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            ReturnDTO returnDTO = await _userService.DeleteAsync(pId);
+            _logger.LogInformation($"SecurityController.UserDeleteAsync => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// GET: api/security/user/{pId}
@@ -197,20 +167,9 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         [Route("user/{pId}")]
         public async Task<ActionResult<ReturnDTO>> UserGetById(string pId)
         {
-            _logger.LogInformation("SecurityController.UserGetById => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _userService.GetById(pId);
-                _logger.LogInformation($"SecurityController.UserGetById => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"SecurityController.UserGetById => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            ReturnDTO returnDTO = await _userService.GetById(pId);
+            _logger.LogInformation($"SecurityController.UserGetById => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// GET: api/security/user
@@ -221,20 +180,9 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         [Route("user")]
         public async Task<ActionResult<ReturnDTO>> UserGetAll()
         {
-            _logger.LogInformation("SecurityController.UserGetAll => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _userService.GetAll();
-                _logger.LogInformation($"SecurityController.UserGetAll => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"SecurityController.UserGetAll => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            ReturnDTO returnDTO = await _userService.GetAll();
+            _logger.LogInformation($"SecurityController.UserGetAll => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
         #endregion
 
@@ -249,24 +197,15 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         {
             _logger.LogInformation("UserRoleController.UserRoleInsertAsync => Start");
             ReturnDTO returnDTO;
-            try
+            if (!this.ModelState.IsValid)
             {
-                if (!this.ModelState.IsValid)
-                {
-                    _logger.LogInformation("UserRoleController.UserRoleInsertAsync => ModelState.IsValid: false");
-                    returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
-                    return new BadRequestObjectResult(returnDTO);
-                }
-                returnDTO = await _userRoleService.InsertAsync(pEntity);
-                _logger.LogInformation($"UserRoleController.UserRoleInsertAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
+                _logger.LogInformation("UserRoleController.UserRoleInsertAsync => ModelState.IsValid: false");
+                returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
+                return new BadRequestObjectResult(returnDTO);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"UserRoleController.UserRoleInsertAsync => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            returnDTO = await _userRoleService.InsertAsync(pEntity);
+            _logger.LogInformation($"UserRoleController.UserRoleInsertAsync => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// PUT: api/security/user/role
@@ -279,24 +218,15 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         {
             _logger.LogInformation("UserRoleController.UserRoleUpdateAsync => Start");
             ReturnDTO returnDTO;
-            try
+            if (!this.ModelState.IsValid)
             {
-                if (!this.ModelState.IsValid)
-                {
-                    _logger.LogInformation("UserRoleController.UserRoleUpdateAsync => ModelState.IsValid: false");
-                    returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
-                    return new BadRequestObjectResult(returnDTO);
-                }
-                returnDTO = await _userRoleService.UpdateAsync(pEntity);
-                _logger.LogInformation($"UserRoleController.UserRoleUpdateAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
+                _logger.LogInformation("UserRoleController.UserRoleUpdateAsync => ModelState.IsValid: false");
+                returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
+                return new BadRequestObjectResult(returnDTO);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"UserRoleController.UserRoleUpdateAsync => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            returnDTO = await _userRoleService.UpdateAsync(pEntity);
+            _logger.LogInformation($"UserRoleController.UserRoleUpdateAsync => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// DELETE: api/security/user/role/{pId}
@@ -307,20 +237,9 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         [Route("user/role/{pId}")]
         public async Task<ActionResult<ReturnDTO>> UserRoleDeleteAsync(string pId)
         {
-            _logger.LogInformation("UserRoleController.UserRoleDeleteAsync => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _userRoleService.DeleteAsync(pId);
-                _logger.LogInformation($"UserRoleController.UserRoleDeleteAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"UserRoleController.UserRoleDeleteAsync => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            ReturnDTO returnDTO = await _userRoleService.DeleteAsync(pId);
+            _logger.LogInformation($"UserRoleController.UserRoleDeleteAsync => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// GET: api/security/user/role/pId
@@ -331,20 +250,9 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         [Route("user/role/{pId}")]
         public async Task<ActionResult<ReturnDTO>> UserRoleGetById(string pId)
         {
-            _logger.LogInformation("UserRoleController.UserRoleGetById => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _userRoleService.GetById(pId);
-                _logger.LogInformation($"UserRoleController.UserRoleGetById => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"UserRoleController.UserRoleGetById => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            ReturnDTO returnDTO = await _userRoleService.GetById(pId);
+            _logger.LogInformation($"UserRoleController.UserRoleGetById => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// GET: api/security/user/role
@@ -355,20 +263,9 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         [Route("user/role")]
         public async Task<ActionResult<ReturnDTO>> UserRoleGetAll()
         {
-            _logger.LogInformation("UserRoleController.UserRoleGetAll => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _userRoleService.GetAll();
-                _logger.LogInformation($"UserRoleController.UserRoleGetAll => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"UserRoleController.UserRoleGetAll => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            ReturnDTO returnDTO = await _userRoleService.GetAll();
+            _logger.LogInformation($"UserRoleController.UserRoleGetAll => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
         #endregion
     }

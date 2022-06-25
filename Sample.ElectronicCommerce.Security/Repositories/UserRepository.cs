@@ -41,18 +41,9 @@ namespace Sample.ElectronicCommerce.Security.Repositories
         public async Task<ResponseDTO> InsertAsync(UserEntity pEntity)
         {
             _logger.LogInformation("UserRepository.InsertAsync => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                await _collection.InsertOneAsync(pEntity);
-                _logger.LogInformation("UserRepository.InsertAsync => OK");
-                responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, pEntity);
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"UserRepository.InsertAsync => Exception: {ex.Message}");
-            }
+            await _collection.InsertOneAsync(pEntity);
+            _logger.LogInformation("UserRepository.InsertAsync => OK");
+            ResponseDTO responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, pEntity);
             _logger.LogInformation("UserRepository.InsertAsync > Finish");
             return responseDTO;
         }
@@ -60,25 +51,16 @@ namespace Sample.ElectronicCommerce.Security.Repositories
         public async Task<ResponseDTO> UpdateAsync(UserEntity pEntity)
         {
             _logger.LogInformation("UserRepository.UpdateAsync => Start");
-            ResponseDTO responseDTO;
-            try
+            Expression<Func<UserEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
+            UserEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+            bool isSuccess = (entity != null) ? true : false;
+            string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
+            object dataObject = (isSuccess) ? pEntity : null;
+            if (isSuccess)
             {
-                Expression<Func<UserEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
-                UserEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
-                bool isSuccess = (entity != null) ? true : false;
-                string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-                object dataObject = (isSuccess) ? pEntity : null;
-                if (isSuccess)
-                {
-                    await _collection.ReplaceOneAsync(filter, pEntity);
-                }
-                responseDTO = new ResponseDTO(isSuccess, deMessage, dataObject);
+                await _collection.ReplaceOneAsync(filter, pEntity);
             }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"UserRepository.UpdateAsync => Exception: {ex.Message}");
-            }
+            ResponseDTO responseDTO = new ResponseDTO(isSuccess, deMessage, dataObject);
             _logger.LogInformation("UserRepository.UpdateAsync > Finish");
             return responseDTO;
         }
@@ -86,24 +68,15 @@ namespace Sample.ElectronicCommerce.Security.Repositories
         public async Task<ResponseDTO> DeleteAsync(string pId)
         {
             _logger.LogInformation("UserRepository.DeleteAsync => Start");
-            ResponseDTO responseDTO;
-            try
+            Expression<Func<UserEntity, bool>> filter = x => x.Id.Equals(pId);
+            UserEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+            bool isSuccess = (entity != null) ? true : false;
+            string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
+            if (isSuccess)
             {
-                Expression<Func<UserEntity, bool>> filter = x => x.Id.Equals(pId);
-                UserEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
-                bool isSuccess = (entity != null) ? true : false;
-                string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-                if (isSuccess)
-                {
-                    await _collection.FindOneAndDeleteAsync(pId);
-                }
-                responseDTO = new ResponseDTO(isSuccess, deMessage, null);
+                await _collection.FindOneAndDeleteAsync(pId);
             }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"UserRepository.DeleteAsync => Exception: {ex.Message}");
-            }
+            ResponseDTO responseDTO = new ResponseDTO(isSuccess, deMessage, null);
             _logger.LogInformation("UserRepository.DeleteAsync > Finish");
             return responseDTO;
         }
@@ -111,20 +84,11 @@ namespace Sample.ElectronicCommerce.Security.Repositories
         public async Task<ResponseDTO> GetById(string pId)
         {
             _logger.LogInformation("UserRepository.GetById => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                Expression<Func<UserEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pId));
-                UserEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
-                string deMessage = (entity != null) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-                bool isSuccess = (entity != null) ? true : false;
-                responseDTO = new ResponseDTO(isSuccess, deMessage, entity);
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"UserRepository.GetById => Exception: {ex.Message}");
-            }
+            Expression<Func<UserEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pId));
+            UserEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+            string deMessage = (entity != null) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
+            bool isSuccess = (entity != null) ? true : false;
+            ResponseDTO responseDTO = new ResponseDTO(isSuccess, deMessage, entity);
             _logger.LogInformation("UserRepository.GetById > Finish");
             return responseDTO;
         }
@@ -132,20 +96,11 @@ namespace Sample.ElectronicCommerce.Security.Repositories
         public async Task<ResponseDTO> GetByMail(string pMail)
         {
             _logger.LogInformation("UserRepository.GetByMail => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                Expression<Func<UserEntity, bool>> filter = x => x.Mail.Equals(pMail);
-                UserEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
-                string deMessage = (entity != null) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-                bool isSuccess = (entity != null) ? true : false;
-                responseDTO = new ResponseDTO(isSuccess, deMessage, entity);
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"UserRepository.GetByMail => Exception: {ex.Message}");
-            }
+            Expression<Func<UserEntity, bool>> filter = x => x.Mail.Equals(pMail);
+            UserEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+            string deMessage = (entity != null) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
+            bool isSuccess = (entity != null) ? true : false;
+            ResponseDTO responseDTO = new ResponseDTO(isSuccess, deMessage, entity);
             _logger.LogInformation("UserRepository.GetByMail > Finish");
             return responseDTO;
         }
@@ -153,17 +108,8 @@ namespace Sample.ElectronicCommerce.Security.Repositories
         public async Task<ResponseDTO> GetAll()
         {
             _logger.LogInformation("UserRepository.GetAll => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                List<UserEntity> listEntities = await _collection.Aggregate().ToListAsync();
-                responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, listEntities);
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"UserRepository.GetAll => Exception: {ex.Message}");
-            }
+            List<UserEntity> listEntities = await _collection.Aggregate().ToListAsync();
+            ResponseDTO responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, listEntities);
             _logger.LogInformation("UserRepository.GetAll > Finish");
             return responseDTO;
         }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sample.ElectronicCommerce.Chat.Repositories;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -30,18 +29,8 @@ namespace Sample.ElectronicCommerce.Chat.Services
         public async Task<List<ChatMessageEntity>> GetAll()
         {
             _logger.LogInformation("ChatBrokerService.GetAll => Start");
-            List<ChatMessageEntity> result;
-            try
-            {
-                result = await _repository.GetAll();
-                _logger.LogInformation($"ChatBrokerService.GetAll => OK => Count: {result.Count}");
-            }
-            catch (Exception ex)
-            {
-                result = new List<ChatMessageEntity>();
-                _logger.LogError($"ChatBrokerService.GetAll => Exception: {ex.Message}");
-            }
-            _logger.LogInformation("ChatBrokerService.GetAll => End");
+            List<ChatMessageEntity> result = await _repository.GetAll();
+            _logger.LogInformation($"ChatBrokerService.GetAll => End => Count: {result.Count}");
             return result;
         }
 
@@ -49,15 +38,7 @@ namespace Sample.ElectronicCommerce.Chat.Services
         public async Task AppInsertAsync(ChatMessageEntity pEntity)
         {
             _logger.LogInformation("ChatBrokerService.AppInsertAsync => Start");
-            try
-            {
-                await _repository.Insert(pEntity);
-                _logger.LogInformation("ChatBrokerService.AppInsertAsync => OK");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"ChatBrokerService.AppInsertAsync => Exception: {ex.Message}");
-            }
+            await _repository.Insert(pEntity);
             _logger.LogInformation("ChatBrokerService.AppInsertAsync => End");
         }
         #endregion

@@ -1,11 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AppMongoClient = Sample.ElectronicCommerce.Core.Entities.Settings;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AppMongoClient = Sample.ElectronicCommerce.Core.Entities.Settings;
 
 namespace Sample.ElectronicCommerce.Chat.Repositories
 {
@@ -21,7 +20,8 @@ namespace Sample.ElectronicCommerce.Chat.Repositories
         public ChatBrokerRepository(
             ILogger<ChatBrokerRepository> logger,
             IOptions<AppMongoClient.MongoClientSettings> mongoClientSettings
-        ) {
+        )
+        {
             _logger = logger;
             _mongoClientSettings = mongoClientSettings.Value;
             var mongoClient = new MongoClient(_mongoClientSettings.GetConnectionString);
@@ -31,36 +31,18 @@ namespace Sample.ElectronicCommerce.Chat.Repositories
         #endregion
 
         #region Methods
-        public async Task<List<ChatMessageEntity>> GetAll() 
+        public async Task<List<ChatMessageEntity>> GetAll()
         {
             _logger.LogInformation("ChatBrokerRepository.GetAll => Start");
-            List<ChatMessageEntity> result;
-            try
-            {
-                result = await _collection.Find(_ => true).ToListAsync();
-                _logger.LogInformation($"ChatBrokerRepository.GetAll => OK => Count: { result.Count }");              
-            }
-            catch (Exception ex)
-            {
-                result = new List<ChatMessageEntity>();
-                _logger.LogError($"ChatBrokerRepository.GetAll => Exception: {ex.Message}");
-            }
-            _logger.LogInformation("ChatBrokerRepository.GetAll => End");
+            List<ChatMessageEntity> result = await _collection.Find(_ => true).ToListAsync();
+            _logger.LogInformation($"ChatBrokerRepository.GetAll => Count: {result.Count} => End");
             return result;
-        }                
+        }
 
         public async Task Insert(ChatMessageEntity pEntity)
         {
             _logger.LogInformation("ChatBrokerRepository.InsertAsync => Start");
-            try
-            {
-                await _collection.InsertOneAsync(pEntity);
-                _logger.LogInformation("ChatBrokerRepository.InsertAsync => OK");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"ChatBrokerRepository.InsertAsync => Exception: {ex.Message}");
-            }
+            await _collection.InsertOneAsync(pEntity);
             _logger.LogInformation("ChatBrokerRepository.InsertAsync => End");
         }
         #endregion

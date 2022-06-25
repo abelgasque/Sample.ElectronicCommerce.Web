@@ -8,6 +8,8 @@ namespace Sample.ElectronicCommerce.Core.Entities.MongoDB
 {
     public class UserEntity
     {
+        public UserEntity() { }
+        
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         [BsonElement("id")]
@@ -29,6 +31,7 @@ namespace Sample.ElectronicCommerce.Core.Entities.MongoDB
         [BsonElement("last_name")]
         [JsonProperty("lastName")]
         public string LastName { get; set; } = null;
+
         [BsonElement("mail")]
         [JsonProperty("mail")]
         public string Mail { get; set; } = null;

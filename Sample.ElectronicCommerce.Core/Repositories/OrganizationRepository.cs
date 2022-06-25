@@ -41,19 +41,10 @@ namespace Sample.ElectronicCommerce.Core.Repositories
         public async Task<ResponseDTO> InsertAsync(OrganizationEntity pEntity)
         {
             _logger.LogInformation("OrganizationRepository.InsertAsync => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                pEntity.DtCreation = DateTime.Now;
-                await _collection.InsertOneAsync(pEntity);
-                _logger.LogInformation("OrganizationRepository.InsertAsync => OK");
-                responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, pEntity);
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"OrganizationRepository.InsertAsync => Exception: {ex.Message}");
-            }
+            pEntity.DtCreation = DateTime.Now;
+            await _collection.InsertOneAsync(pEntity);
+            _logger.LogInformation("OrganizationRepository.InsertAsync => OK");
+            ResponseDTO responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, pEntity);
             _logger.LogInformation("OrganizationRepository.InsertAsync > Finish");
             return responseDTO;
         }
@@ -61,26 +52,17 @@ namespace Sample.ElectronicCommerce.Core.Repositories
         public async Task<ResponseDTO> UpdateAsync(OrganizationEntity pEntity)
         {
             _logger.LogInformation("OrganizationRepository.UpdateAsync => Start");
-            ResponseDTO responseDTO;
-            try
+            Expression<Func<OrganizationEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
+            OrganizationEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+            bool isSuccess = (entity != null) ? true : false;
+            string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
+            object dataObject = (isSuccess) ? pEntity : null;
+            if (isSuccess)
             {
-                Expression<Func<OrganizationEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
-                OrganizationEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
-                bool isSuccess = (entity != null) ? true : false;
-                string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-                object dataObject = (isSuccess) ? pEntity : null;
-                if (isSuccess)
-                {
-                    pEntity.DtLastUpdate = DateTime.Now;
-                    await _collection.ReplaceOneAsync(filter, pEntity);
-                }
-                responseDTO = new ResponseDTO(isSuccess, deMessage, dataObject);
+                pEntity.DtLastUpdate = DateTime.Now;
+                await _collection.ReplaceOneAsync(filter, pEntity);
             }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"OrganizationRepository.UpdateAsync => Exception: {ex.Message}");
-            }
+            ResponseDTO responseDTO = new ResponseDTO(isSuccess, deMessage, dataObject);
             _logger.LogInformation("OrganizationRepository.UpdateAsync > Finish");
             return responseDTO;
         }
@@ -88,20 +70,11 @@ namespace Sample.ElectronicCommerce.Core.Repositories
         public async Task<ResponseDTO> GetById(string pId)
         {
             _logger.LogInformation("OrganizationRepository.GetById => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                Expression<Func<OrganizationEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pId));
-                OrganizationEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
-                string deMessage = (entity != null) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-                bool isSuccess = (entity != null) ? true : false;
-                responseDTO = new ResponseDTO(isSuccess, deMessage, entity);
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"OrganizationRepository.GetById => Exception: {ex.Message}");
-            }
+            Expression<Func<OrganizationEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pId));
+            OrganizationEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+            string deMessage = (entity != null) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
+            bool isSuccess = (entity != null) ? true : false;
+            ResponseDTO responseDTO = new ResponseDTO(isSuccess, deMessage, entity);
             _logger.LogInformation("OrganizationRepository.GetById > Finish");
             return responseDTO;
         }
@@ -109,18 +82,9 @@ namespace Sample.ElectronicCommerce.Core.Repositories
         public async Task<ResponseDTO> GetAll()
         {
             _logger.LogInformation("OrganizationRepository.GetAll => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                Expression<Func<OrganizationEntity, bool>> filter = x => x.IsActive == true;
-                List<OrganizationEntity> listEntities = await _collection.Find(filter).ToListAsync();
-                responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, listEntities);
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"OrganizationRepository.GetAll => Exception: {ex.Message}");
-            }
+            Expression<Func<OrganizationEntity, bool>> filter = x => x.IsActive == true;
+            List<OrganizationEntity> listEntities = await _collection.Find(filter).ToListAsync();
+            ResponseDTO responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, listEntities);
             _logger.LogInformation("OrganizationRepository.GetAll > Finish");
             return responseDTO;
         }

@@ -46,19 +46,9 @@ namespace Sample.ElectronicCommerce.Core.Repositories
         public async Task<ResponseDTO> InsertAsync(LogAppEntity pEntity)
         {
             _logger.LogInformation("LogAppRepository.InsertAsync => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                pEntity.DtCreation = DateTime.Now;
-                await _collection.InsertOneAsync(pEntity);
-                _logger.LogInformation("LogAppRepository.InsertAsync => OK");
-                responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, pEntity);
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"LogAppRepository.InsertAsync => Exception: {ex.Message}");
-            }
+            pEntity.DtCreation = DateTime.Now;
+            await _collection.InsertOneAsync(pEntity);
+            ResponseDTO responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, pEntity);
             _logger.LogInformation("LogAppRepository.InsertAsync > Finish");
             return responseDTO;
         }
@@ -66,26 +56,17 @@ namespace Sample.ElectronicCommerce.Core.Repositories
         public async Task<ResponseDTO> UpdateAsync(LogAppEntity pEntity)
         {
             _logger.LogInformation("LogAppRepository.UpdateAsync => Start");
-            ResponseDTO responseDTO;
-            try
+            Expression<Func<LogAppEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
+            LogAppEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+            bool isSuccess = (entity != null) ? true : false;
+            string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
+            object dataObject = (isSuccess) ? pEntity : null;
+            if (isSuccess)
             {
-                Expression<Func<LogAppEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
-                LogAppEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
-                bool isSuccess = (entity != null) ? true : false;
-                string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-                object dataObject = (isSuccess) ? pEntity : null;
-                if (isSuccess)
-                {
-                    pEntity.DtLastUpdate = DateTime.Now;
-                    await _collection.ReplaceOneAsync(filter, pEntity);
-                }
-                responseDTO = new ResponseDTO(isSuccess, deMessage, dataObject);
+                pEntity.DtLastUpdate = DateTime.Now;
+                await _collection.ReplaceOneAsync(filter, pEntity);
             }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"LogAppRepository.UpdateAsync => Exception: {ex.Message}");
-            }
+            ResponseDTO responseDTO = new ResponseDTO(isSuccess, deMessage, dataObject);
             _logger.LogInformation("LogAppRepository.UpdateAsync > Finish");
             return responseDTO;
         }
@@ -93,20 +74,11 @@ namespace Sample.ElectronicCommerce.Core.Repositories
         public async Task<ResponseDTO> GetById(string pId)
         {
             _logger.LogInformation("LogAppRepository.GetById => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                Expression<Func<LogAppEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pId));
-                LogAppEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
-                string deMessage = (entity != null) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-                bool isSuccess = (entity != null) ? true : false;
-                responseDTO = new ResponseDTO(isSuccess, deMessage, entity);
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"LogAppRepository.GetById => Exception: {ex.Message}");
-            }
+            Expression<Func<LogAppEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pId));
+            LogAppEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+            string deMessage = (entity != null) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
+            bool isSuccess = (entity != null) ? true : false;
+            ResponseDTO responseDTO = new ResponseDTO(isSuccess, deMessage, entity);
             _logger.LogInformation("LogAppRepository.GetById > Finish");
             return responseDTO;
         }
@@ -114,18 +86,9 @@ namespace Sample.ElectronicCommerce.Core.Repositories
         public async Task<ResponseDTO> GetAll()
         {
             _logger.LogInformation("LogAppRepository.GetAll => Start");
-            ResponseDTO responseDTO;
-            try
-            {
-                Expression<Func<LogAppEntity, bool>> filter = x => x.IsActive == true;
-                List<LogAppEntity> listEntities = await _collection.Find(filter).ToListAsync();
-                responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, listEntities);
-            }
-            catch (Exception ex)
-            {
-                responseDTO = new ResponseDTO(false, AppConstant.StandardErrorMessageRepository, ex.Message.ToString(), ex.StackTrace.ToString(), null);
-                _logger.LogError($"LogAppRepository.GetAll => Exception: {ex.Message}");
-            }
+            Expression<Func<LogAppEntity, bool>> filter = x => x.IsActive == true;
+            List<LogAppEntity> listEntities = await _collection.Find(filter).ToListAsync();
+            ResponseDTO responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, listEntities);
             _logger.LogInformation("LogAppRepository.GetAll > Finish");
             return responseDTO;
         }

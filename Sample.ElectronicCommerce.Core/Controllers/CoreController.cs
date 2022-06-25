@@ -5,13 +5,11 @@ using Sample.ElectronicCommerce.Core.Entities.DTO;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Services;
 using Sample.ElectronicCommerce.Core.Util;
-using System;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace Sample.ElectronicCommerce.Core.Controllers
 {
-    [ApiController]    
+    [ApiController]
     [Route("api/core")]
     public class CoreController : ControllerBase
     {
@@ -46,20 +44,9 @@ namespace Sample.ElectronicCommerce.Core.Controllers
         [Route("log-app")]
         public async Task<ActionResult<ReturnDTO>> LogAppInsertAsync([FromBody] LogAppEntity pEntity)
         {
-            _logger.LogInformation("CoreController.LogAppInsertAsync => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _logAppService.InsertAsync(pEntity);
-                _logger.LogInformation($"CoreController.LogAppInsertAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"CoreController.LogAppInsertAsync => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
-            }
+            ReturnDTO returnDTO = await _logAppService.InsertAsync(pEntity);
+            _logger.LogInformation($"CoreController.LogAppInsertAsync => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// PUT: log-app
@@ -70,20 +57,9 @@ namespace Sample.ElectronicCommerce.Core.Controllers
         [Route("log-app")]
         public async Task<ActionResult<ReturnDTO>> LogAppUpdateAsync([FromBody] LogAppEntity pEntity)
         {
-            _logger.LogInformation("CoreController.LogAppUpdateAsync => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _logAppService.UpdateAsync(pEntity);
-                _logger.LogInformation($"CoreController.LogAppUpdateAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"CoreController.LogAppUpdateAsync => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
-            }
+            ReturnDTO returnDTO = await _logAppService.UpdateAsync(pEntity);
+            _logger.LogInformation($"CoreController.LogAppUpdateAsync => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// GET: log-app/{pId}
@@ -94,20 +70,9 @@ namespace Sample.ElectronicCommerce.Core.Controllers
         [HttpGet]
         public async Task<ActionResult<ReturnDTO>> LogAppGetById(string pId)
         {
-            _logger.LogInformation("CoreController.LogAppGetById => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _logAppService.GetById(pId);
-                _logger.LogInformation($"CoreController.LogAppGetById => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"CoreController.LogAppGetById => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
-            }
+            ReturnDTO returnDTO = await _logAppService.GetById(pId);
+            _logger.LogInformation($"CoreController.LogAppGetById => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// GET: log-app
@@ -118,20 +83,9 @@ namespace Sample.ElectronicCommerce.Core.Controllers
         [HttpGet]
         public async Task<ActionResult<ReturnDTO>> LogAppGetAll()
         {
-            _logger.LogInformation("CoreController.LogAppGetAll => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _logAppService.GetAll();
-                _logger.LogInformation($"CoreController.LogAppGetAll => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"CoreController.LogAppGetAll => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
-            }
+            ReturnDTO returnDTO = await _logAppService.GetAll();
+            _logger.LogInformation($"CoreController.LogAppGetAll => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
         #endregion
 
@@ -146,24 +100,15 @@ namespace Sample.ElectronicCommerce.Core.Controllers
         {
             _logger.LogInformation("CoreController.OrganizationInsertAsync => Start");
             ReturnDTO returnDTO;
-            try
+            if (!this.ModelState.IsValid)
             {
-                if (!this.ModelState.IsValid)
-                {
-                    _logger.LogInformation("CoreController.OrganizationInsertAsync => ModelState.IsValid: false");
-                    returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
-                    return new BadRequestObjectResult(returnDTO);
-                }
-                returnDTO = await _organizationService.InsertAsync(pEntity);
-                _logger.LogInformation($"CoreController.OrganizationInsertAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
+                _logger.LogInformation("CoreController.OrganizationInsertAsync => ModelState.IsValid: false");
+                returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
+                return new BadRequestObjectResult(returnDTO);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"CoreController.OrganizationInsertAsync => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            returnDTO = await _organizationService.InsertAsync(pEntity);
+            _logger.LogInformation($"CoreController.OrganizationInsertAsync => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// PUT: api/core/organization
@@ -176,24 +121,15 @@ namespace Sample.ElectronicCommerce.Core.Controllers
         {
             _logger.LogInformation("CoreController.OrganizationUpdateAsync => Start");
             ReturnDTO returnDTO;
-            try
+            if (!this.ModelState.IsValid)
             {
-                if (!this.ModelState.IsValid)
-                {
-                    _logger.LogInformation("CoreController.OrganizationUpdateAsync => ModelState.IsValid: false");
-                    returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
-                    return new BadRequestObjectResult(returnDTO);
-                }
-                returnDTO = await _organizationService.UpdateAsync(pEntity);
-                _logger.LogInformation($"CoreController.OrganizationUpdateAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
+                _logger.LogInformation("CoreController.OrganizationUpdateAsync => ModelState.IsValid: false");
+                returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
+                return new BadRequestObjectResult(returnDTO);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"CoreController.OrganizationUpdateAsync => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            returnDTO = await _organizationService.UpdateAsync(pEntity);
+            _logger.LogInformation($"CoreController.OrganizationUpdateAsync => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// GET: api/core/organization/{pId}
@@ -204,20 +140,9 @@ namespace Sample.ElectronicCommerce.Core.Controllers
         [Route("organization/{pId}")]
         public async Task<ActionResult<ReturnDTO>> OrganizationGetById(string pId)
         {
-            _logger.LogInformation("CoreController.OrganizationGetById => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _organizationService.GetById(pId);
-                _logger.LogInformation($"CoreController.OrganizationGetById => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"CoreController.OrganizationGetById => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            ReturnDTO returnDTO = await _organizationService.GetById(pId);
+            _logger.LogInformation($"CoreController.OrganizationGetById => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// GET: api/core/organization
@@ -228,20 +153,9 @@ namespace Sample.ElectronicCommerce.Core.Controllers
         [Route("organization")]
         public async Task<ActionResult<ReturnDTO>> OrganizationGetAll()
         {
-            _logger.LogInformation("CoreController.OrganizationGetAll => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _organizationService.GetAll();
-                _logger.LogInformation($"CoreController.OrganizationGetAll => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"CoreController.OrganizationGetAll => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            ReturnDTO returnDTO = await _organizationService.GetAll();
+            _logger.LogInformation($"CoreController.OrganizationGetAll => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
         #endregion
     }

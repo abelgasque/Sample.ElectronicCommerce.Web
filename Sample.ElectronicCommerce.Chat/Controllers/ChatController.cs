@@ -4,7 +4,6 @@ using Sample.ElectronicCommerce.Chat.Services;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Util;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -40,20 +39,9 @@ namespace Sample.ElectronicCommerce.Chat.Controllers
         [Route("broker")]
         public async Task<ActionResult<ReturnDTO>> GetAll()
         {
-            _logger.LogInformation("ChatBrokerController.GetAll => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                List<ChatMessageEntity> result = await _service.GetAll();
-                returnDTO = new ReturnDTO(true, AppConstant.DeMessageSuccessWS, result);
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"ChatBrokerController.GetAll => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
-            }
+            List<ChatMessageEntity> result = await _service.GetAll();
+            ReturnDTO returnDTO = new ReturnDTO(true, AppConstant.DeMessageSuccessWS, result);
+            return new OkObjectResult(returnDTO);
         }
         #endregion
     }

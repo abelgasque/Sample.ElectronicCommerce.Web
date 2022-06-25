@@ -4,8 +4,6 @@ using Sample.ElectronicCommerce.Mail.Services;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Util;
-using System;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace Sample.ElectronicCommerce.Mail.Controllers
@@ -50,24 +48,15 @@ namespace Sample.ElectronicCommerce.Mail.Controllers
         {
             _logger.LogInformation("MailController.MailBrokerInsertAsync => Start");
             ReturnDTO returnDTO;
-            try
+            if (!this.ModelState.IsValid)
             {
-                if (!this.ModelState.IsValid)
-                {
-                    _logger.LogInformation("MailController.MailBrokerInsertAsync => ModelState.IsValid: false");
-                    returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
-                    return new BadRequestObjectResult(returnDTO);
-                }
-                returnDTO = await _mailBrokerService.InsertAsync(pEntity);
-                _logger.LogInformation($"MailController.MailBrokerInsertAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
+                _logger.LogInformation("MailController.MailBrokerInsertAsync => ModelState.IsValid: false");
+                returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
+                return new BadRequestObjectResult(returnDTO);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"MailController.MailBrokerInsertAsync => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            returnDTO = await _mailBrokerService.InsertAsync(pEntity);
+            _logger.LogInformation($"MailController.MailBrokerInsertAsync => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// PUT: api/mail/broker
@@ -80,24 +69,15 @@ namespace Sample.ElectronicCommerce.Mail.Controllers
         {
             _logger.LogInformation("MailController.MailBrokerUpdateAsync => Start");
             ReturnDTO returnDTO;
-            try
+            if (!this.ModelState.IsValid)
             {
-                if (!this.ModelState.IsValid)
-                {
-                    _logger.LogInformation("MailController.MailBrokerUpdateAsync => ModelState.IsValid: false");
-                    returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
-                    return new BadRequestObjectResult(returnDTO);
-                }
-                returnDTO = await _mailBrokerService.UpdateAsync(pEntity);
-                _logger.LogInformation($"MailController.MailBrokerUpdateAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
+                _logger.LogInformation("MailController.MailBrokerUpdateAsync => ModelState.IsValid: false");
+                returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
+                return new BadRequestObjectResult(returnDTO);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"MailController.MailBrokerUpdateAsync => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            returnDTO = await _mailBrokerService.UpdateAsync(pEntity);
+            _logger.LogInformation($"MailController.MailBrokerUpdateAsync => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// GET: api/mail/broker/{pId}
@@ -108,20 +88,9 @@ namespace Sample.ElectronicCommerce.Mail.Controllers
         [Route("broker/{pId}")]
         public async Task<ActionResult<ReturnDTO>> MailBrokerGetById(string pId)
         {
-            _logger.LogInformation("MailController.MailBrokerGetById => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _mailBrokerService.GetById(pId);
-                _logger.LogInformation($"MailController.MailBrokerGetById => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"MailController.MailBrokerGetById => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            ReturnDTO returnDTO = await _mailBrokerService.GetById(pId);
+            _logger.LogInformation($"MailController.MailBrokerGetById => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// GET: api/mail/broker
@@ -132,20 +101,9 @@ namespace Sample.ElectronicCommerce.Mail.Controllers
         [Route("broker")]
         public async Task<ActionResult<ReturnDTO>> MailBrokerGetAll()
         {
-            _logger.LogInformation("MailController.MailBrokerGetAll => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _mailBrokerService.GetAll();
-                _logger.LogInformation($"MailController.MailBrokerGetAll => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"MailController.MailBrokerGetAll => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            ReturnDTO returnDTO = await _mailBrokerService.GetAll();
+            _logger.LogInformation($"MailController.MailBrokerGetAll => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
         #endregion
 
@@ -160,24 +118,15 @@ namespace Sample.ElectronicCommerce.Mail.Controllers
         {
             _logger.LogInformation("MailController.MailGroupInsertAsync => Start");
             ReturnDTO returnDTO;
-            try
+            if (!this.ModelState.IsValid)
             {
-                if (!this.ModelState.IsValid)
-                {
-                    _logger.LogInformation("MailController.MailGroupInsertAsync => ModelState.IsValid: false");
-                    returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
-                    return new BadRequestObjectResult(returnDTO);
-                }
-                returnDTO = await _mailGroupService.InsertAsync(pEntity);
-                _logger.LogInformation($"MailController.MailGroupInsertAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
+                _logger.LogInformation("MailController.MailGroupInsertAsync => ModelState.IsValid: false");
+                returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
+                return new BadRequestObjectResult(returnDTO);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"MailController.MailGroupInsertAsync => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            returnDTO = await _mailGroupService.InsertAsync(pEntity);
+            _logger.LogInformation($"MailController.MailGroupInsertAsync => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// PUT: api/mail/group
@@ -190,24 +139,15 @@ namespace Sample.ElectronicCommerce.Mail.Controllers
         {
             _logger.LogInformation("MailController.MailGroupUpdateAsync => Start");
             ReturnDTO returnDTO;
-            try
+            if (!this.ModelState.IsValid)
             {
-                if (!this.ModelState.IsValid)
-                {
-                    _logger.LogInformation("MailController.MailGroupUpdateAsync => ModelState.IsValid: false");
-                    returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
-                    return new BadRequestObjectResult(returnDTO);
-                }
-                returnDTO = await _mailGroupService.UpdateAsync(pEntity);
-                _logger.LogInformation($"MailController.MailGroupUpdateAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
+                _logger.LogInformation("MailController.MailGroupUpdateAsync => ModelState.IsValid: false");
+                returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
+                return new BadRequestObjectResult(returnDTO);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"MailController.UpdateAsync => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            returnDTO = await _mailGroupService.UpdateAsync(pEntity);
+            _logger.LogInformation($"MailController.MailGroupUpdateAsync => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// GET: api/mail/group/pId
@@ -218,20 +158,10 @@ namespace Sample.ElectronicCommerce.Mail.Controllers
         [Route("group/{pId}")]
         public async Task<ActionResult<ReturnDTO>> MailGroupGetById(string pId)
         {
-            _logger.LogInformation("MailController.MailGroupGetById => Start");
             ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _mailGroupService.GetById(pId);
-                _logger.LogInformation($"MailController.MailGroupGetById => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"MailController.MailGroupGetById => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            returnDTO = await _mailGroupService.GetById(pId);
+            _logger.LogInformation($"MailController.MailGroupGetById => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// GET: api/mail/group
@@ -242,20 +172,9 @@ namespace Sample.ElectronicCommerce.Mail.Controllers
         [Route("group")]
         public async Task<ActionResult<ReturnDTO>> MailGroupGetAll()
         {
-            _logger.LogInformation("MailController.MailGroupGetAll => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _mailGroupService.GetAll();
-                _logger.LogInformation($"MailController.MailGroupGetAll => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"MailController.MailGroupGetAll => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return StatusCode((int)HttpStatusCode.InternalServerError, returnDTO);
-            }
+            ReturnDTO returnDTO = await _mailGroupService.GetAll();
+            _logger.LogInformation($"MailController.MailGroupGetAll => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
         #endregion
 
@@ -268,20 +187,9 @@ namespace Sample.ElectronicCommerce.Mail.Controllers
         [Route("single")]
         public async Task<ActionResult<ReturnDTO>> MailSingleInsertAsync([FromBody] MailSingleEntity pEntity)
         {
-            _logger.LogInformation("MailController.MailSingleInsertAsync => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _mailSingleService.InsertAsync(pEntity);
-                _logger.LogInformation($"MailController.MailSingleInsertAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"MailController.MailSingleInsertAsync => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
-            }
+            ReturnDTO returnDTO = await _mailSingleService.InsertAsync(pEntity);
+            _logger.LogInformation($"MailController.MailSingleInsertAsync => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// PUT: api/mail/single
@@ -292,20 +200,9 @@ namespace Sample.ElectronicCommerce.Mail.Controllers
         [Route("single")]
         public async Task<ActionResult<ReturnDTO>> MailSingleUpdateAsync([FromBody] MailSingleEntity pEntity)
         {
-            _logger.LogInformation("MailController.MailSingleUpdateAsync => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _mailSingleService.UpdateAsync(pEntity);
-                _logger.LogInformation($"MailController.MailSingleUpdateAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"MailController.MailSingleUpdateAsync => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
-            }
+            ReturnDTO returnDTO = await _mailSingleService.UpdateAsync(pEntity);
+            _logger.LogInformation($"MailController.MailSingleUpdateAsync => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// GET: api/mail/single/pId
@@ -316,20 +213,9 @@ namespace Sample.ElectronicCommerce.Mail.Controllers
         [Route("single/{pId}")]
         public async Task<ActionResult<ReturnDTO>> MailSingleGetById(string pId)
         {
-            _logger.LogInformation("MailController.MailSingleGetById => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _mailSingleService.GetById(pId);
-                _logger.LogInformation($"MailController.MailSingleGetById => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"MailController.MailSingleGetById => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
-            }
+            ReturnDTO returnDTO = await _mailSingleService.GetById(pId);
+            _logger.LogInformation($"MailController.MailSingleGetById => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
 
         /// GET: api/mail/single
@@ -340,20 +226,9 @@ namespace Sample.ElectronicCommerce.Mail.Controllers
         [Route("single")]
         public async Task<ActionResult<ReturnDTO>> MailSingleGetAll()
         {
-            _logger.LogInformation("MailController.MailSingleGetAll => Start");
-            ReturnDTO returnDTO;
-            try
-            {
-                returnDTO = await _mailSingleService.GetAll();
-                _logger.LogInformation($"MailController.MailSingleGetAll => IsSuccess: {returnDTO.IsSuccess} => End");
-                return new OkObjectResult(returnDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"MailController.MailSingleGetAll => Exception: {ex.Message}");
-                returnDTO = new ReturnDTO(false, AppConstant.ServerExceptionHandlerMessageWS, ex);
-                return new BadRequestObjectResult(returnDTO);
-            }
+            ReturnDTO returnDTO = await _mailSingleService.GetAll();
+            _logger.LogInformation($"MailController.MailSingleGetAll => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
         #endregion
     }
