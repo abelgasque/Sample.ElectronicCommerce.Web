@@ -5,17 +5,11 @@ namespace Sample.ElectronicCommerce.Core.Entities.Settings
 {
     public class AppSettings
     {
-        [JsonProperty("Key")]
-        public string Key { get; set; }
-
         [JsonProperty("BaseUrl")]
         public string BaseUrl { get; set; }
 
         [JsonProperty("Name")]
         public string Name { get; set; }
-
-        [JsonProperty("Code")]
-        public string Code { get; set; }
 
         [JsonProperty("ImageLogoPath")]
         public string ImageLogoPath { get; set; }
@@ -31,9 +25,5 @@ namespace Sample.ElectronicCommerce.Core.Entities.Settings
 
         [JsonProperty("IsDebug")]
         public bool IsDebug { get; set; }
-
-        [JsonProperty("EndpointsWhiteList")]
-        public List<string> EndpointsWhiteList { get; set; }
-
     }
 }

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Sample.ElectronicCommerce.Core.Util;
+using Sample.ElectronicCommerce.Core.Entities.Exceptions;
 
 namespace Sample.ElectronicCommerce.Core.Repositories
 {
@@ -43,10 +44,8 @@ namespace Sample.ElectronicCommerce.Core.Repositories
             _logger.LogInformation("OrganizationRepository.InsertAsync => Start");
             pEntity.DtCreation = DateTime.Now;
             await _collection.InsertOneAsync(pEntity);
-            _logger.LogInformation("OrganizationRepository.InsertAsync => OK");
-            ResponseDTO responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, pEntity);
-            _logger.LogInformation("OrganizationRepository.InsertAsync > Finish");
-            return responseDTO;
+            _logger.LogInformation("OrganizationRepository.InsertAsync => Finish");
+            return new ResponseDTO(true, AppConstant.DeMessageSuccessWS, pEntity);
         }
 
         public async Task<ResponseDTO> UpdateAsync(OrganizationEntity pEntity)
@@ -54,16 +53,15 @@ namespace Sample.ElectronicCommerce.Core.Repositories
             _logger.LogInformation("OrganizationRepository.UpdateAsync => Start");
             Expression<Func<OrganizationEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
             OrganizationEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
-            bool isSuccess = (entity != null) ? true : false;
-            string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-            object dataObject = (isSuccess) ? pEntity : null;
-            if (isSuccess)
+            if (entity == null) throw new BadRequestException(AppConstant.DeMessageDataNotFoundWS);
+            pEntity.DtLastUpdate = DateTime.Now;
+            ResponseDTO responseDTO = new ResponseDTO()
             {
-                pEntity.DtLastUpdate = DateTime.Now;
-                await _collection.ReplaceOneAsync(filter, pEntity);
-            }
-            ResponseDTO responseDTO = new ResponseDTO(isSuccess, deMessage, dataObject);
-            _logger.LogInformation("OrganizationRepository.UpdateAsync > Finish");
+                IsSuccess = true,
+                DeMessage = AppConstant.DeMessageSuccessWS,
+                DataObject = await _collection.ReplaceOneAsync(filter, pEntity)
+            };
+            _logger.LogInformation("OrganizationRepository.UpdateAsync => Finish");
             return responseDTO;
         }
 
@@ -72,10 +70,9 @@ namespace Sample.ElectronicCommerce.Core.Repositories
             _logger.LogInformation("OrganizationRepository.GetById => Start");
             Expression<Func<OrganizationEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pId));
             OrganizationEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
-            string deMessage = (entity != null) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-            bool isSuccess = (entity != null) ? true : false;
-            ResponseDTO responseDTO = new ResponseDTO(isSuccess, deMessage, entity);
-            _logger.LogInformation("OrganizationRepository.GetById > Finish");
+            if (entity == null) throw new BadRequestException(AppConstant.DeMessageDataNotFoundWS);
+            ResponseDTO responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, entity);
+            _logger.LogInformation("OrganizationRepository.GetById => Finish");
             return responseDTO;
         }
 
@@ -85,7 +82,7 @@ namespace Sample.ElectronicCommerce.Core.Repositories
             Expression<Func<OrganizationEntity, bool>> filter = x => x.IsActive == true;
             List<OrganizationEntity> listEntities = await _collection.Find(filter).ToListAsync();
             ResponseDTO responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, listEntities);
-            _logger.LogInformation("OrganizationRepository.GetAll > Finish");
+            _logger.LogInformation("OrganizationRepository.GetAll => Finish");
             return responseDTO;
         }
         #endregion

@@ -11,41 +11,37 @@ namespace Sample.ElectronicCommerce.Security.Middlewares
     public class BasicAuthMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly AppSettings _appSettings;
+        private readonly EnvironmentSettings _environmenSettings;
 
         public BasicAuthMiddleware(
             RequestDelegate next,
-            IOptions<AppSettings> appSettings
+            IOptions<EnvironmentSettings> environmenSettings
         )
         {
             _next = next;
-            _appSettings = appSettings.Value;
+            _environmenSettings = environmenSettings.Value;
         }
 
         public async Task Invoke(HttpContext context)
         {
-            string endPointCurrent = context.Request.Path.ToString();
-            foreach (string endpoint in _appSettings.EndpointsWhiteList)
+            string endpoint = context.Request.Path.ToString();
+            if ((endpoint.Contains("api/security")) || (endpoint.Contains("api/core")))
             {
-                if (endPointCurrent.Equals(endpoint))
+                string authHeader = context.Request.Headers["Authorization"];
+                if (string.IsNullOrEmpty(authHeader) || (!authHeader.Contains("Basic")))
                 {
-                    string authHeader = context.Request.Headers["Authorization"];
-                    if (string.IsNullOrEmpty(authHeader) || (!authHeader.Contains("Basic")))
-                    {
-                        throw new UnauthorizedException("Acesso não autorizado");
-                    }
+                    throw new UnauthorizedException("Acesso não autorizado");
+                }
 
-                    string auth = authHeader.Split(new char[] { ' ' })[1];
-                    Encoding encoding = Encoding.GetEncoding("UTF-8");
-                    var usernameAndPassword = encoding.GetString(Convert.FromBase64String(auth));
-                    string username = usernameAndPassword.Split(new char[] { ':' })[0];
-                    string password = usernameAndPassword.Split(new char[] { ':' })[1];
-                    bool hasAppAuth = (_appSettings.Name.Equals(username) && _appSettings.Code.Equals(password));
+                string auth = authHeader.Split(new char[] { ' ' })[1];
+                Encoding encoding = Encoding.GetEncoding("UTF-8");
+                var usernameAndPassword = encoding.GetString(Convert.FromBase64String(auth));
+                string username = usernameAndPassword.Split(new char[] { ':' })[0];
+                string password = usernameAndPassword.Split(new char[] { ':' })[1];
 
-                    if (!hasAppAuth)
-                    {
-                        throw new UnauthorizedException("Acesso não autorizado");
-                    }
+                if ((!_environmenSettings.UserName.Equals(username)) || (!_environmenSettings.Password.Equals(password)))
+                {
+                    throw new UnauthorizedException("Acesso não autorizado");
                 }
             }
             await _next(context);

@@ -39,19 +39,21 @@ const listBasicAuth = [
 
     JwtModule.forRoot({
       config: {
-        authScheme: (request) => {          
-          for (let i = 0; i < listBasicAuth.length; i++) {
-            if (request.url.includes(listBasicAuth[i])) {
-              return "Basic ";
-            }
+        authScheme: (request) => {
+          if (
+            request.url.includes("api/security")
+            || request.url.includes("api/core")
+          ) {
+            return "Basic ";
           }
           return "Bearer ";
         },
         tokenGetter: (request) => {
-          for (let i = 0; i < listBasicAuth.length; i++) {
-            if (request.url.includes(listBasicAuth[i])) {
-              return localStorage.getItem("access_token_basic");
-            }
+          if (
+            request.url.includes("api/security")
+            || request.url.includes("api/core")
+          ) {
+            return localStorage.getItem("access_token_basic");
           }
 
           return localStorage.getItem("access_token_bearer");

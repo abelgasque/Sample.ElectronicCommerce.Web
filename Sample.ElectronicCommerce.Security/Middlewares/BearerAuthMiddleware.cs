@@ -22,17 +22,13 @@ namespace Sample.ElectronicCommerce.Security.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
-            string endPointCurrent = context.Request.Path.ToString();
-            foreach (string endpoint in _appSettings.EndpointsWhiteList)
+            string endpoint = context.Request.Path.ToString();
+            if ((!endpoint.Contains("api/security")) && (!endpoint.Contains("api/core")))
             {
-                if (!endPointCurrent.Equals(endpoint))
+                string authHeader = context.Request.Headers["Authorization"];
+                if (string.IsNullOrEmpty(authHeader) || (!authHeader.Contains("Bearer")))
                 {
-                    string authHeader = context.Request.Headers["Authorization"];
-                    if (string.IsNullOrEmpty(authHeader) || (!authHeader.Contains("Bearer")))
-                    {
-                        throw new UnauthorizedException("Acesso não autorizado");
-                    }
-
+                    throw new UnauthorizedException("Acesso não autorizado");
                 }
             }
             await _next(context);

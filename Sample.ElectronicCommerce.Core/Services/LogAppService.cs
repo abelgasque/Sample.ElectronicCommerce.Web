@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Sample.ElectronicCommerce.Core.Entities.DataBase.Mapping;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
+using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Entities.Settings;
 using Sample.ElectronicCommerce.Core.Repositories;
 using System;
@@ -33,6 +33,33 @@ namespace Sample.ElectronicCommerce.Core.Services
         }
         #endregion
 
+        #region End Points
+        public async Task<ReturnDTO> InsertAsync(LogAppEntity pEntity)
+        {
+            _logger.LogInformation($"LogAppService.InsertAsync => Start");
+            return new ReturnDTO(await _repository.InsertAsync(pEntity));
+        }
+
+        public async Task<ReturnDTO> UpdateAsync(LogAppEntity pEntity)
+        {
+            _logger.LogInformation($"LogAppService.UpdateAsync => Start");
+            pEntity.DtLastUpdate = DateTime.Now;
+            return new ReturnDTO(await _repository.UpdateAsync(pEntity));
+        }
+
+        public async Task<ReturnDTO> GetById(string pId)
+        {
+            _logger.LogInformation($"LogAppService.GetById => Start");
+            return new ReturnDTO(await _repository.GetById(pId));
+        }
+
+        public async Task<ReturnDTO> GetAll()
+        {
+            _logger.LogInformation($"LogAppService.GetAll => Start");
+            return new ReturnDTO(await _repository.GetAll());
+        }
+        #endregion
+
         #region Methods
         public async Task<ReturnDTO> AppInsertAsync(string pIdUser, string pMethod, object pContent, ResponseDTO pResponseDTO)
         {
@@ -59,42 +86,7 @@ namespace Sample.ElectronicCommerce.Core.Services
                 entity.IsSuccess = pResponseDTO.IsSuccess;
             }
 
-            ResponseDTO responseDTO = await _repository.InsertAsync(entity);
-            _logger.LogInformation($"LogAppService.AppInsertAsync => End");
-            return new ReturnDTO(responseDTO);
-        }
-
-        public async Task<ReturnDTO> InsertAsync(LogAppEntity pEntity)
-        {
-            _logger.LogInformation($"LogAppService.InsertAsync => Start");
-            ResponseDTO responseDTO = await _repository.InsertAsync(pEntity);
-            _logger.LogInformation($"LogAppService.InsertAsync => End");
-            return new ReturnDTO(responseDTO);
-        }
-
-        public async Task<ReturnDTO> UpdateAsync(LogAppEntity pEntity)
-        {
-            _logger.LogInformation($"LogAppService.UpdateAsync => Start");
-            pEntity.DtLastUpdate = DateTime.Now;
-            ResponseDTO responseDTO = await _repository.UpdateAsync(pEntity);
-            _logger.LogInformation($"LogAppService.UpdateAsync => End");
-            return new ReturnDTO(responseDTO);
-        }
-
-        public async Task<ReturnDTO> GetById(string pId)
-        {
-            _logger.LogInformation($"LogAppService.GetById => Start");
-            ResponseDTO responseDTO = await _repository.GetById(pId);
-            _logger.LogInformation($"LogAppService.GetById => End");
-            return new ReturnDTO(responseDTO);
-        }
-
-        public async Task<ReturnDTO> GetAll()
-        {
-            _logger.LogInformation($"LogAppService.GetAll => Start");
-            ResponseDTO responseDTO = await _repository.GetAll();
-            _logger.LogInformation($"LogAppService.GetAll => End");
-            return new ReturnDTO(responseDTO);
+            return new ReturnDTO(await _repository.InsertAsync(entity));
         }
         #endregion
     }

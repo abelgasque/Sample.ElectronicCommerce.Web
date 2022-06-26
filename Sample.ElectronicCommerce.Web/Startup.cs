@@ -53,6 +53,7 @@ namespace Sample.ElectronicCommerce.Web
             services.AddTransient<MailHelper>();
             services.AddTransient<OrganizationRepository>();
             services.AddTransient<OrganizationService>();
+            services.AddTransient<AppService>();
             services.AddTransient<LogAppRepository>();
             services.AddTransient<LogAppService>();
 

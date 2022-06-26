@@ -34,7 +34,7 @@ namespace Sample.ElectronicCommerce.Core.Services
         {
             _logger.LogInformation($"OrganizationService.InsertAsync => Start");
             ResponseDTO responseDTO = await _repository.InsertAsync(pEntity);
-            await _logAppService.AppInsertAsync(null, "OrganizationService.InsertAsync", pEntity, responseDTO);
+            await _logAppService.AppInsertAsync(null, "Organization.InsertAsync", pEntity, responseDTO);
             _logger.LogInformation($"OrganizationService.InsertAsync => End");
             return new ReturnDTO(responseDTO);
         }
@@ -43,7 +43,7 @@ namespace Sample.ElectronicCommerce.Core.Services
         {
             _logger.LogInformation($"OrganizationService.UpdateAsync => Start");
             ResponseDTO responseDTO = await _repository.UpdateAsync(pEntity);
-            await _logAppService.AppInsertAsync(null, "OrganizationService.UpdateAsync", pEntity, responseDTO);
+            await _logAppService.AppInsertAsync(null, "Organization.UpdateAsync", pEntity, responseDTO);
             _logger.LogInformation($"OrganizationService.UpdateAsync => End");
             return new ReturnDTO(responseDTO);
         }
@@ -51,18 +51,13 @@ namespace Sample.ElectronicCommerce.Core.Services
         public async Task<ReturnDTO> GetById(string pId)
         {
             _logger.LogInformation($"OrganizationService.GetById => Start");
-            ResponseDTO responseDTO;
-            responseDTO = await _repository.GetById(pId);
-            _logger.LogInformation($"OrganizationService.GetById => End");
-            return new ReturnDTO(responseDTO);
+            return new ReturnDTO(await _repository.GetById(pId));
         }
 
         public async Task<ReturnDTO> GetAll()
         {
             _logger.LogInformation("OrganizationService.GetAll => Start");
-            ResponseDTO responseDTO = await _repository.GetAll();
-            _logger.LogInformation("OrganizationService.GetAll > Finish");
-            return new ReturnDTO(responseDTO);
+            return new ReturnDTO(await _repository.GetAll());
         }
         #endregion
     }

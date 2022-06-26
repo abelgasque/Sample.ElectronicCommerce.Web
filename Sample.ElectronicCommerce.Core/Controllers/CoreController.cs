@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Sample.ElectronicCommerce.Core.Entities.DataBase.Mapping;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Services;
-using Sample.ElectronicCommerce.Core.Util;
 using System.Threading.Tasks;
 
 namespace Sample.ElectronicCommerce.Core.Controllers
@@ -16,146 +14,87 @@ namespace Sample.ElectronicCommerce.Core.Controllers
         #region Variables
         private readonly ILogger<CoreController> _logger;
 
-        private readonly LogAppService _logAppService;
+        private readonly AppService _appService;
 
-        private readonly OrganizationService _organizationService;
+        private readonly LogAppService _logAppService;
         #endregion
 
         #region Constructor
         public CoreController(
             ILogger<CoreController> logger,
-            LogAppService service,
-            OrganizationService organizationService
+            AppService appService,
+            LogAppService logAppService
             )
         {
             _logger = logger;
-            _logAppService = service;
-            _organizationService = organizationService;
+            _appService = appService;
+            _logAppService = logAppService;
+        }
+        #endregion
+
+        #region End Points AppSettings
+        /// GET: api/core/app/settings
+        /// <summary>
+        /// Ponto final que busca configurações da aplicação
+        /// </summary>
+        [Route("app/settings")]
+        [HttpGet]
+        public ActionResult<ReturnDTO> GetAppSettingsByKey(string key)
+        {
+            ReturnDTO returnDTO = _appService.GetAppSettingsByKey(key);
+            _logger.LogInformation($"CoreController.GetAppSettingsByKey => IsSuccess: {returnDTO.IsSuccess} => End");
+            return new OkObjectResult(returnDTO);
         }
         #endregion
 
         #region End Points Log App
-        /// POST: log-app
+        /// POST: api/core/app/log
         /// <summary>
         /// Ponto final que insere historico aplicacao
         /// </summary>
         //[Authorize(Roles = UserRoleConstant.CodeAdmin)]
         [HttpPost]
-        [Route("log-app")]
+        [Route("app/log")]
         public async Task<ActionResult<ReturnDTO>> LogAppInsertAsync([FromBody] LogAppEntity pEntity)
         {
-            ReturnDTO returnDTO = await _logAppService.InsertAsync(pEntity);
-            _logger.LogInformation($"CoreController.LogAppInsertAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-            return new OkObjectResult(returnDTO);
+            _logger.LogInformation($"CoreController.LogAppInsertAsync => Start");
+            return new OkObjectResult(await _logAppService.InsertAsync(pEntity));
         }
 
-        /// PUT: log-app
+        /// PUT: api/core/app/log
         /// <summary>
         /// Ponto final que atualiza historico aplicacao
         /// </summary>     
         [HttpPut]
-        [Route("log-app")]
+        [Route("app/log")]
         public async Task<ActionResult<ReturnDTO>> LogAppUpdateAsync([FromBody] LogAppEntity pEntity)
         {
-            ReturnDTO returnDTO = await _logAppService.UpdateAsync(pEntity);
-            _logger.LogInformation($"CoreController.LogAppUpdateAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-            return new OkObjectResult(returnDTO);
+            _logger.LogInformation($"CoreController.LogAppUpdateAsync => Start");
+            return new OkObjectResult(await _logAppService.UpdateAsync(pEntity));
         }
 
-        /// GET: log-app/{pId}
+        /// GET: api/core/app/log/{pId}
         /// <summary>
         /// Ponto final que busca historico aplicacao por codigo
         /// </summary>
-        [Route("log-app/{pId}")]
+        [Route("app/log/{pId}")]
         [HttpGet]
         public async Task<ActionResult<ReturnDTO>> LogAppGetById(string pId)
         {
-            ReturnDTO returnDTO = await _logAppService.GetById(pId);
-            _logger.LogInformation($"CoreController.LogAppGetById => IsSuccess: {returnDTO.IsSuccess} => End");
-            return new OkObjectResult(returnDTO);
+            _logger.LogInformation($"CoreController.LogAppGetById => Start");
+            return new OkObjectResult(await _logAppService.GetById(pId));
         }
 
-        /// GET: log-app
+        /// GET: api/core/app/log
         /// <summary>
         /// Ponto final que lista todos os historicos aplicacao
         /// </summary>
-        [Route("log-app")]
+        [Route("app/log")]
         [HttpGet]
         public async Task<ActionResult<ReturnDTO>> LogAppGetAll()
         {
-            ReturnDTO returnDTO = await _logAppService.GetAll();
-            _logger.LogInformation($"CoreController.LogAppGetAll => IsSuccess: {returnDTO.IsSuccess} => End");
-            return new OkObjectResult(returnDTO);
-        }
-        #endregion
-
-        #region End Points Organization
-        /// POST: api/core/organization
-        /// <summary>
-        /// Ponto final que insere organização
-        /// </summary>
-        [HttpPost]
-        [Route("organization")]
-        public async Task<ActionResult<ReturnDTO>> OrganizationInsertAsync([FromBody] OrganizationEntity pEntity)
-        {
-            _logger.LogInformation("CoreController.OrganizationInsertAsync => Start");
-            ReturnDTO returnDTO;
-            if (!this.ModelState.IsValid)
-            {
-                _logger.LogInformation("CoreController.OrganizationInsertAsync => ModelState.IsValid: false");
-                returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
-                return new BadRequestObjectResult(returnDTO);
-            }
-            returnDTO = await _organizationService.InsertAsync(pEntity);
-            _logger.LogInformation($"CoreController.OrganizationInsertAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-            return new OkObjectResult(returnDTO);
-        }
-
-        /// PUT: api/core/organization
-        /// <summary>
-        /// Ponto final que atualiza organização
-        /// </summary>        
-        [HttpPut]
-        [Route("organization")]
-        public async Task<ActionResult<ReturnDTO>> OrganizationUpdateAsync([FromBody] OrganizationEntity pEntity)
-        {
-            _logger.LogInformation("CoreController.OrganizationUpdateAsync => Start");
-            ReturnDTO returnDTO;
-            if (!this.ModelState.IsValid)
-            {
-                _logger.LogInformation("CoreController.OrganizationUpdateAsync => ModelState.IsValid: false");
-                returnDTO = new ReturnDTO(false, AppConstant.DeMessageInvalidModel, this.ModelState);
-                return new BadRequestObjectResult(returnDTO);
-            }
-            returnDTO = await _organizationService.UpdateAsync(pEntity);
-            _logger.LogInformation($"CoreController.OrganizationUpdateAsync => IsSuccess: {returnDTO.IsSuccess} => End");
-            return new OkObjectResult(returnDTO);
-        }
-
-        /// GET: api/core/organization/{pId}
-        /// <summary>
-        /// Ponto final que busca organização por codigo
-        /// </summary>        
-        [HttpGet]
-        [Route("organization/{pId}")]
-        public async Task<ActionResult<ReturnDTO>> OrganizationGetById(string pId)
-        {
-            ReturnDTO returnDTO = await _organizationService.GetById(pId);
-            _logger.LogInformation($"CoreController.OrganizationGetById => IsSuccess: {returnDTO.IsSuccess} => End");
-            return new OkObjectResult(returnDTO);
-        }
-
-        /// GET: api/core/organization
-        /// <summary>
-        /// Ponto final que lista todas as organizações
-        /// </summary>        
-        [HttpGet]
-        [Route("organization")]
-        public async Task<ActionResult<ReturnDTO>> OrganizationGetAll()
-        {
-            ReturnDTO returnDTO = await _organizationService.GetAll();
-            _logger.LogInformation($"CoreController.OrganizationGetAll => IsSuccess: {returnDTO.IsSuccess} => End");
-            return new OkObjectResult(returnDTO);
+            _logger.LogInformation($"CoreController.LogAppGetAll => Start");
+            return new OkObjectResult(await _logAppService.GetAll());
         }
         #endregion
     }
