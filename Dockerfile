@@ -6,6 +6,7 @@ WORKDIR /app
 RUN mkdir -pv /var/lib/docker/tmp/
 RUN chmod 777 -R  /var/lib/docker/tmp/
 EXPOSE 9898
+EXPOSE 443
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends libgdiplus libc6-dev
 RUN apt-get clean
@@ -18,10 +19,10 @@ WORKDIR /src
 
 # Start install Node.Js
 RUN apt-get update && \ 
-apt-get install -y wget && \ 
-apt-get install -y gnupg2 && \ 
-wget -qO- https://deb.nodesource.com/setup_16.x | bash - && \ 
-apt-get install -y build-essential nodejs 
+    apt-get install -y wget && \ 
+    apt-get install -y gnupg2 && \ 
+    wget -qO- https://deb.nodesource.com/setup_16.x | bash - && \ 
+    apt-get install -y build-essential nodejs 
 # End install Node.Js
 
 COPY ["Sample.ElectronicCommerce.Chat/Sample.ElectronicCommerce.Chat.csproj", "Sample.ElectronicCommerce.Chat/"]
@@ -43,7 +44,7 @@ RUN dotnet publish "Sample.ElectronicCommerce.Web.csproj" -c Release -o /app/pub
 FROM base AS final
 WORKDIR /app
 
-ENV ASPNETCORE_URLS=http://+:9898
+ENV ASPNETCORE_URLS=http://+:9898;http://+:443
 ENV temp="%temp%"
 
 COPY --from=publish /app/publish .

@@ -7,6 +7,5 @@ export const environment = {
   tokenBlacklistedRoutes: [],
 
   version: "1.1.0206.3",
-  baseUrl: "http://localhost:9898",
-  
+  baseUrl: "http://localhost:9898",  
 };
