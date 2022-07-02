@@ -1,15 +1,15 @@
-﻿using AppMongoClient = Sample.ElectronicCommerce.Core.Entities.Settings;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Sample.ElectronicCommerce.Core.Entities.DTO;
-using Sample.ElectronicCommerce.Core.Entities.MongoDB;
-using Sample.ElectronicCommerce.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using AppMongoClient = Sample.ElectronicCommerce.Core.Entities.Settings;
+using Sample.ElectronicCommerce.Core.Entities.DTO;
+using Sample.ElectronicCommerce.Core.Entities.MongoDB;
+using Sample.ElectronicCommerce.Core.Util;
 
 namespace Sample.ElectronicCommerce.Mail.Repositories
 {
@@ -32,7 +32,7 @@ namespace Sample.ElectronicCommerce.Mail.Repositories
             _logger = logger;
             _mongoClientSettings = mongoClientSettings.Value;
             var mongoClient = new MongoClient(_mongoClientSettings.GetConnectionString);
-            var mongoDatabase = mongoClient.GetDatabase(_mongoClientSettings.DataBaseProduction);
+            var mongoDatabase = mongoClient.GetDatabase(_mongoClientSettings.DataBase);
             _collection = mongoDatabase.GetCollection<MailSingleEntity>(_mongoClientSettings.MailSingleColletion);
         }
         #endregion

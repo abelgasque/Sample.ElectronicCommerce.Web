@@ -46,14 +46,15 @@ namespace Sample.ElectronicCommerce.Web
 
             //Configure settings
             services.Configure<AppSettings>(_configuration.GetSection("AppSettings"));
-            services.Configure<EnvironmentSettings>(_configuration.GetSection("EnvironmentSettings"));
+            services.Configure<MailSettings>(_configuration.GetSection("MailSettings"));
             services.Configure<MongoClientSettings>(_configuration.GetSection("MongoClientSettings"));
+            services.Configure<TokenSettings>(_configuration.GetSection("TokenSettings"));
+            services.Configure<UserSettings>(_configuration.GetSection("UserSettings"));
 
             //Core
             services.AddTransient<MailHelper>();
             services.AddTransient<OrganizationRepository>();
             services.AddTransient<OrganizationService>();
-            services.AddTransient<AppService>();
             services.AddTransient<LogAppRepository>();
             services.AddTransient<LogAppService>();
 

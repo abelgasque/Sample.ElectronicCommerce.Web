@@ -14,36 +14,17 @@ namespace Sample.ElectronicCommerce.Core.Controllers
         #region Variables
         private readonly ILogger<CoreController> _logger;
 
-        private readonly AppService _appService;
-
         private readonly LogAppService _logAppService;
         #endregion
 
         #region Constructor
         public CoreController(
             ILogger<CoreController> logger,
-            AppService appService,
             LogAppService logAppService
             )
         {
             _logger = logger;
-            _appService = appService;
             _logAppService = logAppService;
-        }
-        #endregion
-
-        #region End Points AppSettings
-        /// GET: api/core/app/settings
-        /// <summary>
-        /// Ponto final que busca configurações da aplicação
-        /// </summary>
-        [Route("app/settings")]
-        [HttpGet]
-        public ActionResult<ReturnDTO> GetAppSettingsByKey(string key)
-        {
-            ReturnDTO returnDTO = _appService.GetAppSettingsByKey(key);
-            _logger.LogInformation($"CoreController.GetAppSettingsByKey => IsSuccess: {returnDTO.IsSuccess} => End");
-            return new OkObjectResult(returnDTO);
         }
         #endregion
 

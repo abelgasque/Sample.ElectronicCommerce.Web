@@ -16,14 +16,8 @@ namespace Sample.ElectronicCommerce.Core.Entities.Settings
         [JsonProperty("Password")]
         public string Password { get; set; }
 
-        [JsonProperty("DataBaseProduction")]
-        public string DataBaseProduction { get; set; }
-
-        [JsonProperty("DataBaseTestUnit")]
-        public string DataBaseTestUnit { get; set; }
-
-        [JsonProperty("DataBaseTestMass")]
-        public string DataBaseTestMass { get; set; }
+        [JsonProperty("DataBase")]
+        public string DataBase { get; set; }
 
         [JsonProperty("MailBrokerColletion")]
         public string MailBrokerColletion { get; set; }

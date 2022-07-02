@@ -39,7 +39,7 @@ namespace Sample.ElectronicCommerce.Core.Repositories
             _appSettings = appSettings.Value;
             _mongoClientSettings = mongoClientSettings.Value;
             var mongoClient = new MongoClient(_mongoClientSettings.GetConnectionString);
-            var mongoDatabase = mongoClient.GetDatabase(_mongoClientSettings.DataBaseProduction);
+            var mongoDatabase = mongoClient.GetDatabase(_mongoClientSettings.DataBase);
             _collection = mongoDatabase.GetCollection<LogAppEntity>(_mongoClientSettings.LogAppColletion);
         }
         #endregion

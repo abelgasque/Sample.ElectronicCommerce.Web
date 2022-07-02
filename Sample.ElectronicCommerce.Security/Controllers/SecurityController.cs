@@ -34,7 +34,7 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         #endregion
 
         #region End Points
-        // POST: api/security/token/auth
+        /// POST: api/security/token/auth
         /// <summary>
         /// Ponto final que autentica usuário no sistema
         /// </summary>
@@ -55,19 +55,19 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             return new BadRequestObjectResult(returnDTO);
         }
 
-        // GET: api/security/token/refresh/{pId}
+        /// POST: api/security/token/refresh/{pId}
         /// <summary>
         /// Ponto final que atualiza sessão de usuário
         /// </summary>
         /// <param name="pId"></param>
         /// <returns></returns>       
         [ApiExplorerSettings(IgnoreApi = true)]
-        [HttpGet]
-        [Route("token/refresh/{pId}")]
-        public async Task<ActionResult<ReturnDTO>> Refresh(string pId)
+        [HttpPost]
+        [Route("token/refresh")]
+        public async Task<ActionResult<ReturnDTO>> Refresh([FromBody] string pEntity)
         {
             _logger.LogInformation("UserSessionController.Refresh => Start");
-            ReturnDTO returnDTO = await _jsonWebTokenService.Refresh(pId);
+            ReturnDTO returnDTO = await _jsonWebTokenService.Refresh(pEntity);
             _logger.LogInformation($"UserSessionController.Refresh => IsSuccess: {returnDTO.IsSuccess} => End");
             if (returnDTO.IsSuccess)
             {
@@ -75,13 +75,12 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             }
             return new BadRequestObjectResult(returnDTO);
         }
-        #endregion
 
-        #region End points User
         /// POST: api/security/user/lead
         /// <summary>
         /// Ponto final que insere captura usuario
-        /// </summary>        
+        /// </summary>     
+        /// /// <param name="pEntity"></param>
         [HttpPost]
         [Route("user/lead")]
         public async Task<ActionResult<ReturnDTO>> InsertUserLeadAsync([FromBody] UserLeadDTO pEntity)

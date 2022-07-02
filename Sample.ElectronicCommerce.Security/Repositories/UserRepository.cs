@@ -32,12 +32,12 @@ namespace Sample.ElectronicCommerce.Security.Repositories
             _logger = logger;
             _mongoClientSettings = mongoClientSettings.Value;
             var mongoClient = new MongoClient(_mongoClientSettings.GetConnectionString);
-            var mongoDatabase = mongoClient.GetDatabase(_mongoClientSettings.DataBaseProduction);
+            var mongoDatabase = mongoClient.GetDatabase(_mongoClientSettings.DataBase);
             _collection = mongoDatabase.GetCollection<UserEntity>(_mongoClientSettings.UserColletion);
         }
         #endregion
 
-        #region Methods
+        #region Methods Crud
         public async Task<ResponseDTO> InsertAsync(UserEntity pEntity)
         {
             _logger.LogInformation("UserRepository.InsertAsync => Start");

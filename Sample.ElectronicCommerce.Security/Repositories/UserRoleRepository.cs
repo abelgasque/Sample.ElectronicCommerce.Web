@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sample.ElectronicCommerce.Core.Entities.DTO;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,6 +7,7 @@ using Microsoft.Extensions.Options;
 using System.Linq.Expressions;
 using MongoDB.Bson;
 using AppMongoClient = Sample.ElectronicCommerce.Core.Entities.Settings;
+using Sample.ElectronicCommerce.Core.Entities.DTO;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Util;
 
@@ -32,7 +32,7 @@ namespace Sample.ElectronicCommerce.Security.Repositories
             _logger = logger;
             _mongoClientSettings = mongoClientSettings.Value;
             var mongoClient = new MongoClient(_mongoClientSettings.GetConnectionString);
-            var mongoDatabase = mongoClient.GetDatabase(_mongoClientSettings.DataBaseProduction);
+            var mongoDatabase = mongoClient.GetDatabase(_mongoClientSettings.DataBase);
             _collection = mongoDatabase.GetCollection<UserRoleEntity>(_mongoClientSettings.UserRoleColletion);
         }
         #endregion

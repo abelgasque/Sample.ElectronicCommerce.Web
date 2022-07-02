@@ -12,20 +12,20 @@ namespace Sample.ElectronicCommerce.Core.Extensions
             var appSettingsSection = configuration.GetSection("AppSettings");
             var appSettings = appSettingsSection.Get<AppSettings>();
 
-            var environmentSettingsSection = configuration.GetSection("EnvironmentSettings");
-            var environmentSettings = environmentSettingsSection.Get<EnvironmentSettings>();
+            var tokenSettingsSection = configuration.GetSection("TokenSettings");
+            var tokenSettings = tokenSettingsSection.Get<TokenSettings>();
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc($"v{appSettings.Version}", new OpenApiInfo { Title = "ElectronicCommerceWS", Version = $"v{appSettings.Version}" });
-                c.AddSecurityDefinition(environmentSettings.Type, new OpenApiSecurityScheme
+                c.AddSecurityDefinition(tokenSettings.Type, new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
                     Description = "Insirir um token válido",
                     Name = "Authorization",
                     Type = SecuritySchemeType.Http,
                     BearerFormat = "JWT",
-                    Scheme = environmentSettings.Type.ToLower(),
+                    Scheme = tokenSettings.Type.ToLower(),
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                     {
@@ -35,7 +35,7 @@ namespace Sample.ElectronicCommerce.Core.Extensions
                                 Reference = new OpenApiReference
                                 {
                                     Type = ReferenceType.SecurityScheme,
-                                    Id = environmentSettings.Type
+                                    Id = tokenSettings.Type
                                 }
                             },
                             new string[]{ }

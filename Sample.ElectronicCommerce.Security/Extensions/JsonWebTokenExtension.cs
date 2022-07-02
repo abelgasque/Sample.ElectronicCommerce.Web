@@ -11,8 +11,8 @@ namespace Sample.ElectronicCommerce.Security.Extensions
     {
         public static IServiceCollection AddJsonWebToken(this IServiceCollection services, IConfiguration configuration)
         {
-            var environmentSettingsSection = configuration.GetSection("EnvironmentSettings");
-            var environmentSettings = environmentSettingsSection.Get<EnvironmentSettings>();
+            var tokenSettingsSection = configuration.GetSection("TokenSettings");
+            var tokenSettings = tokenSettingsSection.Get<TokenSettings>();
 
             services.AddAuthentication(x =>
             {
@@ -26,7 +26,7 @@ namespace Sample.ElectronicCommerce.Security.Extensions
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(environmentSettings.Secret)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenSettings.SecretKey)),
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };

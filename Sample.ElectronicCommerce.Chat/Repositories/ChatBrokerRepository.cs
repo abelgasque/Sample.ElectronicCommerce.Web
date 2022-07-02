@@ -1,10 +1,10 @@
-﻿using AppMongoClient = Sample.ElectronicCommerce.Core.Entities.Settings;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AppMongoClient = Sample.ElectronicCommerce.Core.Entities.Settings;
+using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 
 namespace Sample.ElectronicCommerce.Chat.Repositories
 {
@@ -25,7 +25,7 @@ namespace Sample.ElectronicCommerce.Chat.Repositories
             _logger = logger;
             _mongoClientSettings = mongoClientSettings.Value;
             var mongoClient = new MongoClient(_mongoClientSettings.GetConnectionString);
-            var mongoDatabase = mongoClient.GetDatabase(_mongoClientSettings.DataBaseProduction);
+            var mongoDatabase = mongoClient.GetDatabase(_mongoClientSettings.DataBase);
             _collection = mongoDatabase.GetCollection<ChatMessageEntity>(_mongoClientSettings.ChatBrokerAllColletion);
         }
         #endregion
