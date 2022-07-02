@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Sample.ElectronicCommerce.Security.Services;
-using Sample.ElectronicCommerce.Core.Entities.DTO;
-using System.Threading.Tasks;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Util;
 using Sample.ElectronicCommerce.Core.Entities.Exceptions;
+using System.Collections.Generic;
 
 namespace Sample.ElectronicCommerce.Security.Controllers
 {
@@ -14,68 +12,19 @@ namespace Sample.ElectronicCommerce.Security.Controllers
     [Route("api/user")]
     public class UserController : ControllerBase
     {
-        #region Variables
-        private readonly ILogger<UserController> _logger;
-
         private readonly UserService _service;
-        #endregion
 
-        #region Constructor
-        public UserController(
-            ILogger<UserController> logger,
-            UserService service
-        )
-        {
-            _logger = logger;
-            _service = service;
-        }
-        #endregion
+        public UserController(UserService service) => _service = service;
 
-        #region End points
         /// POST: api/user
         /// <summary>
-        /// Ponto final que insere usuario
+        /// Ponto final que cria usuário
         /// </summary>                
         [HttpPost]
-        public async Task<ActionResult<ReturnDTO>> InsertAsync([FromBody] UserEntity pEntity)
+        public ActionResult<UserEntity> Create([FromBody] UserEntity pEntity)
         {
-            _logger.LogInformation("UserController.InsertAsync => Start");
-            if (!this.ModelState.IsValid)
-            {
-                _logger.LogInformation("UserController.InsertAsync => ModelState.IsValid: false");
-                throw new BadRequestException(AppConstant.DeMessageInvalidModel);
-            }
-            _logger.LogInformation($"UserController.InsertAsync => OK");
-            return new OkObjectResult(await _service.InsertAsync(pEntity));
-        }
-
-        /// PUT: api/user
-        /// <summary>
-        /// Ponto final que atualiza usuario
-        /// </summary>        
-        [HttpPut]
-        public async Task<ActionResult<ReturnDTO>> UpdateAsync([FromBody] UserEntity pEntity)
-        {
-            _logger.LogInformation("UserController.UpdateAsync => Start");
-            if (!this.ModelState.IsValid)
-            {
-                _logger.LogInformation("UserController.UpdateAsync => ModelState.IsValid: false");
-                throw new BadRequestException(AppConstant.DeMessageInvalidModel);
-            }
-            _logger.LogInformation("UserController.UpdateAsync => OK");
-            return new OkObjectResult(await _service.UpdateAsync(pEntity));
-        }
-
-        /// DELETE: api/user/{pId}
-        /// <summary>
-        /// Ponto final que deleta usuario
-        /// </summary>        
-        [HttpDelete]
-        [Route("{pId}")]
-        public async Task<ActionResult<ReturnDTO>> DeleteAsync(string pId)
-        {
-            _logger.LogInformation("UserController.DeleteAsync => Start");
-            return new OkObjectResult(await _service.DeleteAsync(pId));
+            if (!this.ModelState.IsValid) throw new BadRequestException(AppConstant.DeMessageInvalidModel);
+            return new OkObjectResult(_service.Create(pEntity));
         }
 
         /// GET: api/user/{pId}
@@ -84,22 +33,36 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         /// </summary>        
         [HttpGet]
         [Route("{pId}")]
-        public async Task<ActionResult<ReturnDTO>> GetByIdAsync(string pId)
-        {
-            _logger.LogInformation("UserController.GetByIdAsync => Start");
-            return new OkObjectResult(await _service.GetById(pId));
-        }
+        public ActionResult<UserEntity> ReadById(string pId) => new OkObjectResult(_service.ReadById(pId));
 
         /// GET: api/user
         /// <summary>
-        /// Ponto final que lista todos os usuarios
+        /// Ponto final que busca lista de usuários
         /// </summary>        
         [HttpGet]
-        public async Task<ActionResult<ReturnDTO>> GetAllAsync()
+        public ActionResult<List<UserEntity>> ReadAll() => new OkObjectResult(_service.ReadAll());
+
+        /// PUT: api/user
+        /// <summary>
+        /// Ponto final que atualiza usuario
+        /// </summary>        
+        [HttpPut]
+        public ActionResult<UserEntity> Update([FromBody] UserEntity pEntity)
         {
-            _logger.LogInformation("UserController.GetAllAsync => OK");
-            return new OkObjectResult(await _service.GetAll());
+            if (!this.ModelState.IsValid) throw new BadRequestException(AppConstant.DeMessageInvalidModel);
+            return new OkObjectResult(_service.Update(pEntity));
         }
-        #endregion
+
+        /// DELETE: api/user/{pId}
+        /// <summary>
+        /// Ponto final que deleta usuario
+        /// </summary>        
+        [HttpDelete]
+        [Route("{pId}")]
+        public ActionResult Delete(string pId)
+        {
+            _service.Delete(pId);
+            return new OkObjectResult(null);
+        }
     }
 }

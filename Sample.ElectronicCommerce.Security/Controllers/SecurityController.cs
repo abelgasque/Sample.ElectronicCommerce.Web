@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Sample.ElectronicCommerce.Security.Services;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
-using System.Threading.Tasks;
 using Sample.ElectronicCommerce.Core.Util;
 using Sample.ElectronicCommerce.Core.Entities.Exceptions;
 
@@ -12,88 +10,59 @@ namespace Sample.ElectronicCommerce.Security.Controllers
     [Route("api/security")]
     public class SecurityController : ControllerBase
     {
-        #region Variables
-        private readonly ILogger<SecurityController> _logger;
+        private readonly JsonWebTokenService _service;
 
         private readonly UserService _userService;
 
-        private readonly JsonWebTokenService _jsonWebTokenService;
-        #endregion
-
-        #region Constructor
         public SecurityController(
-            ILogger<SecurityController> logger,
-            UserService service,
-            JsonWebTokenService jsonWebTokenService
+            JsonWebTokenService service,
+            UserService userService
         )
         {
-            _logger = logger;
-            _userService = service;
-            _jsonWebTokenService = jsonWebTokenService;
+            _service = service;
+            _userService = userService;
         }
-        #endregion
 
-        #region End Points
         /// POST: api/security/token/auth
         /// <summary>
-        /// Ponto final que autentica usuário no sistema
+        /// Ponto final que autentica usuário e gera token acesso do usuário
         /// </summary>
         /// <param name="pEntity"></param>
         /// <returns></returns>
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [Route("token/auth")]
-        public async Task<ActionResult<ReturnDTO>> Login([FromBody] UserDTO pEntity)
+        public ActionResult<TokenDTO> Login([FromBody] UserDTO pEntity)
         {
-            _logger.LogInformation("UserSessionController.Login => Start");
-            ReturnDTO returnDTO = await _jsonWebTokenService.Login(pEntity);
-            _logger.LogInformation($"UserSessionController.Login => IsSuccess: {returnDTO.IsSuccess} => End");
-            if (returnDTO.IsSuccess)
-            {
-                return new OkObjectResult(returnDTO.ResultObject);
-            }
-            return new BadRequestObjectResult(returnDTO);
+            return new OkObjectResult(_service.Login(pEntity));
         }
 
         /// POST: api/security/token/refresh/{pId}
         /// <summary>
-        /// Ponto final que atualiza sessão de usuário
+        /// Ponto final que atualiza token acesso do usuário
         /// </summary>
         /// <param name="pId"></param>
         /// <returns></returns>       
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [Route("token/refresh")]
-        public async Task<ActionResult<ReturnDTO>> Refresh([FromBody] string pEntity)
+        public ActionResult<TokenDTO> Refresh([FromBody] TokenDTO pEntity)
         {
-            _logger.LogInformation("UserSessionController.Refresh => Start");
-            ReturnDTO returnDTO = await _jsonWebTokenService.Refresh(pEntity);
-            _logger.LogInformation($"UserSessionController.Refresh => IsSuccess: {returnDTO.IsSuccess} => End");
-            if (returnDTO.IsSuccess)
-            {
-                return new OkObjectResult(returnDTO.ResultObject);
-            }
-            return new BadRequestObjectResult(returnDTO);
+            return new OkObjectResult(_service.Refresh(pEntity));
         }
 
         /// POST: api/security/user/lead
         /// <summary>
-        /// Ponto final que insere captura usuario
+        /// Ponto final que cria captura usuario
         /// </summary>     
         /// /// <param name="pEntity"></param>
         [HttpPost]
         [Route("user/lead")]
-        public async Task<ActionResult<ReturnDTO>> InsertUserLeadAsync([FromBody] UserLeadDTO pEntity)
+        public ActionResult CreateLeadAsync([FromBody] UserLeadDTO pEntity)
         {
-            _logger.LogInformation("SecurityController.InsertUserLeadAsync => Start");
-            if (!this.ModelState.IsValid)
-            {
-                _logger.LogInformation("SecurityController.InsertUserLeadAsync => ModelState.IsValid: false");
-                throw new BadRequestException(AppConstant.DeMessageInvalidModel);
-            }
-            _logger.LogInformation($"SecurityController.InsertUserLeadAsync => OK");
-            return new OkObjectResult(await _userService.UserLeadInsertAsync(pEntity));
+            if (!this.ModelState.IsValid) throw new BadRequestException(AppConstant.DeMessageInvalidModel);
+            _userService.CreateLeadAsync(pEntity);
+            return new OkObjectResult(null);
         }
-        #endregion
     }
 }

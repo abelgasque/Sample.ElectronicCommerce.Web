@@ -1,107 +1,47 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Collections.Generic;
+using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Security.Repositories;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
-using Sample.ElectronicCommerce.Core.Services;
-using System;
-using System.Threading.Tasks;
-using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 
 namespace Sample.ElectronicCommerce.Security.Services
 {
     public class UserService
     {
-        #region Variables
-        private readonly ILogger<UserService> _logger;
-
         private readonly UserRepository _repository;
 
-        private readonly LogAppService _logAppService;
-        #endregion
+        public UserService(UserRepository repository) => _repository = repository;
 
-        #region Constructor
-        public UserService(
-            ILogger<UserService> logger,
-            UserRepository repository,
-            LogAppService logAppService
-        )
-        {
-            _logger = logger;
-            _repository = repository;
-            _logAppService = logAppService;
-        }
-        #endregion
+        public UserEntity Create(UserEntity pEntity) => _repository.Create(pEntity);
 
-        #region Methods        
-        public async Task<ReturnDTO> InsertAsync(UserEntity pEntity)
-        {
-            _logger.LogInformation($"UserService.InsertAsync => Start");
-            pEntity.DtCreation = DateTime.Now;
-            ResponseDTO responseDTO = await _repository.InsertAsync(pEntity);
-            await _logAppService.AppInsertAsync(null, "UserService.InsertAsync", pEntity, responseDTO);
-            _logger.LogInformation($"UserService.InsertAsync => End");
-            return new ReturnDTO(responseDTO);
-        }
+        public UserEntity ReadById(string pId) => _repository.ReadById(pId);
 
-        public async Task<ReturnDTO> UpdateAsync(UserEntity pEntity)
-        {
-            _logger.LogInformation($"UserService.UpdateAsync => Start");
-            pEntity.DtLastUpdate = DateTime.Now;
-            ResponseDTO responseDTO = await _repository.UpdateAsync(pEntity);
-            await _logAppService.AppInsertAsync(null, "UserService.UpdateAsync", pEntity, responseDTO);
-            _logger.LogInformation($"UserService.UpdateAsync => End");
-            return new ReturnDTO(responseDTO);
-        }
+        public UserEntity ReadByMail(string pMail) => _repository.ReadByMail(pMail);
 
-        public async Task<ReturnDTO> DeleteAsync(string pId)
-        {
-            _logger.LogInformation($"UserService.DeleteAsync => Start");
-            ResponseDTO responseDTO = await _repository.DeleteAsync(pId);
-            await _logAppService.AppInsertAsync(null, "UserService.DeleteAsync", pId, responseDTO);
-            _logger.LogInformation($"UserService.DeleteAsync => End");
-            return new ReturnDTO(responseDTO);
-        }
+        public List<UserEntity> ReadAll() => _repository.ReadAll();
 
-        public async Task<ReturnDTO> GetById(string pId)
-        {
-            _logger.LogInformation($"UserService.GetById => Start");
-            ResponseDTO responseDTO = await _repository.GetById(pId);
-            _logger.LogInformation($"UserService.GetById => End");
-            return new ReturnDTO(responseDTO);
-        }
+        public UserEntity Update(UserEntity pEntity) => _repository.Update(pEntity);
 
-        public async Task<ReturnDTO> GetByMail(string pMail)
-        {
-            _logger.LogInformation($"UserService.GetByMail => Start");
-            ResponseDTO responseDTO = await _repository.GetByMail(pMail);
-            _logger.LogInformation($"UserService.GetByMail => End");
-            return new ReturnDTO(responseDTO);
-        }
+        public void Delete(string pId) => _repository.Delete(pId);
 
-        public async Task<ReturnDTO> GetAll()
+        public void CreateLeadAsync(UserLeadDTO pEntity)
         {
-            _logger.LogInformation($"UserService.GetAll => Start");
-            ResponseDTO responseDTO = await _repository.GetAll();
-            _logger.LogInformation($"UserService.GetAll => End");
-            return new ReturnDTO(responseDTO);
-        }
-        #endregion
-
-        #region Methods User Lead
-        public async Task<ReturnDTO> UserLeadInsertAsync(UserLeadDTO pEntity)
-        {
-            _logger.LogInformation($"UserService.UserLeadInsertAsync => Start");
             UserEntity entity = new UserEntity()
             {
                 Name = pEntity.Name,
                 Mail = pEntity.Mail,
-                NuCellPhone = pEntity.Phone,
-                Code = Guid.NewGuid().ToString().Substring(0, 8),
-                IsBlock = true
+                NuCellPhone = pEntity.Phone
             };
-            ResponseDTO responseDTO = await _repository.InsertAsync(entity);
-            _logger.LogInformation($"UserService.UserLeadInsertAsync => End");
-            return new ReturnDTO(responseDTO);
+            _repository.Create(entity);
+            this.Block(entity);
         }
-        #endregion
+
+        public void Block(UserEntity pEntity)
+        {
+            pEntity.IsBlock = true;
+            pEntity.NuAuthAttemptsFail = 0;
+            pEntity.Code = Guid.NewGuid().ToString().Substring(0, 8);
+            _repository.Update(pEntity);
+        }
     }
 }

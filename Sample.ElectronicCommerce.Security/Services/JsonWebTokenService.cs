@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
 using Sample.ElectronicCommerce.Core.Entities.Exceptions;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
@@ -50,7 +49,6 @@ namespace Sample.ElectronicCommerce.Security.Services
         #region Methods    
         private TokenDTO GenerateToken(UserEntity pEntity)
         {
-            _logger.LogInformation("JsonWebTokenService.GenerateToken => Start");
             TokenDTO tokenWs;
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_tokenSettings.SecretKey);
@@ -68,7 +66,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                 new Claim("lastName", pEntity.LastName),
                 new Claim("imageUrl", pEntity.ImageUrl),
                 new Claim("mail", pEntity.Mail),
-                new Claim("nuCellPhone", pEntity.NuCellPhone),
+                new Claim("phone", pEntity.NuCellPhone),
             };
 
             if (pEntity.Roles != null && pEntity.Roles.Count > 0)
@@ -88,69 +86,30 @@ namespace Sample.ElectronicCommerce.Security.Services
                 expires_in = _tokenSettings.ExpireIn,
                 token_type = _tokenSettings.Type
             };
-            _logger.LogInformation(
-                "JsonWebTokenService.GenerateToken => AccessToken: Generated, "
-                + $"AccessToken Expire: {DateTime.UtcNow.AddMinutes(_tokenSettings.ExpireIn).ToString("dd/MM/yyyy - HH:mm:ss")}"
-            );
-            _logger.LogInformation("JsonWebTokenService.GenerateToken => End");
             return tokenWs;
         }
 
-        public async Task<ReturnDTO> Login(UserDTO pEntity)
+        public TokenDTO Login(UserDTO pEntity)
         {
-            _logger.LogInformation($"JsonWebTokenService.Login => Start");
-            ResponseDTO responseDTO;
-            ReturnDTO returnDTO = await _userService.GetByMail(pEntity.UserName);
-            UserEntity user = (UserEntity)returnDTO.ResultObject;
-            if (user == null)
+            UserEntity entity = _userService.ReadByMail(pEntity.UserName);
+            if (entity == null) throw new BadRequestException(AppConstant.DeMessageDataNotFoundWS);
+            entity.NuAuthAttemptsFail += 1;
+            if ((entity.NuAuthAttemptsFail >= _tokenSettings.NuAuthAttempts) && (!entity.Password.Equals(pEntity.Password)))
             {
-                throw new BadRequestException(AppConstant.DeMessageDataNotFoundWS);
+                _userService.Block(entity);
+                throw new UnauthorizedException("Usuário bloqueado!");
             }
-
-            user.NuAuthAttemptsFail += 1;
-            await _userService.UpdateAsync(user);
-            if ((user.NuAuthAttemptsFail >= _tokenSettings.NuAuthAttempts)
-                && (!user.Password.Equals(pEntity.Password)))
-            {
-                user.IsBlock = true;
-                user.NuAuthAttemptsFail = 0;
-                responseDTO = new ResponseDTO(false, "Usuário bloqueado, e-mail enviado para caixa de entrada!", null);
-            }
-
-            if (user.IsBlock)
-            {
-                throw new BadRequestException("Usuário bloqueado!");
-            }
-
-            if (!user.IsActive)
-            {
-                throw new BadRequestException("Usuário inátivo!");
-            }
-
-            if (!user.Password.Equals(pEntity.Password))
-            {
-                throw new BadRequestException($"Senha incorreta, restam mais {(_tokenSettings.NuAuthAttempts - user.NuAuthAttemptsFail)} tentativas!");
-            }
-
-            responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, this.GenerateToken(user));
-            await _logAppService.AppInsertAsync(null, "UserSession.Login", pEntity, responseDTO);
-            _logger.LogInformation($"JsonWebTokenService.Login => End");
-            return new ReturnDTO(responseDTO);
+            if (entity.IsBlock) throw new UnauthorizedException("Usuário bloqueado!");
+            if (!entity.IsActive) throw new UnauthorizedException("Usuário inátivo!");
+            if (!entity.Password.Equals(pEntity.Password)) throw new UnauthorizedException("Senha incorreta!");
+            return this.GenerateToken(entity);
         }
 
-        public async Task<ReturnDTO> Refresh(string pId)
+        public TokenDTO Refresh(TokenDTO pEntity)
         {
-            _logger.LogInformation($"JsonWebTokenService.Refresh => Start");
-            ReturnDTO returnDTO = await _userService.GetById(pId);
-            if (returnDTO.IsSuccess)
-            {
-                UserEntity entity = (UserEntity)returnDTO.ResultObject;
-                returnDTO.ResultObject = this.GenerateToken(entity);
-            }
-            ResponseDTO responseDTO = new ResponseDTO(returnDTO.IsSuccess, returnDTO.DeMessage, returnDTO.ResultObject);
-            await _logAppService.AppInsertAsync(null, "UserSession.Refresh", null, responseDTO);
-            _logger.LogInformation($"JsonWebTokenService.Refresh => End");
-            return new ReturnDTO(responseDTO);
+            UserEntity entity = null;
+            //UserEntity entity = _userService.ReadById(pId);
+            return this.GenerateToken(entity);
         }
         #endregion
     }
