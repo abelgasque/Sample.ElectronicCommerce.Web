@@ -35,7 +35,6 @@ namespace Sample.ElectronicCommerce.Web
             }
             
             app.UseCors("AllowOrigin");
-            //app.UseExceptionMiddleware();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseHttpsRedirection();
@@ -56,8 +55,8 @@ namespace Sample.ElectronicCommerce.Web
                 spa.Options.SourcePath = "ClientSide";
                 if (env.IsDevelopment())
                 {
-                    //spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
-                    spa.UseAngularCliServer(npmScript: "start");
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    //spa.UseAngularCliServer(npmScript: "start");
                 }
             });
         }
