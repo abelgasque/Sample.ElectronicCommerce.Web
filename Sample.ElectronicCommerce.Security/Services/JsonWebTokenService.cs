@@ -18,31 +18,20 @@ namespace Sample.ElectronicCommerce.Security.Services
     public class JsonWebTokenService
     {
         #region Variables
-        private readonly ILogger<JsonWebTokenService> _logger;
-
-        private readonly AppSettings _appSettings;
 
         private readonly TokenSettings _tokenSettings;
 
         private readonly UserService _userService;
-
-        private readonly LogAppService _logAppService;
         #endregion
 
         #region Constructor
         public JsonWebTokenService(
-            ILogger<JsonWebTokenService> logger,
-            IOptions<AppSettings> appSettings,
             IOptions<TokenSettings> tokenSettings,
-            UserService userService,
-            LogAppService logAppService
+            UserService userService
         )
         {
-            _logger = logger;
-            _appSettings = appSettings.Value;
             _tokenSettings = tokenSettings.Value;
             _userService = userService;
-            _logAppService = logAppService;
         }
         #endregion
 

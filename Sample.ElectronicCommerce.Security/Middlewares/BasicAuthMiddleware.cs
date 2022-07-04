@@ -35,8 +35,9 @@ namespace Sample.ElectronicCommerce.Security.Middlewares
                     throw new UnauthorizedException(messageError);
                 }
 
-                if ((_appSettings.Credentials == null) || _appSettings.Credentials.Count <= 0)
+                if ((_appSettings.Credentials == null) || (_appSettings.Credentials.Count <= 0))
                 {
+                    Console.Write("aqui - _appSettings.Credentials == null");
                     throw new UnauthorizedException(messageError);
                 }
 
@@ -49,11 +50,13 @@ namespace Sample.ElectronicCommerce.Security.Middlewares
                 bool isValid = false;
                 foreach (UserDTO credential in _appSettings.Credentials)
                 {
-                    if (credential.UserName.Equals(username) && credential.Password.Equals(password))
-                        isValid = true;
+
+                    if (credential.UserName.Equals(username) && credential.Password.Equals(password)) isValid = true;
+                    Console.Write($"aqui - UserName: {credential.UserName}, credential.Password: {credential.Password}");
                 }
 
-                if (!isValid) throw new UnauthorizedException(messageError);
+                Console.Write($"aqui - isValid: {isValid}");
+                if (!isValid) { throw new UnauthorizedException(messageError); }
             }
             await _next(context);
         }
