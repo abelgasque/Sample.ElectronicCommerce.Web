@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Security.Repositories;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
+using Sample.ElectronicCommerce.Core.Util;
+using Sample.ElectronicCommerce.Core.Entities.Exceptions;
 
 namespace Sample.ElectronicCommerce.Security.Services
 {
@@ -30,18 +32,35 @@ namespace Sample.ElectronicCommerce.Security.Services
             {
                 Name = pEntity.Name,
                 Mail = pEntity.Mail,
-                NuCellPhone = pEntity.Phone
+                Phone = pEntity.Phone
             };
             _repository.Create(entity);
-            this.Block(entity);
+            this.ForgotPassword(new ForgotPasswordDTO() { UserName = pEntity.Mail });
         }
 
-        public void Block(UserEntity pEntity)
+        public void ForgotPassword(ForgotPasswordDTO pEntity)
         {
-            pEntity.IsBlock = true;
-            pEntity.NuAuthAttemptsFail = 0;
-            pEntity.Code = Guid.NewGuid().ToString().Substring(0, 8);
-            _repository.Update(pEntity);
+            UserEntity user = this.ReadByMail(pEntity.UserName);
+            user.Password = null;
+            user.Status = AppConstant.StatusBlock;
+            user.NuAuthAttempts = 0;
+            user.Code = Guid.NewGuid().ToString().Substring(0, 8);
+            user.DtLastBlock = DateTime.Now;
+            _repository.Update(user);
+            //enviar e-mail para recuperação de senha
+        }
+        public void ResetPassword(ResetPasswordDTO pEntity)
+        {
+            UserEntity user = this.ReadById(pEntity.Id);
+            if (!user.Status.Equals(AppConstant.StatusBlock)) throw new BadRequestException("Usuário já foi ativado!");
+            if (!user.Code.Equals(pEntity.Code)) throw new BadRequestException("Código inválido para recuperação de senha!");
+            user.Password = pEntity.NewPassword;
+            user.Status = pEntity.Unblock ? AppConstant.StatusActive : AppConstant.StatusBlock;
+            user.NuAuthAttempts = 0;
+            user.Code = null;
+            user.DtLastDesblock = DateTime.Now;
+            _repository.Update(user);
+            //enviar e-mail para senha cadastrada com sucesso
         }
     }
 }

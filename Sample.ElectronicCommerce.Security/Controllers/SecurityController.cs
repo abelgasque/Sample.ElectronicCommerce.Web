@@ -64,5 +64,33 @@ namespace Sample.ElectronicCommerce.Security.Controllers
             _userService.CreateLeadAsync(pEntity);
             return new OkObjectResult(null);
         }
+
+        /// POST: api/security/forgot/password
+        /// <summary>
+        /// Ponto final que envia recuperação de senha por e-mail do usuário
+        /// </summary>     
+        /// /// <param name="pEntity"></param>
+        [HttpPost]
+        [Route("forgot/password")]
+        public ActionResult ForgotPassword([FromBody] ForgotPasswordDTO pEntity)
+        {
+            if (!this.ModelState.IsValid) throw new BadRequestException(AppConstant.DeMessageInvalidModel);
+            _userService.ForgotPassword(pEntity);
+            return new OkObjectResult(null);
+        }
+
+        /// POST: api/security/reset/password
+        /// <summary>
+        /// Ponto final que recupera senha de usuário
+        /// </summary>     
+        /// /// <param name="pEntity"></param>
+        [HttpPost]
+        [Route("reset/password")]
+        public ActionResult ResetPassword([FromBody] ResetPasswordDTO pEntity)
+        {
+            if (!this.ModelState.IsValid) throw new BadRequestException(AppConstant.DeMessageInvalidModel);
+            _userService.ResetPassword(pEntity);
+            return new OkObjectResult(null);
+        }
     }
 }

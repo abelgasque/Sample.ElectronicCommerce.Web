@@ -12,7 +12,12 @@
         public const string ServerExceptionHandlerMessageWS = "Ocorreu um erro ao realizar chamada do Web Service";
         public const string DeErrorMessageMailBrokerWS = "Agente de e-mail não configurado para está mensagem";
 
-        //user roles
-        public const string UserRoleAdmin = "ROLE_ADMINISTRATOR";
+        public const string RoleAdmin = "ROLE_ADMINISTRATOR";
+        public const string RoleCustomer = "ROLE_CUSTOMER";
+        public const string RoleSystem = "ROLE_SYSTEM";
+
+        public const string StatusActive = "active";
+        public const string StatusInactive = "desactive";
+        public const string StatusBlock = "block";
     }
 }

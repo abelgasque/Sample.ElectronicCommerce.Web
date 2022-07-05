@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -10,7 +9,6 @@ using Sample.ElectronicCommerce.Core.Entities.DTO;
 using Sample.ElectronicCommerce.Core.Entities.Exceptions;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Entities.Settings;
-using Sample.ElectronicCommerce.Core.Services;
 using Sample.ElectronicCommerce.Core.Util;
 
 namespace Sample.ElectronicCommerce.Security.Services
@@ -55,7 +53,7 @@ namespace Sample.ElectronicCommerce.Security.Services
                 new Claim("lastName", pEntity.LastName),
                 new Claim("imageUrl", pEntity.ImageUrl),
                 new Claim("mail", pEntity.Mail),
-                new Claim("phone", pEntity.NuCellPhone),
+                new Claim("phone", pEntity.Phone),
             };
 
             if (pEntity.Roles != null && pEntity.Roles.Count > 0)
@@ -81,15 +79,14 @@ namespace Sample.ElectronicCommerce.Security.Services
         public TokenDTO Login(UserDTO pEntity)
         {
             UserEntity entity = _userService.ReadByMail(pEntity.UserName);
-            if (entity == null) throw new BadRequestException(AppConstant.DeMessageDataNotFoundWS);
-            entity.NuAuthAttemptsFail += 1;
-            if ((entity.NuAuthAttemptsFail >= _tokenSettings.NuAuthAttempts) && (!entity.Password.Equals(pEntity.Password)))
+            entity.NuAuthAttempts += 1;
+            if ((entity.NuAuthAttempts >= _tokenSettings.NuAuthAttempts) && (!entity.Password.Equals(pEntity.Password)))
             {
-                _userService.Block(entity);
+                _userService.ForgotPassword(new ForgotPasswordDTO() { UserName = pEntity.UserName });
                 throw new UnauthorizedException("Usuário bloqueado!");
             }
-            if (entity.IsBlock) throw new UnauthorizedException("Usuário bloqueado!");
-            if (!entity.IsActive) throw new UnauthorizedException("Usuário inátivo!");
+            if (entity.Status.Equals(AppConstant.StatusBlock)) throw new UnauthorizedException("Usuário bloqueado!");
+            if (entity.Status.Equals(AppConstant.StatusInactive)) throw new UnauthorizedException("Usuário inátivo!");
             if (!entity.Password.Equals(pEntity.Password)) throw new UnauthorizedException("Senha incorreta!");
             return this.GenerateToken(entity);
         }

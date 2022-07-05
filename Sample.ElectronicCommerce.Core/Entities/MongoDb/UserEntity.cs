@@ -9,7 +9,7 @@ namespace Sample.ElectronicCommerce.Core.Entities.MongoDB
     public class UserEntity
     {
         public UserEntity() { }
-        
+
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         [BsonElement("id")]
@@ -40,9 +40,13 @@ namespace Sample.ElectronicCommerce.Core.Entities.MongoDB
         [JsonProperty("password")]
         public string Password { get; set; } = null;
 
-        [BsonElement("nu_cell_phone")]
-        [JsonProperty("nuCellPhone")]
-        public string NuCellPhone { get; set; } = null;
+        [BsonElement("phone")]
+        [JsonProperty("Phone")]
+        public string Phone { get; set; } = null;
+
+        [BsonElement("status")]
+        [JsonProperty("status")]
+        public string Status { get; set; } = null;
 
         [BsonElement("dt_creation")]
         [JsonProperty("dtCreation")]
@@ -60,17 +64,9 @@ namespace Sample.ElectronicCommerce.Core.Entities.MongoDB
         [JsonProperty("dtLastDesblock")]
         public DateTime? DtLastDesblock { get; set; } = null;
 
-        [BsonElement("nu_auth_attempts_fail")]
-        [JsonProperty("nuAuthAttemptsFail")]
-        public int NuAuthAttemptsFail { get; set; } = 0;
-
-        [BsonElement("is_block")]
-        [JsonProperty("isBlock")]
-        public bool IsBlock { get; set; } = false;
-
-        [BsonElement("is_active")]
-        [JsonProperty("isActive")]
-        public bool IsActive { get; set; } = true;
+        [BsonElement("nu_auth_attempts")]
+        [JsonProperty("nuAuthAttempts")]
+        public int NuAuthAttempts { get; set; } = 0;
 
         [BsonElement("roles")]
         [JsonProperty("roles")]

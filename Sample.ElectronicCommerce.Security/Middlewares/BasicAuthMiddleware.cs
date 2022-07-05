@@ -30,33 +30,22 @@ namespace Sample.ElectronicCommerce.Security.Middlewares
             if ((endpoint.Contains("api/security")) || (endpoint.Contains("api/core")))
             {
                 string authHeader = context.Request.Headers["Authorization"];
-                if (string.IsNullOrEmpty(authHeader) || (!authHeader.Contains("Basic")))
-                {
-                    throw new UnauthorizedException(messageError);
-                }
-
-                if ((_appSettings.Credentials == null) || (_appSettings.Credentials.Count <= 0))
-                {
-                    Console.Write("aqui - _appSettings.Credentials == null");
-                    throw new UnauthorizedException(messageError);
-                }
-
+                bool isValid = ((!string.IsNullOrEmpty(authHeader)) && (authHeader.Contains("Basic")));
+                if (!isValid) throw new UnauthorizedException(messageError);
+                isValid = ((_appSettings.Credentials != null) && (_appSettings.Credentials.Count > 0));
+                if (!isValid) throw new UnauthorizedException(messageError);
                 string auth = authHeader.Split(new char[] { ' ' })[1];
                 Encoding encoding = Encoding.GetEncoding("UTF-8");
                 var usernameAndPassword = encoding.GetString(Convert.FromBase64String(auth));
                 string username = usernameAndPassword.Split(new char[] { ':' })[0];
                 string password = usernameAndPassword.Split(new char[] { ':' })[1];
-
-                bool isValid = false;
+                isValid = false;
                 foreach (UserDTO credential in _appSettings.Credentials)
                 {
-
-                    if (credential.UserName.Equals(username) && credential.Password.Equals(password)) isValid = true;
-                    Console.Write($"aqui - UserName: {credential.UserName}, credential.Password: {credential.Password}");
+                    isValid = credential.UserName.Equals(username) && credential.Password.Equals(password);
+                    if (isValid) break;
                 }
-
-                Console.Write($"aqui - isValid: {isValid}");
-                if (!isValid) { throw new UnauthorizedException(messageError); }
+                if (!isValid) throw new UnauthorizedException(messageError);
             }
             await _next(context);
         }

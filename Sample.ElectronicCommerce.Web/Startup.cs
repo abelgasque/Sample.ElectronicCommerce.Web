@@ -7,7 +7,6 @@ using Microsoft.Extensions.Hosting;
 using Sample.ElectronicCommerce.Chat.Repositories;
 using Sample.ElectronicCommerce.Chat.Services;
 using Sample.ElectronicCommerce.Core.Entities.Settings;
-using Sample.ElectronicCommerce.Core.Extensions;
 using Sample.ElectronicCommerce.Core.Middlewares;
 using Sample.ElectronicCommerce.Core.Repositories;
 using Sample.ElectronicCommerce.Core.Services;
@@ -18,7 +17,6 @@ using Sample.ElectronicCommerce.Security.Extensions;
 using Sample.ElectronicCommerce.Security.Middlewares;
 using Sample.ElectronicCommerce.Security.Repositories;
 using Sample.ElectronicCommerce.Security.Services;
-using Serilog;
 
 namespace Sample.ElectronicCommerce.Web
 {
@@ -34,14 +32,12 @@ namespace Sample.ElectronicCommerce.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddLogging(configure => configure.AddSerilog());
             services.AddSignalR(o => { o.EnableDetailedErrors = true; });
             services.Configure<IISOptions>(o => { o.ForwardClientCertificate = false; });
             services.AddCors(o => { o.AddPolicy("AllowOrigin", b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); });
             services.AddSpaStaticFiles(o => { o.RootPath = "ClientSide/dist"; });
 
             //Extensions
-            services.AddSwagger(_configuration);
             services.AddJsonWebToken(_configuration);
 
             //Configure settings
@@ -80,17 +76,11 @@ namespace Sample.ElectronicCommerce.Web
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            var appSettingsSection = _configuration.GetSection("AppSettings");
-            var appSettings = appSettingsSection.Get<AppSettings>();
-
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
             app.UseMiddleware<ErrorHandlerMiddleware>();
             app.UseMiddleware<BasicAuthMiddleware>();
-            
+
             app.UseCors("AllowOrigin");
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
@@ -104,9 +94,6 @@ namespace Sample.ElectronicCommerce.Web
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
                 //endpoints.MapHub<ChatConsumer>("/chat");
             });
-
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint($"v{appSettings.Version}/swagger.json", $"ElectronicCommerce v{appSettings.Version}"));
 
             app.UseSpa(spa =>
             {
