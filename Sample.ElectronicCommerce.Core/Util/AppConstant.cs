@@ -2,7 +2,6 @@
 {
     public class AppConstant
     {
-        //messages
         public const string DeMessageSuccessWS = "OK";
         public const string DeMessageDataNotFoundWS = "Nenhum registro encontrado";
         public const string DeMessageInvalidModel = "Erro de validação";
@@ -19,5 +18,8 @@
         public const string StatusActive = "active";
         public const string StatusInactive = "desactive";
         public const string StatusBlock = "block";
+
+        public const string MailTitleDefault = "E-mail básico unitário";
+        public const string MailBodyDefault = "<h1>[Interno] E-mail padrão teste</h1><p>{0}</p>";
     }
 }

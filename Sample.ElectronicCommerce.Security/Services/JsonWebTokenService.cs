@@ -52,8 +52,6 @@ namespace Sample.ElectronicCommerce.Security.Services
                 new Claim("name", pEntity.Name),
                 new Claim("lastName", pEntity.LastName),
                 new Claim("imageUrl", pEntity.ImageUrl),
-                new Claim("mail", pEntity.Mail),
-                new Claim("phone", pEntity.Phone),
             };
 
             if (pEntity.Roles != null && pEntity.Roles.Count > 0)

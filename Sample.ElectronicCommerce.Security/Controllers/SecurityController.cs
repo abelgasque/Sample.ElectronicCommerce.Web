@@ -34,6 +34,7 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         [Route("token/auth")]
         public ActionResult<TokenDTO> Auth([FromBody] UserDTO pEntity)
         {
+            if (!this.ModelState.IsValid) throw new BadRequestException(AppConstant.DeMessageInvalidModel);
             return new OkObjectResult(_service.Auth(pEntity));
         }
 
@@ -48,21 +49,8 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         [Route("token/refresh")]
         public ActionResult<TokenDTO> Refresh([FromBody] TokenDTO pEntity)
         {
-            return new OkObjectResult(_service.Refresh(pEntity));
-        }
-
-        /// POST: api/security/user/lead
-        /// <summary>
-        /// Ponto final que cria captura usuario
-        /// </summary>     
-        /// /// <param name="pEntity"></param>
-        [HttpPost]
-        [Route("user/lead")]
-        public ActionResult CreateLeadAsync([FromBody] UserLeadDTO pEntity)
-        {
             if (!this.ModelState.IsValid) throw new BadRequestException(AppConstant.DeMessageInvalidModel);
-            _userService.CreateLeadAsync(pEntity);
-            return new OkObjectResult(null);
+            return new OkObjectResult(_service.Refresh(pEntity));
         }
 
         /// POST: api/security/forgot/password

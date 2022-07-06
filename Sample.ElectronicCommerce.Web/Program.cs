@@ -8,7 +8,7 @@ namespace Sample.ElectronicCommerce.Web
     {
         public static void Main(string[] args)
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             ServicePointManager.ServerCertificateValidationCallback += (se, cert, chain, sslerror) => { return true; };
             CreateHostBuilder(args).Build().Run();
         }

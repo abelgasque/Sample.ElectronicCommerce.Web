@@ -12,7 +12,16 @@ namespace Sample.ElectronicCommerce.Security.Services
     {
         private readonly UserRepository _repository;
 
-        public UserService(UserRepository repository) => _repository = repository;
+        private readonly MailHelper _mailHelper;
+
+        public UserService(
+            UserRepository repository,
+            MailHelper mailHelper
+        )
+        {
+            _repository = repository;
+            _mailHelper = mailHelper;
+        }
 
         public UserEntity Create(UserEntity pEntity)
         {
@@ -54,18 +63,6 @@ namespace Sample.ElectronicCommerce.Security.Services
             _repository.Delete(pId);
         }
 
-        public void CreateLeadAsync(UserLeadDTO pEntity)
-        {
-            UserEntity entity = new UserEntity()
-            {
-                Name = pEntity.Name,
-                Mail = pEntity.Mail,
-                Phone = pEntity.Phone
-            };
-            _repository.Create(entity);
-            this.ForgotPassword(new ForgotPasswordDTO() { UserName = pEntity.Mail });
-        }
-
         public void ForgotPassword(ForgotPasswordDTO pEntity)
         {
             UserEntity user = this.ReadByMail(pEntity.UserName);
@@ -75,8 +72,9 @@ namespace Sample.ElectronicCommerce.Security.Services
             user.Code = Guid.NewGuid().ToString().Substring(0, 8);
             user.DtLastBlock = DateTime.Now;
             _repository.Update(user);
-            //enviar e-mail para recuperação de senha
+            _mailHelper.SendMailBasicWithApplicationAddress(user.UserName, "E-mail de recuperação de senha do usuário");
         }
+
         public void ResetPassword(ResetPasswordDTO pEntity)
         {
             UserEntity user = this.ReadById(pEntity.Id);
@@ -88,7 +86,7 @@ namespace Sample.ElectronicCommerce.Security.Services
             user.Code = null;
             user.DtLastDesblock = DateTime.Now;
             _repository.Update(user);
-            //enviar e-mail para senha cadastrada com sucesso
+            _mailHelper.SendMailBasicWithApplicationAddress(user.UserName, "E-mail de atualização de senha do usuário");
         }
     }
 }

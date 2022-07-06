@@ -1,74 +1,80 @@
-﻿using Sample.ElectronicCommerce.Core.Entities.DTO;
+﻿using Microsoft.Extensions.Options;
+using Sample.ElectronicCommerce.Core.Entities.DTO;
+using Sample.ElectronicCommerce.Core.Entities.Settings;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Sample.ElectronicCommerce.Core.Util
 {
     public class MailHelper
     {
 
-        #region Methods Sending Mail
-        // public async Task<ReturnDTO> MultipleMailSending(List<MailSingleEntity> pListEntity)
-        // {
-        //     ReturnDTO returnDTO;
-        //     bool isSuccess = (pListEntity != null && pListEntity.Count > 0) ? true : false;
-        //     string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
-        //     object dataObject = (isSuccess) ? pListEntity : null;
-        //     if (pListEntity != null && pListEntity.Count > 0)
-        //     {
-        //         foreach (MailSingleEntity entity in pListEntity)
-        //         {
-        //             returnDTO = await this.SendMailAsync(entity);
-        //             if (!returnDTO.IsSuccess)
-        //             {
-        //                 isSuccess = returnDTO.IsSuccess;
-        //                 deMessage = returnDTO.DeMessage;
-        //                 dataObject = returnDTO.ResultObject;
-        //                 break;
-        //             }
-        //         }
-        //     }
-        //     return new ReturnDTO(isSuccess, deMessage, dataObject);
-        // }
+        private readonly UserSettings _userSettings;
 
-        // public async Task<ReturnDTO> SingleMailSending(MailSingleEntity pEntity)
-        // {
-        //     return await this.SendMailAsync(pEntity);
-        // }
-
-        private async Task<ReturnDTO> SendMailAsync(
-            MailAddressDTO pMailAddress,
-            MailMessageDTO pMailMessage
+        public MailHelper(
+            IOptions<UserSettings> userSettings
         )
         {
-            //_logger.LogInformation("MailHelper.SendMailAsync => Start");
-            ResponseDTO responseDTO;
-            MailAddress toAddress = new MailAddress(pMailMessage.Mail);
-            MailAddress fromAddress = new MailAddress(pMailAddress.UserName);
-            var message = new MailMessage(fromAddress, toAddress);
-            message.Subject = pMailMessage.Title;
-            message.Body = pMailMessage.Body;
-            message.IsBodyHtml = true;
-            message.HeadersEncoding = Encoding.UTF8;
-            message.SubjectEncoding = Encoding.UTF8;
-            message.BodyEncoding = Encoding.UTF8;
-            if (pMailMessage.IsPriority) message.Priority = MailPriority.High;
-            SmtpClient client = new SmtpClient(pMailAddress.Server);
-            if (pMailAddress.Port != null) client = new SmtpClient(pMailAddress.Server, pMailAddress.Port.Value);
+            _userSettings = userSettings.Value;
+        }
+
+        #region Methods Sending Commom
+        private void SendMailWithGenericAddress(MailAddressDTO pAddress, MailMessageDTO pMessage)
+        {
+            MailAddress toAddress = new MailAddress(pMessage.Mail);
+            MailAddress fromAddress = new MailAddress(pAddress.UserName);
+
+            var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = pMessage.Title,
+                Body = pMessage.Body,
+                IsBodyHtml = true,
+                HeadersEncoding = Encoding.UTF8,
+                SubjectEncoding = Encoding.UTF8,
+                BodyEncoding = Encoding.UTF8,
+            };
+            if (pMessage.IsPriority) message.Priority = MailPriority.High;
+
+            SmtpClient client = new SmtpClient(pAddress.Server);
+            if (pAddress.Port != null) client.Port = pAddress.Port.Value;
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
-            client.EnableSsl = pMailAddress.IsEnabledSsl;
+            client.EnableSsl = pAddress.IsEnabledSsl;
             client.UseDefaultCredentials = false;
-            NetworkCredential smtpUserInfo = new NetworkCredential(pMailAddress.UserName, pMailAddress.Password);
+            NetworkCredential smtpUserInfo = new NetworkCredential(pAddress.UserName, pAddress.Password);
             client.Credentials = smtpUserInfo;
-            await client.SendMailAsync(message);
+
+            client.SendMailAsync(message);
             client.Dispose();
             message.Dispose();
-            responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, null);
-            //await _logAppService.AppInsertAsync(0, "MailHelper.SendMailAsync", pEntity, responseDTO);
-            //_logger.LogInformation("MailHelper.SendMailAsync => End");
-            return new ReturnDTO(responseDTO);
+        }
+
+        private void SendMailWithAddressApp(MailMessageDTO pMessage)
+        {
+            MailAddressDTO address = new MailAddressDTO()
+            {
+                UserName = _userSettings.UserName,
+                Password = _userSettings.Password,
+                Server = _userSettings.MailServer,
+                Port = _userSettings.MailPort,
+                IsEnabledSsl = _userSettings.MailEnabledSsl,
+            };
+            this.SendMailWithGenericAddress(address, pMessage);
+        }
+        #endregion
+
+
+        #region Methods Sending Public
+        public void SendMailBasicWithApplicationAddress(string pMail, string pMessage)
+        {
+            MailMessageDTO message = new MailMessageDTO()
+            {
+                Mail = pMail,
+                Title = AppConstant.MailTitleDefault,
+                Body = string.Format(AppConstant.MailBodyDefault, pMessage),
+                IsPriority = false
+            };
+            this.SendMailWithAddressApp(message);
         }
         #endregion
     }

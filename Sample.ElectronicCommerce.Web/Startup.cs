@@ -41,8 +41,7 @@ namespace Sample.ElectronicCommerce.Web
             services.AddJsonWebToken(_configuration);
 
             //Configure settings
-            services.Configure<AppSettings>(_configuration.GetSection("AppSettings"));
-            services.Configure<MailSettings>(_configuration.GetSection("MailSettings"));
+            services.Configure<AppSettings>(_configuration.GetSection("AppSettings"));            
             services.Configure<MongoClientSettings>(_configuration.GetSection("MongoClientSettings"));
             services.Configure<TokenSettings>(_configuration.GetSection("TokenSettings"));
             services.Configure<UserSettings>(_configuration.GetSection("UserSettings"));

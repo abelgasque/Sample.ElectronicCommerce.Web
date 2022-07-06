@@ -40,7 +40,7 @@ namespace Sample.ElectronicCommerce.Security.Repositories
 
         public UserEntity ReadByMail(string pMail)
         {
-            Expression<Func<UserEntity, bool>> filter = x => x.Mail.Equals(pMail);
+            Expression<Func<UserEntity, bool>> filter = x => x.UserName.Equals(pMail);
             return _collection.Find(filter).FirstOrDefault();
         }
 

@@ -32,16 +32,16 @@ namespace Sample.ElectronicCommerce.Core.Entities.MongoDB
         [JsonProperty("lastName")]
         public string LastName { get; set; } = null;
 
-        [BsonElement("mail")]
-        [JsonProperty("mail")]
-        public string Mail { get; set; } = null;
+        [BsonElement("user_name")]
+        [JsonProperty("username")]
+        public string UserName { get; set; } = null;
 
         [BsonElement("password")]
         [JsonProperty("password")]
         public string Password { get; set; } = null;
 
         [BsonElement("phone")]
-        [JsonProperty("Phone")]
+        [JsonProperty("phone")]
         public string Phone { get; set; } = null;
 
         [BsonElement("status")]
