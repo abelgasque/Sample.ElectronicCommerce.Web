@@ -6,8 +6,6 @@ using System.Linq.Expressions;
 using MongoDB.Bson;
 using AppMongoClient = Sample.ElectronicCommerce.Core.Entities.Settings;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
-using Sample.ElectronicCommerce.Core.Util;
-using Sample.ElectronicCommerce.Core.Entities.Exceptions;
 
 namespace Sample.ElectronicCommerce.Security.Repositories
 {
@@ -30,43 +28,27 @@ namespace Sample.ElectronicCommerce.Security.Repositories
         #endregion
 
         #region Methods CRUD
-        public UserRoleEntity Create(UserRoleEntity pEntity)
+        public void Create(UserRoleEntity pEntity) => _collection.InsertOneAsync(pEntity);
+
+        public List<UserRoleEntity> ReadAll()
         {
-            pEntity.DtCreation = DateTime.Now;
-            _collection.InsertOneAsync(pEntity);
-            return pEntity;
+            Expression<Func<UserRoleEntity, bool>> filter = x => x.IsActive == true;
+            return _collection.Find(filter).ToList();
         }
 
         public UserRoleEntity ReadById(string pId)
         {
             Expression<Func<UserRoleEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pId));
-            UserRoleEntity entity = _collection.Find(filter).FirstOrDefault();
-            if (entity == null) throw new BadRequestException(AppConstant.DeMessageDataNotFoundWS);
-            return entity;
+            return _collection.Find(filter).FirstOrDefault();
         }
 
-        public List<UserRoleEntity> ReadAll()
+        public void Update(UserRoleEntity pEntity)
         {
-            Expression<Func<UserRoleEntity, bool>> filter = x => x.IsActive == true;
-            List<UserRoleEntity> listEntities = _collection.Find(filter).ToList();
-            if ((listEntities == null) || (listEntities.Count <= 0)) throw new BadRequestException(AppConstant.DeMessageDataNotFoundWS);
-            return listEntities;
-        }
-        public UserRoleEntity Update(UserRoleEntity pEntity)
-        {
-            Expression<Func<UserRoleEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
-            UserRoleEntity entity = _collection.Find(filter).FirstOrDefault();
-            if (entity == null) throw new BadRequestException(AppConstant.DeMessageDataNotFoundWS);
-            pEntity.DtLastUpdate = DateTime.Now;
+            Expression<Func<UserRoleEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);            
             _collection.ReplaceOne(filter, pEntity);
-            return entity;
         }
 
-        public void Delete(string pId)
-        {
-            UserRoleEntity entity = this.ReadById(pId);
-            _collection.FindOneAndDelete(pId);
-        }
+        public void Delete(string pId) => _collection.FindOneAndDelete(pId);
         #endregion
     }
 }

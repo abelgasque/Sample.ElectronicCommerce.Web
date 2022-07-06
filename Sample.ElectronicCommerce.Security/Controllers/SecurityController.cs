@@ -32,9 +32,9 @@ namespace Sample.ElectronicCommerce.Security.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [Route("token/auth")]
-        public ActionResult<TokenDTO> Login([FromBody] UserDTO pEntity)
+        public ActionResult<TokenDTO> Auth([FromBody] UserDTO pEntity)
         {
-            return new OkObjectResult(_service.Login(pEntity));
+            return new OkObjectResult(_service.Auth(pEntity));
         }
 
         /// POST: api/security/token/refresh/{pId}

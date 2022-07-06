@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using AppMongoClient = Sample.ElectronicCommerce.Core.Entities.Settings;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
-using Sample.ElectronicCommerce.Core.Util;
-using Sample.ElectronicCommerce.Core.Entities.Exceptions;
 
 namespace Sample.ElectronicCommerce.Security.Repositories
 {
@@ -29,52 +27,30 @@ namespace Sample.ElectronicCommerce.Security.Repositories
         }
         #endregion
 
-        #region Methods Crud
-        public UserEntity Create(UserEntity pEntity)
-        {
-            pEntity.DtCreation = DateTime.Now;
-            _collection.InsertOne(pEntity);
-            return pEntity;
-        }
+        #region Methods CRUD
+        public void Create(UserEntity pEntity) => _collection.InsertOne(pEntity);
+
+        public List<UserEntity> ReadAll() => _collection.Aggregate().ToList();
 
         public UserEntity ReadById(string pId)
         {
             Expression<Func<UserEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pId));
-            UserEntity entity = _collection.Find(filter).FirstOrDefault();
-            if (entity == null) throw new BadRequestException(AppConstant.DeMessageDataNotFoundWS);
-            return entity;
+            return _collection.Find(filter).FirstOrDefault();
         }
 
         public UserEntity ReadByMail(string pMail)
         {
             Expression<Func<UserEntity, bool>> filter = x => x.Mail.Equals(pMail);
-            UserEntity entity = _collection.Find(filter).FirstOrDefault();
-            if (entity == null) throw new BadRequestException(AppConstant.DeMessageDataNotFoundWS);
-            return entity;
+            return _collection.Find(filter).FirstOrDefault();
         }
 
-        public List<UserEntity> ReadAll()
-        {
-            List<UserEntity> listEntities = _collection.Aggregate().ToList();
-            if ((listEntities == null) || (listEntities.Count <= 0)) throw new BadRequestException(AppConstant.DeMessageDataNotFoundWS);
-            return listEntities;
-        }
-
-        public UserEntity Update(UserEntity pEntity)
+        public void Update(UserEntity pEntity)
         {
             Expression<Func<UserEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
-            UserEntity entity = _collection.Find(filter).FirstOrDefault();
-            if (entity == null) throw new BadRequestException(AppConstant.DeMessageDataNotFoundWS);
-            pEntity.DtLastUpdate = DateTime.Now;
             _collection.ReplaceOne(filter, pEntity);
-            return entity;
         }
 
-        public void Delete(string pId)
-        {
-            UserEntity entity = this.ReadById(pId);
-            _collection.FindOneAndDelete(pId);
-        }
+        public void Delete(string pId) => _collection.FindOneAndDelete(pId);
         #endregion
     }
 }

@@ -14,17 +14,45 @@ namespace Sample.ElectronicCommerce.Security.Services
 
         public UserService(UserRepository repository) => _repository = repository;
 
-        public UserEntity Create(UserEntity pEntity) => _repository.Create(pEntity);
+        public UserEntity Create(UserEntity pEntity)
+        {
+            pEntity.DtCreation = DateTime.Now;
+            _repository.Create(pEntity);
+            return pEntity;
+        }
 
-        public UserEntity ReadById(string pId) => _repository.ReadById(pId);
+        public UserEntity ReadById(string pId)
+        {
+            UserEntity entity = _repository.ReadById(pId);
+            if (entity == null) throw new BadRequestException(AppConstant.DeMessageDataNotFoundWS);
+            return entity;
+        }
 
-        public UserEntity ReadByMail(string pMail) => _repository.ReadByMail(pMail);
+        public UserEntity ReadByMail(string pMail)
+        {
+            UserEntity entity = _repository.ReadByMail(pMail);
+            if (entity == null) throw new BadRequestException(AppConstant.DeMessageDataNotFoundWS);
+            return entity;
+        }
 
-        public List<UserEntity> ReadAll() => _repository.ReadAll();
+        public List<UserEntity> ReadAll()
+        {
+            List<UserEntity> list = _repository.ReadAll();
+            return (list.Count > 0) ? list : null;
+        }
 
-        public UserEntity Update(UserEntity pEntity) => _repository.Update(pEntity);
+        public UserEntity Update(UserEntity pEntity)
+        {
+            pEntity.DtLastUpdate = DateTime.Now;
+            _repository.Update(pEntity);
+            return pEntity;
+        }
 
-        public void Delete(string pId) => _repository.Delete(pId);
+        public void Delete(string pId)
+        {
+            this.ReadById(pId);
+            _repository.Delete(pId);
+        }
 
         public void CreateLeadAsync(UserLeadDTO pEntity)
         {

@@ -76,7 +76,7 @@ namespace Sample.ElectronicCommerce.Security.Services
             return tokenWs;
         }
 
-        public TokenDTO Login(UserDTO pEntity)
+        public TokenDTO Auth(UserDTO pEntity)
         {
             UserEntity entity = _userService.ReadByMail(pEntity.UserName);
             entity.NuAuthAttempts += 1;
@@ -93,9 +93,11 @@ namespace Sample.ElectronicCommerce.Security.Services
 
         public TokenDTO Refresh(TokenDTO pEntity)
         {
-            UserEntity entity = null;
-            //UserEntity entity = _userService.ReadById(pId);
-            return this.GenerateToken(entity);
+            var handler = new JwtSecurityTokenHandler();
+            var tokenDecode = handler.ReadJwtToken(pEntity.access_token);
+            //UserEntity entity = _userService.ReadById(tokenDecode.id);
+            //return this.GenerateToken(entity);
+            return pEntity;
         }
         #endregion
     }
