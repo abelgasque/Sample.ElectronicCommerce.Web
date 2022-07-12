@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using Sample.ElectronicCommerce.Chat.Services;
+using Sample.ElectronicCommerce.Core.Services;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using System.Threading.Tasks;
 
-namespace Sample.ElectronicCommerce.Chat.Consumer
+namespace Sample.ElectronicCommerce.Core.Consumer
 {
     public class ChatConsumer : Hub
     {

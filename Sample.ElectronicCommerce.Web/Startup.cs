@@ -4,15 +4,11 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Sample.ElectronicCommerce.Chat.Repositories;
-using Sample.ElectronicCommerce.Chat.Services;
 using Sample.ElectronicCommerce.Core.Entities.Settings;
 using Sample.ElectronicCommerce.Core.Middlewares;
 using Sample.ElectronicCommerce.Core.Repositories;
 using Sample.ElectronicCommerce.Core.Services;
 using Sample.ElectronicCommerce.Core.Util;
-using Sample.ElectronicCommerce.Mail.Repositories;
-using Sample.ElectronicCommerce.Mail.Services;
 using Sample.ElectronicCommerce.Security.Extensions;
 using Sample.ElectronicCommerce.Security.Middlewares;
 using Sample.ElectronicCommerce.Security.Repositories;
@@ -41,7 +37,7 @@ namespace Sample.ElectronicCommerce.Web
             services.AddJsonWebToken(_configuration);
 
             //Configure settings
-            services.Configure<AppSettings>(_configuration.GetSection("AppSettings"));            
+            services.Configure<AppSettings>(_configuration.GetSection("AppSettings"));
             services.Configure<MongoClientSettings>(_configuration.GetSection("MongoClientSettings"));
             services.Configure<TokenSettings>(_configuration.GetSection("TokenSettings"));
             services.Configure<UserSettings>(_configuration.GetSection("UserSettings"));
@@ -66,11 +62,11 @@ namespace Sample.ElectronicCommerce.Web
 
             //Mail
             services.AddTransient<MailBrokerRepository>();
-            services.AddTransient<MailGroupRepository>();
-            services.AddTransient<MailSingleRepository>();
+            services.AddTransient<MailBrokerMessageRepository>();
+            services.AddTransient<MailMessageRepository>();
             services.AddTransient<MailBrokerService>();
-            services.AddTransient<MailGroupService>();
-            services.AddTransient<MailSingleService>();
+            services.AddTransient<MailBrokerMessageService>();
+            services.AddTransient<MailMessageService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

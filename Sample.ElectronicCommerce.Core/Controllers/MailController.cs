@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Sample.ElectronicCommerce.Mail.Services;
+using Sample.ElectronicCommerce.Core.Services;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Util;
 using System.Threading.Tasks;
 
-namespace Sample.ElectronicCommerce.Mail.Controllers
+namespace Sample.ElectronicCommerce.Core.Controllers
 {
     [ApiController]
     [Route("api/mail")]
@@ -17,17 +17,17 @@ namespace Sample.ElectronicCommerce.Mail.Controllers
 
         private readonly MailBrokerService _mailBrokerService;
 
-        private readonly MailGroupService _mailGroupService;
+        private readonly MailBrokerMessageService _mailGroupService;
 
-        private readonly MailSingleService _mailSingleService;
+        private readonly MailMessageService _mailSingleService;
         #endregion
 
         #region Constructor
         public MailController(
             ILogger<MailController> logger,
             MailBrokerService mailBrokerService,
-            MailGroupService mailGroupService,
-            MailSingleService mailSingleService
+            MailBrokerMessageService mailGroupService,
+            MailMessageService mailSingleService
         )
         {
             _logger = logger;

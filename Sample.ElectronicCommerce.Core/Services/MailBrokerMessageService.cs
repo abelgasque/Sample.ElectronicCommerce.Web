@@ -1,26 +1,26 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sample.ElectronicCommerce.Mail.Repositories;
+using Sample.ElectronicCommerce.Core.Repositories;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Services;
 using System.Threading.Tasks;
 
-namespace Sample.ElectronicCommerce.Mail.Services
+namespace Sample.ElectronicCommerce.Core.Services
 {
-    public class MailGroupService
+    public class MailBrokerMessageService
     {
         #region Variables
-        private readonly ILogger<MailGroupService> _logger;
+        private readonly ILogger<MailBrokerMessageService> _logger;
 
-        private readonly MailGroupRepository _repository;
+        private readonly MailBrokerMessageRepository _repository;
 
         private readonly LogAppService _logAppService;
         #endregion
 
         #region Constructor
-        public MailGroupService(
-            ILogger<MailGroupService> logger,
-            MailGroupRepository repository,
+        public MailBrokerMessageService(
+            ILogger<MailBrokerMessageService> logger,
+            MailBrokerMessageRepository repository,
             LogAppService logAppService
         )
         {
@@ -33,35 +33,35 @@ namespace Sample.ElectronicCommerce.Mail.Services
         #region Methods  
         public async Task<ReturnDTO> InsertAsync(MailGroupEntity pEntity)
         {
-            _logger.LogInformation($"MailGroupService.InsertAsync => Start");
+            _logger.LogInformation($"MailBrokerMessageService.InsertAsync => Start");
             ResponseDTO responseDTO = await _repository.InsertAsync(pEntity);
-            await _logAppService.AppInsertAsync(null, "MailGroupService.InsertAsync", pEntity, responseDTO);
-            _logger.LogInformation($"MailGroupService.InsertAsync => End");
+            await _logAppService.AppInsertAsync(null, "MailBrokerMessageService.InsertAsync", pEntity, responseDTO);
+            _logger.LogInformation($"MailBrokerMessageService.InsertAsync => End");
             return new ReturnDTO(responseDTO);
         }
 
         public async Task<ReturnDTO> UpdateAsync(MailGroupEntity pEntity)
         {
-            _logger.LogInformation($"MailGroupService.UpdateAsync => Start");
+            _logger.LogInformation($"MailBrokerMessageService.UpdateAsync => Start");
             ResponseDTO responseDTO = await _repository.UpdateAsync(pEntity);
-            await _logAppService.AppInsertAsync(null, "MailGroupService.UpdateAsync", pEntity, responseDTO);
-            _logger.LogInformation($"MailGroupService.UpdateAsync => End");
+            await _logAppService.AppInsertAsync(null, "MailBrokerMessageService.UpdateAsync", pEntity, responseDTO);
+            _logger.LogInformation($"MailBrokerMessageService.UpdateAsync => End");
             return new ReturnDTO(responseDTO);
         }
 
         public async Task<ReturnDTO> GetById(string pId)
         {
-            _logger.LogInformation($"MailGroupService.GetById => Start");
+            _logger.LogInformation($"MailBrokerMessageService.GetById => Start");
             ResponseDTO responseDTO = await _repository.GetById(pId);
-            _logger.LogInformation($"MailGroupService.GetById => End");
+            _logger.LogInformation($"MailBrokerMessageService.GetById => End");
             return new ReturnDTO(responseDTO);
         }
 
         public async Task<ReturnDTO> GetAll()
         {
-            _logger.LogInformation("MailGroupService.GetAll => Start");
+            _logger.LogInformation("MailBrokerMessageService.GetAll => Start");
             ResponseDTO responseDTO = await _repository.GetAll();
-            _logger.LogInformation("MailGroupService.GetAll > Finish");
+            _logger.LogInformation("MailBrokerMessageService.GetAll > Finish");
             return new ReturnDTO(responseDTO);
         }
         #endregion

@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Sample.ElectronicCommerce.Chat.Services;
+using Sample.ElectronicCommerce.Core.Services;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Util;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Sample.ElectronicCommerce.Chat.Controllers
+namespace Sample.ElectronicCommerce.Core.Controllers
 {
     [ApiController]
     [Route("api/chat")]

@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sample.ElectronicCommerce.Chat.Repositories;
+using Sample.ElectronicCommerce.Core.Repositories;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Sample.ElectronicCommerce.Chat.Services
+namespace Sample.ElectronicCommerce.Core.Services
 {
     public class ChatBrokerService
     {

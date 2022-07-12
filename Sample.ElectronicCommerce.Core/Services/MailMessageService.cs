@@ -1,22 +1,22 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Sample.ElectronicCommerce.Mail.Repositories;
+using Sample.ElectronicCommerce.Core.Repositories;
 using Sample.ElectronicCommerce.Core.Entities.DTO;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Entities.Settings;
 using Sample.ElectronicCommerce.Core.Services;
 using System.Threading.Tasks;
 
-namespace Sample.ElectronicCommerce.Mail.Services
+namespace Sample.ElectronicCommerce.Core.Services
 {
-    public class MailSingleService
+    public class MailMessageService
     {
         #region Variables
-        private readonly ILogger<MailSingleService> _logger;
+        private readonly ILogger<MailMessageService> _logger;
 
         private readonly AppSettings _appSettings;
 
-        private readonly MailSingleRepository _repository;
+        private readonly MailMessageRepository _repository;
 
         private readonly MailBrokerRepository _mailBrokerRepository;
 
@@ -24,10 +24,10 @@ namespace Sample.ElectronicCommerce.Mail.Services
         #endregion
 
         #region Constructor
-        public MailSingleService(
-            ILogger<MailSingleService> logger,
+        public MailMessageService(
+            ILogger<MailMessageService> logger,
             IOptions<AppSettings> appSettings,
-            MailSingleRepository repository,
+            MailMessageRepository repository,
             MailBrokerRepository mailBrokerRepository,
             LogAppService logAppService
         )
@@ -43,35 +43,35 @@ namespace Sample.ElectronicCommerce.Mail.Services
         #region Methods  
         public async Task<ReturnDTO> InsertAsync(MailSingleEntity pEntity)
         {
-            _logger.LogInformation($"MailSingleService.InsertAsync => Start");
+            _logger.LogInformation($"MailMessageService.InsertAsync => Start");
             ResponseDTO responseDTO = await _repository.InsertAsync(pEntity);
-            await _logAppService.AppInsertAsync(null, "MailSingleService.InsertAsync", pEntity, responseDTO);
-            _logger.LogInformation($"MailSingleService.InsertAsync => End");
+            await _logAppService.AppInsertAsync(null, "MailMessageService.InsertAsync", pEntity, responseDTO);
+            _logger.LogInformation($"MailMessageService.InsertAsync => End");
             return new ReturnDTO(responseDTO);
         }
 
         public async Task<ReturnDTO> UpdateAsync(MailSingleEntity pEntity)
         {
-            _logger.LogInformation($"MailSingleService.UpdateAsync => Start");
+            _logger.LogInformation($"MailMessageService.UpdateAsync => Start");
             ResponseDTO responseDTO = await _repository.UpdateAsync(pEntity);
-            await _logAppService.AppInsertAsync(null, "MailSingleService.UpdateAsync", pEntity, responseDTO);
-            _logger.LogInformation($"MailSingleService.UpdateAsync => End");
+            await _logAppService.AppInsertAsync(null, "MailMessageService.UpdateAsync", pEntity, responseDTO);
+            _logger.LogInformation($"MailMessageService.UpdateAsync => End");
             return new ReturnDTO(responseDTO);
         }
 
         public async Task<ReturnDTO> GetById(string pId)
         {
-            _logger.LogInformation($"MailSingleService.GetById => Start");
+            _logger.LogInformation($"MailMessageService.GetById => Start");
             ResponseDTO responseDTO = await _repository.GetById(pId);
-            _logger.LogInformation($"MailSingleService.GetById => End");
+            _logger.LogInformation($"MailMessageService.GetById => End");
             return new ReturnDTO(responseDTO);
         }
 
         public async Task<ReturnDTO> GetAll()
         {
-            _logger.LogInformation("MailSingleService.GetAll => Start");
+            _logger.LogInformation("MailMessageService.GetAll => Start");
             ResponseDTO responseDTO = await _repository.GetAll();
-            _logger.LogInformation("MailSingleService.GetAll > Finish");
+            _logger.LogInformation("MailMessageService.GetAll > Finish");
             return new ReturnDTO(responseDTO);
         }
         #endregion

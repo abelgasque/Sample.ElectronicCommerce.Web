@@ -11,21 +11,21 @@ using Sample.ElectronicCommerce.Core.Entities.DTO;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 using Sample.ElectronicCommerce.Core.Util;
 
-namespace Sample.ElectronicCommerce.Mail.Repositories
+namespace Sample.ElectronicCommerce.Core.Repositories
 {
-    public class MailBrokerRepository
+    public class MailBrokerMessageRepository
     {
         #region Variables
-        private readonly ILogger<MailBrokerRepository> _logger;
+        private readonly ILogger<MailBrokerMessageRepository> _logger;
 
         private readonly AppMongoClient.MongoClientSettings _mongoClientSettings;
 
-        private readonly IMongoCollection<MailBrokerEntity> _collection;
+        private readonly IMongoCollection<MailGroupEntity> _collection;
         #endregion
 
         #region Constructor
-        public MailBrokerRepository(
-            ILogger<MailBrokerRepository> logger,
+        public MailBrokerMessageRepository(
+            ILogger<MailBrokerMessageRepository> logger,
             IOptions<AppMongoClient.MongoClientSettings> mongoClientSettings
         )
         {
@@ -33,27 +33,27 @@ namespace Sample.ElectronicCommerce.Mail.Repositories
             _mongoClientSettings = mongoClientSettings.Value;
             var mongoClient = new MongoClient(_mongoClientSettings.GetConnectionString);
             var mongoDatabase = mongoClient.GetDatabase(_mongoClientSettings.DataBase);
-            _collection = mongoDatabase.GetCollection<MailBrokerEntity>(_mongoClientSettings.MailBrokerColletion);
+            _collection = mongoDatabase.GetCollection<MailGroupEntity>(_mongoClientSettings.MailGroupColletion);
         }
         #endregion
 
         #region Methods Crud
-        public async Task<ResponseDTO> InsertAsync(MailBrokerEntity pEntity)
+        public async Task<ResponseDTO> InsertAsync(MailGroupEntity pEntity)
         {
-            _logger.LogInformation("MailBrokerRepository.InsertAsync => Start");
+            _logger.LogInformation("MailBrokerMessageRepository.InsertAsync => Start");
             pEntity.DtCreation = DateTime.Now;
             await _collection.InsertOneAsync(pEntity);
-            _logger.LogInformation("MailBrokerRepository.InsertAsync => OK");
+            _logger.LogInformation("MailBrokerMessageRepository.InsertAsync => OK");
             ResponseDTO responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, pEntity);
-            _logger.LogInformation("MailBrokerRepository.InsertAsync > Finish");
+            _logger.LogInformation("MailBrokerMessageRepository.InsertAsync > Finish");
             return responseDTO;
         }
 
-        public async Task<ResponseDTO> UpdateAsync(MailBrokerEntity pEntity)
+        public async Task<ResponseDTO> UpdateAsync(MailGroupEntity pEntity)
         {
-            _logger.LogInformation("MailBrokerRepository.UpdateAsync => Start");
-            Expression<Func<MailBrokerEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
-            MailBrokerEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+            _logger.LogInformation("MailBrokerMessageRepository.UpdateAsync => Start");
+            Expression<Func<MailGroupEntity, bool>> filter = x => x.Id.Equals(pEntity.Id);
+            MailGroupEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
             bool isSuccess = (entity != null) ? true : false;
             string deMessage = (isSuccess) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
             object dataObject = (isSuccess) ? pEntity : null;
@@ -63,29 +63,29 @@ namespace Sample.ElectronicCommerce.Mail.Repositories
                 await _collection.ReplaceOneAsync(filter, pEntity);
             }
             ResponseDTO responseDTO = new ResponseDTO(isSuccess, deMessage, dataObject);
-            _logger.LogInformation("MailBrokerRepository.UpdateAsync > Finish");
+            _logger.LogInformation("MailBrokerMessageRepository.UpdateAsync > Finish");
             return responseDTO;
         }
 
         public async Task<ResponseDTO> GetById(string pId)
         {
-            _logger.LogInformation("MailBrokerRepository.GetById => Start");
-            Expression<Func<MailBrokerEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pId));
-            MailBrokerEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
+            _logger.LogInformation("MailBrokerMessageRepository.GetById => Start");
+            Expression<Func<MailGroupEntity, bool>> filter = x => x.Id.Equals(ObjectId.Parse(pId));
+            MailGroupEntity entity = await _collection.Find(filter).FirstOrDefaultAsync();
             string deMessage = (entity != null) ? AppConstant.DeMessageSuccessWS : AppConstant.DeMessageDataNotFoundWS;
             bool isSuccess = (entity != null) ? true : false;
             ResponseDTO responseDTO = new ResponseDTO(isSuccess, deMessage, entity);
-            _logger.LogInformation("MailBrokerRepository.GetById > Finish");
+            _logger.LogInformation("MailBrokerMessageRepository.GetById > Finish");
             return responseDTO;
         }
 
         public async Task<ResponseDTO> GetAll()
         {
-            _logger.LogInformation("MailBrokerRepository.GetAll => Start");
-            Expression<Func<MailBrokerEntity, bool>> filter = x => x.IsActive == true;
-            List<MailBrokerEntity> listEntities = await _collection.Find(filter).ToListAsync();
+            _logger.LogInformation("MailBrokerMessageRepository.GetAll => Start");
+            Expression<Func<MailGroupEntity, bool>> filter = x => x.IsActive == true;
+            List<MailGroupEntity> listEntities = await _collection.Find(filter).ToListAsync();
             ResponseDTO responseDTO = new ResponseDTO(true, AppConstant.DeMessageSuccessWS, listEntities);
-            _logger.LogInformation("MailBrokerRepository.GetAll > Finish");
+            _logger.LogInformation("MailBrokerMessageRepository.GetAll > Finish");
             return responseDTO;
         }
         #endregion

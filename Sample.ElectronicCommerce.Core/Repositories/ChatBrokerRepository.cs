@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using AppMongoClient = Sample.ElectronicCommerce.Core.Entities.Settings;
 using Sample.ElectronicCommerce.Core.Entities.MongoDB;
 
-namespace Sample.ElectronicCommerce.Chat.Repositories
+namespace Sample.ElectronicCommerce.Core.Repositories
 {
     public class ChatBrokerRepository
     {
