@@ -24,8 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>    
-    <ProjectReference Include="..\Sample.ElectronicCommerce.Chat\Sample.ElectronicCommerce.Chat.csproj" />    
-    <ProjectReference Include="..\Sample.ElectronicCommerce.Mail\Sample.ElectronicCommerce.Mail.csproj" />
     <ProjectReference Include="..\Sample.ElectronicCommerce.Core\Sample.ElectronicCommerce.Core.csproj" />
     <ProjectReference Include="..\Sample.ElectronicCommerce.Security\Sample.ElectronicCommerce.Security.csproj" />
   </ItemGroup>

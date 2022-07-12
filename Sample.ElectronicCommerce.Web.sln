@@ -9,10 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.ElectronicCommerce.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.ElectronicCommerce.Security", "Sample.ElectronicCommerce.Security\Sample.ElectronicCommerce.Security.csproj", "{4D5526AB-169A-4406-9F09-71FDBE2FBE02}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.ElectronicCommerce.Mail", "Sample.ElectronicCommerce.Mail\Sample.ElectronicCommerce.Mail.csproj", "{BECFCD90-137B-4120-9B5E-F7E6E7F02699}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.ElectronicCommerce.Chat", "Sample.ElectronicCommerce.Chat\Sample.ElectronicCommerce.Chat.csproj", "{1F7F6823-BA3B-48E7-B9FE-821E6AE8104D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
